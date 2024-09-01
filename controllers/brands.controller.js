@@ -103,9 +103,10 @@ async function putBrandImage(req, res) {
         await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], [outputImageFilePath]);
         const result = await brandsManagmentFunctions.changeBrandImage(req.data._id, req.params.brandId, outputImageFilePath);
         if (!result.error) {
-            unlinkSync(result.data.deletedBrandImagePath);
+            // unlinkSync(result.data.deletedBrandImagePath);
         }
         else {
+            unlinkSync(outputImageFilePath);
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
                 return;
@@ -114,7 +115,6 @@ async function putBrandImage(req, res) {
         res.json(result);
 }
     catch (err) {
-        console.log(err)
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }

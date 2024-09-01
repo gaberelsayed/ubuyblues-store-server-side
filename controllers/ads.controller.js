@@ -69,7 +69,6 @@ async function deleteAd(req, res) {
         res.json(result);
     }
     catch (err) {
-        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
@@ -80,9 +79,10 @@ async function putAdImage(req, res) {
         await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], [outputImageFilePath]);
         const result = await adsOPerationsManagmentFunctions.updateAdImage(req.data._id, req.params.adId, outputImageFilePath);
         if (!result.error) {
-            unlinkSync(result.data.oldAdImagePath);
+            // unlinkSync(result.data.oldAdImagePath);
         }
         else {
+            unlinkSync(outputImageFilePath);
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
                 return;
