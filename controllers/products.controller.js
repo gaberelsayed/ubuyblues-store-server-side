@@ -14,7 +14,7 @@ async function postNewProduct(req, res) {
         });
         await handleResizeImagesAndConvertFormatToWebp(files, outputImageFilePaths);
         const productInfo = {
-            ...Object.assign({}, req.body),
+            ...{ name, price, description, categoryId, discount, quantity } = Object.assign({}, req.body),
             imagePath: outputImageFilePaths[0],
             galleryImagesPaths: outputImageFilePaths.slice(1),
         };
@@ -115,21 +115,6 @@ async function getProductsCount(req, res) {
     }
 }
 
-async function getAllFlashProductsInsideThePage(req, res) {
-    try {
-        const queryObject = req.query;
-        const filtersAndSortDetailsObject = getFiltersAndSortDetailsObject(queryObject);
-        let sortDetailsObject = {};
-        if (filtersAndSortDetailsObject.sortDetailsObject) {
-            sortDetailsObject[filtersAndSortDetailsObject.sortDetailsObject.sortBy] = Number(filtersAndSortDetailsObject.sortDetailsObject.sortType);
-        }
-        res.json(await productsManagmentFunctions.getAllFlashProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject));
-    }
-    catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
-    }
-}
-
 async function getAllProductsInsideThePage(req, res) {
     try {
         const queryObject = req.query;
@@ -139,6 +124,21 @@ async function getAllProductsInsideThePage(req, res) {
             sortDetailsObject[filtersAndSortDetailsObject.sortDetailsObject.sortBy] = Number(filtersAndSortDetailsObject.sortDetailsObject.sortType);
         }
         res.json(await productsManagmentFunctions.getAllProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject));
+    }
+    catch (err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
+async function getAllFlashProductsInsideThePage(req, res) {
+    try {
+        const queryObject = req.query;
+        const filtersAndSortDetailsObject = getFiltersAndSortDetailsObject(queryObject);
+        let sortDetailsObject = {};
+        if (filtersAndSortDetailsObject.sortDetailsObject) {
+            sortDetailsObject[filtersAndSortDetailsObject.sortDetailsObject.sortBy] = Number(filtersAndSortDetailsObject.sortDetailsObject.sortType);
+        }
+        res.json(await productsManagmentFunctions.getAllFlashProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -233,7 +233,7 @@ async function putProduct(req, res) {
 async function putProductGalleryImage(req, res) {
     try {
         const outputImageFilePath = `assets/images/products/${Math.random()}_${Date.now()}__${req.file.originalname.replaceAll(" ", "_").replace(/\.[^/.]+$/, ".webp")}`;
-        await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], outputImageFilePath);
+        await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], [outputImageFilePath]);
         const oldGalleryImagePath = req.query.oldGalleryImagePath;
         const result = await productsManagmentFunctions.updateProductGalleryImage(req.data._id, req.params.productId, oldGalleryImagePath, outputImageFilePath);
         if (!result.error) {

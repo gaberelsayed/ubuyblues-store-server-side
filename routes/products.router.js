@@ -4,7 +4,7 @@ const productsController = require("../controllers/products.controller");
 
 const multer = require("multer");
 
-const { validateJWT, validateName, validateNumbersIsGreaterThanZero, validateNumbersIsNotFloat, validateSortMethod, validateSortType, validateIsExistErrorInFiles } = require("../middlewares/global.middlewares");
+const { validateJWT, validateNumbersIsGreaterThanZero, validateNumbersIsNotFloat, validateSortMethod, validateSortType, validateIsExistErrorInFiles } = require("../middlewares/global.middlewares");
 
 const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
@@ -33,19 +33,16 @@ productsRouter.post("/add-new-product",
     ]),
     validateIsExistErrorInFiles,
     (req, res, next) => {
-        const { name, price, description, category, categoryId, discount, quantity, storeId } = Object.assign({}, req.body);
+        const { name, price, description, categoryId, discount, quantity } = Object.assign({}, req.body);
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Name", fieldValue: name, dataType: "string", isRequiredValue: true },
             { fieldName: "Price", fieldValue: Number(price), dataType: "number", isRequiredValue: true },
             { fieldName: "Description", fieldValue: description, dataType: "string", isRequiredValue: true },
-            { fieldName: "Category", fieldValue: category, dataType: "string", isRequiredValue: true },
-            { fieldName: "CategoryId", fieldValue: categoryId, dataType: "string", isRequiredValue: true },
-            { fieldName: "discount", fieldValue: Number(discount), dataType: "number", isRequiredValue: true },
+            { fieldName: "CategoryId", fieldValue: categoryId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "discount", fieldValue: Number(discount), dataType: "number", isRequiredValue: discount < 0 },
             { fieldName: "quantity", fieldValue: Number(quantity), dataType: "number", isRequiredValue: true },
-            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
         ], res, next);
     },
-    (req, res, next) => validateName((Object.assign({}, req.body)).name, res, next, "Sorry, Please Send Valid Product Name !!"),
     (req, res, next) => {
         const { price, discount, quantity } = Object.assign({}, req.body);
         validateNumbersIsGreaterThanZero([price, discount, quantity], res, next, ["Sorry, Please Send Valid Product Price ( Number Must Be Greater Than Zero ) !!", "Sorry, Please Send Valid Product Discount ( Number Must Be Greater Than Zero ) !!", "Sorry, Please Send Valid Product Quantity ( Number Must Be Greater Than Zero ) !!"]);
@@ -117,29 +114,12 @@ productsRouter.get("/product-info/:productId",
 
 productsRouter.get("/products-count",
     (req, res, next) => {
+        const { storeId, categoryId, name } = req.query;
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: req.query.storeId, dataType: "ObjectId", isRequiredValue: false },
-            { fieldName: "Category Id", fieldValue: req.query.categoryId, dataType: "ObjectId", isRequiredValue: false },
-            { fieldName: "Product Name", fieldValue: req.query.storeId, dataType: "string", isRequiredValue: false },
-            { fieldName: "Sort By", fieldValue: req.query.storeId, dataType: "string", isRequiredValue: false },
-            { fieldName: "Sort Type", fieldValue: req.query.sortType, dataType: "string", isRequiredValue: false },
+            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: false },
+            { fieldName: "Category Id", fieldValue: categoryId, dataType: "ObjectId", isRequiredValue: false },
+            { fieldName: "Product Name", fieldValue: name, dataType: "string", isRequiredValue: false },
         ], res, next);
-    },
-    (req, res, next) => {
-        const { sortBy } = req.query;
-        if (sortBy) {
-            validateSortMethod(req.query.sortBy, res, next);
-            return;
-        }
-        next();
-    },
-    (req, res, next) => {
-        const { sortType } = req.query;
-        if (sortType) {
-            validateSortType(req.query.sortType, res, next);
-            return;
-        }
-        next();
     },
     productsController.getProductsCount
 );
@@ -151,21 +131,6 @@ productsRouter.get("/flash-products-count",
         ], res, next);
     },
     productsController.getFlashProductsCount
-);
-
-productsRouter.get("/all-flash-products-inside-the-page",
-    (req, res, next) => {
-        const { pageNumber, pageSize, sortBy, sortType } = req.query;
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "page Number", fieldValue: Number(pageNumber), dataType: "number", isRequiredValue: true },
-            { fieldName: "page Size", fieldValue: Number(pageSize), dataType: "number", isRequiredValue: true },
-            { fieldName: "Sort By", fieldValue: sortBy, dataType: "string", isRequiredValue: false },
-            { fieldName: "Sort Type", fieldValue: sortType, dataType: "string", isRequiredValue: false },
-        ], res, next);
-    },
-    (req, res, next) => validateNumbersIsGreaterThanZero([req.query.pageNumber, req.query.pageSize], res, next, ["Sorry, Please Send Valid Page Number ( Number Must Be Greater Than Zero ) !!", "Sorry, Please Send Valid Page Size ( Number Must Be Greater Than Zero ) !!"]),
-    (req, res, next) => validateNumbersIsNotFloat([req.query.pageNumber, req.query.pageSize], res, next, ["Sorry, Please Send Valid Page Number ( Number Must Be Not Float ) !!", "Sorry, Please Send Valid Page Size ( Number Must Be Not Float ) !!"]),
-    productsController.getAllFlashProductsInsideThePage
 );
 
 productsRouter.get("/all-products-inside-the-page",
@@ -181,6 +146,21 @@ productsRouter.get("/all-products-inside-the-page",
     (req, res, next) => validateNumbersIsGreaterThanZero([req.query.pageNumber, req.query.pageSize], res, next, ["Sorry, Please Send Valid Page Number ( Number Must Be Greater Than Zero ) !!", "Sorry, Please Send Valid Page Size ( Number Must Be Greater Than Zero ) !!"]),
     (req, res, next) => validateNumbersIsNotFloat([req.query.pageNumber, req.query.pageSize], res, next, ["Sorry, Please Send Valid Page Number ( Number Must Be Not Float ) !!", "Sorry, Please Send Valid Page Size ( Number Must Be Not Float ) !!"]),
     productsController.getAllProductsInsideThePage
+);
+
+productsRouter.get("/all-flash-products-inside-the-page",
+    (req, res, next) => {
+        const { pageNumber, pageSize, sortBy, sortType } = req.query;
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "page Number", fieldValue: Number(pageNumber), dataType: "number", isRequiredValue: true },
+            { fieldName: "page Size", fieldValue: Number(pageSize), dataType: "number", isRequiredValue: true },
+            { fieldName: "Sort By", fieldValue: sortBy, dataType: "string", isRequiredValue: false },
+            { fieldName: "Sort Type", fieldValue: sortType, dataType: "string", isRequiredValue: false },
+        ], res, next);
+    },
+    (req, res, next) => validateNumbersIsGreaterThanZero([req.query.pageNumber, req.query.pageSize], res, next, ["Sorry, Please Send Valid Page Number ( Number Must Be Greater Than Zero ) !!", "Sorry, Please Send Valid Page Size ( Number Must Be Greater Than Zero ) !!"]),
+    (req, res, next) => validateNumbersIsNotFloat([req.query.pageNumber, req.query.pageSize], res, next, ["Sorry, Please Send Valid Page Number ( Number Must Be Not Float ) !!", "Sorry, Please Send Valid Page Size ( Number Must Be Not Float ) !!"]),
+    productsController.getAllFlashProductsInsideThePage
 );
 
 productsRouter.get("/sample-from-related-products-in-the-product/:productId",
@@ -226,14 +206,14 @@ productsRouter.delete("/gallery-images/:productId",
 productsRouter.put("/:productId",
     validateJWT,
     (req, res, next) => {
-        const { name, price, description, category, discount } = req.body;
+        const { name, price, description, discount } = req.body;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "ObjectId", isRequiredValue: true },
-            { fieldName: "Name", fieldValue: name, dataType: "string", isRequiredValue: false },
-            { fieldName: "Price", fieldValue: Number(price), dataType: "number", isRequiredValue: false },
-            { fieldName: "Description", fieldValue: description, dataType: "string", isRequiredValue: false },
-            { fieldName: "Category", fieldValue: category, dataType: "string", isRequiredValue: false },
-            { fieldName: "discount", fieldValue: Number(discount), dataType: "number", isRequiredValue: false },
+            { fieldName: "Name", fieldValue: name, dataType: "string", isRequiredValue: true },
+            { fieldName: "Price", fieldValue: Number(price), dataType: "number", isRequiredValue: true },
+            { fieldName: "Description", fieldValue: description, dataType: "string", isRequiredValue: true },
+            { fieldName: "CategoryId", fieldValue: categoryId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "discount", fieldValue: Number(discount), dataType: "number", isRequiredValue: discount < 0 },
         ], res, next);
     },
     productsController.putProduct

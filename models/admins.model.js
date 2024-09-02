@@ -72,10 +72,11 @@ async function getAdminsCount(merchantId, filters) {
         const merchant = await adminModel.findById(merchantId);
         if (merchant) {
             if (merchant.isMerchant) {
+                filters.storeId = merchant.storeId;
                 return {
                     msg: "Get Admins Count Process Has Been Successfully !!",
                     error: false,
-                    data: await adminModel.countDocuments({ ...filters, storeId: merchant.storeId }),
+                    data: await adminModel.countDocuments(filters),
                 }
             }
             return {
@@ -99,10 +100,11 @@ async function getAllAdminsInsideThePage(merchantId, pageNumber, pageSize, filte
         const merchant = await adminModel.findById(merchantId);
         if (merchant) {
             if (merchant.isMerchant) {
+                filters.storeId = merchant.storeId;
                 return {
                     msg: `Get All Admins Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
                     error: false,
-                    data: await adminModel.find({ ...filters, storeId: merchant.storeId }).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ creatingOrderDate: -1 }),
+                    data: await adminModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ creatingDate: -1 }),
                 }
             }
             return {
@@ -129,7 +131,7 @@ async function addNewAdmin(merchantId, adminInfo) {
                 if (!admin.isBlocked) {
                     const adminDetails = await adminModel.findOne({ email: adminInfo.email });
                     if (!adminDetails) {
-                        const newAdmin = new adminModel({
+                        (new adminModel({
                             firstName: adminInfo.firstName,
                             lastName: adminInfo.lastName,
                             email: adminInfo.email,
@@ -205,8 +207,7 @@ async function addNewAdmin(merchantId, adminInfo) {
                                     value: false,
                                 },
                             ],
-                        });
-                        await newAdmin.save();
+                        })).save();
                         return {
                             msg: "Create New Admin Process Has Been Successfully !!",
                             error: false,
@@ -251,7 +252,7 @@ async function updateAdminInfo(merchantId, adminId, newAdminDetails) {
         if (admin) {
             if (admin.isMerchant){
                 if (!admin.isBlocked) {
-                    const adminDetails = await adminModel.findOneAndUpdate({ _id: adminId }, { ...newAdminDetails });
+                    const adminDetails = await adminModel.findOneAndUpdate({ _id: adminId }, newAdminDetails);
                     if (adminDetails) {
                         return {
                             msg: "Updating Admin Details Process Has Been Successfully !!",

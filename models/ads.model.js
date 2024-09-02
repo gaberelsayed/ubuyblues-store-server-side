@@ -15,7 +15,8 @@ async function addNewAd(authorizationId, adsInfo) {
                         data: {},
                     }
                 }
-                await (new adsModel({ ...adsInfo, storeId: admin.storeId })).save();
+                adsInfo.storeId = admin.storeId;
+                await (new adsModel(adsInfo)).save();
                 return {
                     msg: "Adding New Text Ad Process Has Been Successfully",
                     error: false,
@@ -57,9 +58,7 @@ async function deleteAd(authorizationId, adId) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const adInfo = await adsModel.findOne({
-                    _id: adId,
-                });
+                const adInfo = await adsModel.findById(adId);
                 if (adInfo) {
                     if (adInfo.storeId === admin.storeId) {
                         await adInfo.deleteOne({
@@ -163,7 +162,7 @@ async function updateTextAdContent(authorizationId, adId, newTextAdContent) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const adInfo = await adsModel.findOne({ _id: adId });
+                const adInfo = await adsModel.findById(adId);
                 if (adInfo) {
                     if (adInfo.storeId === admin.storeId) {
                         if (adInfo.type === "text") {

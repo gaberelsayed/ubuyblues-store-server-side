@@ -4,7 +4,7 @@ const adminsController = require("../controllers/admins.controller");
 
 const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
-const { validateJWT, validateEmail, validatePassword, validateNumbersIsGreaterThanZero, validateNumbersIsNotFloat } = require("../middlewares/global.middlewares");
+const { validateJWT, validateEmail, validatePassword, validateNumbersIsGreaterThanZero, validateNumbersIsNotFloat, validateName } = require("../middlewares/global.middlewares");
 
 adminsRouter.get("/login",
     (req, res, next) => {
@@ -26,14 +26,42 @@ adminsRouter.get("/admins-count", validateJWT, adminsController.getAdminsCount);
 adminsRouter.get("/all-admins-inside-the-page",
     validateJWT,
     (req, res, next) => {
-        const { pageNumber, pageSize } = req.query;
+        const { pageNumber, pageSize, _id, firstName, lastName, email } = req.query;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "page Number", fieldValue: Number(pageNumber), dataType: "number", isRequiredValue: true },
             { fieldName: "page Size", fieldValue: Number(pageSize), dataType: "number", isRequiredValue: true },
+            { fieldName: "Admin Id", fieldValue: _id, dataType: "ObjectId", isRequiredValue: false },
+            { fieldName: "First Name", fieldValue: firstName, dataType: "string", isRequiredValue: false },
+            { fieldName: "Last Name", fieldValue: lastName, dataType: "string", isRequiredValue: false },
+            { fieldName: "Email", fieldValue: email, dataType: "string", isRequiredValue: false },
         ], res, next);
     },
     (req, res, next) => validateNumbersIsGreaterThanZero([req.query.pageNumber, req.query.pageSize], res, next, ["Sorry, Please Send Valid Page Number ( Number Must Be Greater Than Zero ) !!", "Sorry, Please Send Valid Page Size ( Number Must Be Greater Than Zero ) !!"]),
     (req, res, next) => validateNumbersIsNotFloat([req.query.pageNumber, req.query.pageSize], res, next, ["Sorry, Please Send Valid Page Number ( Number Must Be Not Float ) !!", "Sorry, Please Send Valid Page Size ( Number Must Be Not Float ) !!"]),
+    (req, res, next) => {
+        const { firstName } = req.body;
+        if (firstName) {
+            validateName(firstName, res, next);
+            return;
+        }
+        next();
+    },
+    (req, res, next) => {
+        const { lastName } = req.body;
+        if (lastName) {
+            validateName(lastName, res, next);
+            return;
+        }
+        next();
+    },
+    (req, res, next) => {
+        const { email } = req.body;
+        if (email) {
+            validateEmail(email, res, next);
+            return;
+        }
+        next();
+    },
     adminsController.getAllAdminsInsideThePage
 );
 
@@ -50,6 +78,8 @@ adminsRouter.post("/add-new-admin",
     },
     (req, res, next) => validateEmail(req.body.email, res, next),
     (req, res, next) => validatePassword(req.body.password, res, next),
+    (req, res, next) => validateName(req.body.firstName, res, next),
+    (req, res, next) => validateName(req.body.lastName, res, next),
     adminsController.postAddNewAdmin
 );
 

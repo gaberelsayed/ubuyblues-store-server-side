@@ -6,8 +6,7 @@ const { unlinkSync } = require("fs");
 
 async function postNewTextAd(req, res) {
     try{
-        const { content } = req.body;
-        const result = await adsOPerationsManagmentFunctions.addNewAd(req.data._id, { content, type: "text" });
+        const result = await adsOPerationsManagmentFunctions.addNewAd(req.data._id, { content: req.body.content, type: "text" });
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));

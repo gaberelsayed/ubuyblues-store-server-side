@@ -7,12 +7,12 @@ async function addNewProduct(authorizationId, productInfo) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked && admin.storeId === productInfo.storeId) {
-                const product = await productModel.findOne({ name: productInfo.name, category: productInfo.category });
+                const product = await productModel.findOne({ name: productInfo.name, categoryId: productInfo.categoryId });
                 if (!product) {
-                    const category = await categoryModel.findOne({ name: productInfo.category });
+                    const category = await categoryModel.findById(productInfo.categoryId);
                     if (category) {
-                        const newProductInfo = new productModel(productInfo);
-                        await newProductInfo.save();
+                        productInfo.category = category.name;
+                        await (new productModel(productInfo)).save();
                         return {
                             msg: "Adding New Product Process Has Been Successfuly !!",
                             error: false,
@@ -189,10 +189,12 @@ async function getProductsCount(filters) {
 async function getFlashProductsCount(filters) {
     try {
         const currentDate = new Date();
+        filters.startDiscountPeriod = { $lte: currentDate };
+        filters.endDiscountPeriod = { $gte: currentDate };
         return {
             msg: "Get Flash Products Count Process Has Been Successfully !!",
             error: false,
-            data: await productModel.countDocuments({ ...filters, startDiscountPeriod: { $lte: currentDate }, endDiscountPeriod: { $gte: currentDate } }),
+            data: await productModel.countDocuments(filters),
         }
     }
     catch (err) {
@@ -203,12 +205,14 @@ async function getFlashProductsCount(filters) {
 async function getAllFlashProductsInsideThePage(pageNumber, pageSize, filters, sortDetailsObject) {
     try {
         const currentDate = new Date();
+        filters.startDiscountPeriod = { $lte: currentDate };
+        filters.endDiscountPeriod = { $gte: currentDate };
         return {
             msg: `Get Flash Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
             data: {
                 products: await productModel
-                            .find({...filters, startDiscountPeriod: { $lte: currentDate }, endDiscountPeriod: { $gte: currentDate }})
+                            .find(filters)
                             .skip((pageNumber - 1) * pageSize)
                             .limit(pageSize).sort(sortDetailsObject),
                 currentDate: new Date(),
@@ -308,9 +312,7 @@ async function deleteProduct(authorizationId, productId) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const productInfo = await productModel.findOne({
-                    _id: productId,
-                });
+                const productInfo = await productModel.findById(productId);
                 if (productInfo) {
                     if (productInfo.storeId === admin.storeId) {
                         await productModel.deleteOne({
@@ -405,10 +407,17 @@ async function updateProduct(authorizationId, productId, newData) {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const product = await productModel.findOne({ _id: productId });
+                const product = await productModel.findById(productId);
                 if (product) {
                     if (product.storeId === admin.storeId) {
-                        await productModel.updateOne({ _id: productId }, { ...newData });
+                        const category = await categoryModel.findById(newData.categoryId);
+                        if (category) {
+                            newData.category = category.name;
+                        }
+                        else {
+                            newData.category = "uncategorized";
+                        }
+                        await productModel.updateOne({ _id: productId }, newData);
                         return {
                             msg: "Updating Product Process Has Been Successfully !!",
                             error: false,
@@ -527,7 +536,7 @@ async function updateProductImage(authorizationId, productId, newProductImagePat
                 return {
                     msg: "Sorry, This Product Is Not Exist !!",
                     error: true,
-                    data: product.imagePath,
+                    data: {},
                 }
             }
             return {

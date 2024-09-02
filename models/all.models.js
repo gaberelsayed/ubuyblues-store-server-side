@@ -4,7 +4,7 @@ const { mongoose } = require("../server");
 
 // Create Admin Schema
 
-const adminSchema = mongoose.Schema({
+const adminSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
@@ -86,7 +86,7 @@ const adminModel = mongoose.model("admin", adminSchema);
 
 // Create Store Schema
 
-const storeSchema = mongoose.Schema({
+const storeSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -152,7 +152,7 @@ const storeModel = mongoose.model("store", storeSchema);
 
 // Create Product Schema
 
-const productSchema = mongoose.Schema({
+const productSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -227,7 +227,7 @@ const productModel = mongoose.model("product", productSchema);
 
 // Create User Schema
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     email: String,
     password: String,
     provider: {
@@ -356,7 +356,7 @@ const userModel = mongoose.model("user", userSchema);
 
 // Create Account Verification Codes Schema
 
-const accountVerificationCodesShema = mongoose.Schema({
+const accountVerificationCodesShema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -395,7 +395,7 @@ const accountVerificationCodesModel = mongoose.model("account_verification_codes
 
 // Create Category Schema
 
-const categorySchema = mongoose.Schema({
+const categorySchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -412,7 +412,7 @@ const categoryModel = mongoose.model("category", categorySchema);
 
 // Create Order Schema
 
-const orderSchema = mongoose.Schema({
+const orderSchema = new mongoose.Schema({
     userId: {
         type: String,
         default: "",
@@ -641,7 +641,7 @@ const orderModel = mongoose.model("order", orderSchema);
 
 // Create Brand Schema
 
-const brandSchema = mongoose.Schema({
+const brandSchema = new mongoose.Schema({
     imagePath: {
         type: String,
         required: true,
@@ -662,7 +662,7 @@ const brandModel = mongoose.model("brand", brandSchema);
 
 // Create Appeared Sections Schema
 
-const appearedSectionsSchema = mongoose.Schema({
+const appearedSectionsSchema = new mongoose.Schema({
     sectionName: String,
     isAppeared: {
         type: Boolean,
@@ -676,7 +676,7 @@ const appearedSectionsModel = mongoose.model("appeared_sections", appearedSectio
 
 // Create Global Password Schema
 
-const globalPasswordSchema = mongoose.Schema({
+const globalPasswordSchema = new mongoose.Schema({
     email: String,
     password: String,
 });
@@ -687,7 +687,7 @@ const globalPasswordModel = mongoose.model("global_password", globalPasswordSche
 
 // Create Subscription Schema
 
-const subscriptionShema = mongoose.Schema({
+const subscriptionShema = new mongoose.Schema({
     email: String,
     subscriptionDate: {
         type: Date,
@@ -701,7 +701,7 @@ const subscriptionModel = mongoose.model("subscription", subscriptionShema);
 
 // Create Referal Schema
 
-const referalShema = mongoose.Schema({
+const referalShema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -734,7 +734,7 @@ const referalModel = mongoose.model("referal", referalShema);
 
 // Create Favorite Product Schema
 
-const favoriteProductShema = mongoose.Schema({
+const favoriteProductShema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -763,7 +763,7 @@ const favoriteProductModel = mongoose.model("favorite_products", favoriteProduct
 
 // Create Products Wallet Schema
 
-const productsWalletShema = mongoose.Schema({
+const productsWalletShema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -792,7 +792,7 @@ const productsWalletModel = mongoose.model("products_wallet", productsWalletShem
 
 // Create Product Rating Schema
 
-const productsRatingShema = mongoose.Schema({
+const productsRatingShema = new mongoose.Schema({
     userId: {
         type: String,
         required: true,
