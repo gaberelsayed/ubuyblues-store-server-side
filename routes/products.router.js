@@ -206,7 +206,7 @@ productsRouter.delete("/gallery-images/:productId",
 productsRouter.put("/:productId",
     validateJWT,
     (req, res, next) => {
-        const { name, price, description, discount } = req.body;
+        const { name, price, description, categoryId, discount } = req.body;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "ObjectId", isRequiredValue: true },
             { fieldName: "Name", fieldValue: name, dataType: "string", isRequiredValue: true },
