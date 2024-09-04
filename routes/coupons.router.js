@@ -26,11 +26,9 @@ couponsRouter.post("/add-new-coupon",
 couponsRouter.put("/update-coupon-info/:couponId",
     validateJWT,
     (req, res, next) => {
-        const { code, discountPercentage } = req.body;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Coupon Id", fieldValue: req.params.couponId, dataType: "ObjectId", isRequiredValue: true },
-            { fieldName: "Code", fieldValue: code, dataType: "string", isRequiredValue: true },
-            { fieldName: "Discount Percentage", fieldValue: discountPercentage, dataType: "number", isRequiredValue: true },
+            { fieldName: "Discount Percentage", fieldValue: req.body.discountPercentage, dataType: "number", isRequiredValue: true },
         ], res, next);
     },
     couponsController.putCouponInfo
