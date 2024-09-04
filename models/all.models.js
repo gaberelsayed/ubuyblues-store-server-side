@@ -80,7 +80,7 @@ const adminSchema = new mongoose.Schema({
     dateOfCancelBlocking: Date,
 });
 
-// Create Store Model From Admin Schema
+// Create Admin Model From Admin Schema
 
 const adminModel = mongoose.model("admin", adminSchema);
 
@@ -836,6 +836,31 @@ const adsSchema = new mongoose.Schema({
 
 const adsModel = mongoose.model("ad", adsSchema);
 
+// Create Coupon Schema
+
+const couponSchema = new mongoose.Schema({
+    code: {
+        type: String,
+        required: true,
+    },
+    discountPercentage: {
+        type: Number,
+        default: false,
+    },
+    storeId: {
+        type: String,
+        required: true,
+    },
+    creatingDate: {
+        type: Date,
+        default: Date.now(),
+    },
+});
+
+// Create Coupon Model From Coupon Schema
+
+const couponModel = mongoose.model("coupon", couponSchema);
+
 module.exports = {
     mongoose,
     adminModel,
@@ -853,5 +878,6 @@ module.exports = {
     favoriteProductModel,
     productsWalletModel,
     productsRatingModel,
-    adsModel
+    adsModel,
+    couponModel
 }

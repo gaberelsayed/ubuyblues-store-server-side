@@ -102,6 +102,8 @@ app.listen(PORT, async () => {
 
     app.use("/ads", require("./routes/ads.router"));
 
+    app.use("/coupons", require("./routes/coupons.router"));
+
     /* End Handle The Routes */
 });
 

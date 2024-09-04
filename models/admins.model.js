@@ -99,7 +99,7 @@ async function getAllAdminsInsideThePage(merchantId, pageNumber, pageSize, filte
     try {
         const merchant = await adminModel.findById(merchantId);
         if (merchant) {
-            if (merchant.isMerchant) {
+            if (merchant.isMerchant && !merchant.isBlocked) {
                 filters.storeId = merchant.storeId;
                 return {
                     msg: `Get All Admins Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
@@ -221,7 +221,7 @@ async function addNewAdmin(merchantId, adminInfo) {
                     }
                 }
                 return {
-                    msg: `Sorry, This Account Has Been Blocked !!`,
+                    msg: "Sorry, This Account Has Been Blocked !!",
                     error: true,
                     data: {
                         blockingDate: admin.blockingDate,
