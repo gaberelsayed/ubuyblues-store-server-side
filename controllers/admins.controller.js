@@ -22,7 +22,7 @@ async function getAdminLogin(req, res) {
         res.json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}, 500));
     }
 }
 
@@ -31,7 +31,7 @@ async function getAdminUserInfo(req, res) {
         res.json(await adminsOPerationsManagmentFunctions.getAdminUserInfo(req.data._id));
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}, 500));
     }
 }
 
@@ -49,16 +49,10 @@ function getFiltersObject(filters) {
 async function getAdminsCount(req, res) {
     try{
         const result = await adminsOPerationsManagmentFunctions.getAdminsCount(req.data._id, getFiltersObject(req.query));
-        if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Merchant Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
-            }
-        }
-        res.json(result);
+        res.status(result.status).json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}, 500));
     }
 }
 
@@ -66,72 +60,40 @@ async function getAllAdminsInsideThePage(req, res) {
     try{
         const filters = req.query;
         const result = await adminsOPerationsManagmentFunctions.getAllAdminsInsideThePage(req.data._id, filters.pageNumber, filters.pageSize, getFiltersObject(filters));
-        if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Merchant Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
-            }
-        }
-        res.json(result);
+        res.status(result.status).json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}, 500));
     }
 }
 
 async function postAddNewAdmin(req, res) {
     try{
         const result = await adminsOPerationsManagmentFunctions.addNewAdmin(req.data._id, req.body);
-        if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
-            }
-        }
-        res.json(result);
+        res.status(result.status).json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}, 500));
     }
 }
 
 async function putAdminInfo(req, res) {
     try{
         const result = await adminsOPerationsManagmentFunctions.updateAdminInfo(req.data._id, req.params.adminId, req.body);
-        if (result.error) {
-            if (
-                result.msg === "Sorry, Permission Denied !!" ||
-                result.msg === "Sorry, This Admin Is Not Exist !!" ||
-                result.msg === "Sorry, This Account Has Been Blocked !!"
-            ) {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
-            }
-        }
-        res.json(result);
+        res.status(result.status).json(result);
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}, 500));
     }
 }
 
 async function deleteAdmin(req, res) {
     try{
         const result = await adminsOPerationsManagmentFunctions.deleteAdmin(req.data._id, req.params.adminId);
-        if (result.error) {
-            if (
-                result.msg === "Sorry, Permission Denied !!" ||
-                result.msg === "Sorry, This Admin Is Not Exist !!" ||
-                result.msg === "Sorry, This Account Has Been Blocked !!"
-            ) {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
-            }
-        }
-        res.json(result);
+        res.status(result.status).json(result);
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}, 500));
     }
 }
 
