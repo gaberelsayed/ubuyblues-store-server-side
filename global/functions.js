@@ -334,12 +334,11 @@ async function sendChangePasswordEmail(email, language) {
     return result;
 }
 
-function getResponseObject(msg, isError, data, status) {
+function getResponseObject(msg, isError, data) {
     return {
         msg,
         error: isError,
         data,
-        status,
     }
 }
 

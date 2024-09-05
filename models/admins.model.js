@@ -19,13 +19,11 @@ async function adminLogin(email, password) {
                         data: {
                             _id: admin._id,
                         },
-                        status: 200
                     };
                 return {
                     msg: "Sorry, The Email Or Password Is Not Valid !!",
                     error: true,
                     data: {},
-                    status: 200
                 }
             }
             return {
@@ -35,14 +33,12 @@ async function adminLogin(email, password) {
                     blockingDate: admin.blockingDate,
                     blockingReason: admin.blockingReason,
                 },
-                status: 200
             }
         }
         return {
             msg: "Sorry, The Email Or Password Is Not Valid !!",
             error: true,
             data: {},
-            status: 200
         }
     }
     catch (err) {
@@ -58,14 +54,12 @@ async function getAdminUserInfo(userId) {
                 msg: "Get Admin Info Process Has Been Successfully !!",
                 error: false,
                 data: user,
-                status: 200
             }
         }
         return {
             msg: "Sorry, The User Is Not Exist !!",
             error: true,
             data: {},
-            status: 200
         }
     } catch (err) {
         throw Error(err);
@@ -74,40 +68,36 @@ async function getAdminUserInfo(userId) {
 
 async function getAdminsCount(merchantId, filters) {
     try {
-        const merchant = await adminModel.findById(merchantId);
-        if (merchant) {
-            if (merchant.isMerchant) {
-                if (!merchant.isBlocked) {
-                    filters.storeId = merchant.storeId;
+        const admin = await adminModel.findById(merchantId);
+        if (admin) {
+            if (admin.isMerchant) {
+                if (!admin.isBlocked) {
+                    filters.storeId = admin.storeId;
                     return {
                         msg: "Get Admins Count Process Has Been Successfully !!",
                         error: false,
                         data: await adminModel.countDocuments(filters),
-                        status: 200
                     }
                 }
                 return {
                     msg: "Sorry, This Merchant Has Been Blocked !!",
                     error: true,
                     data: {
-                        blockingDate: merchant.blockingDate,
-                        blockingReason: merchant.blockingReason,
+                        blockingDate: admin.blockingDate,
+                        blockingReason: admin.blockingReason,
                     },
-                    status: 401
                 }
             }
             return {
                 msg: "Sorry, Permission Denied Because This Admin Is Not Merchant !!",
                 error: true,
                 data: {},
-                status: 401
             }
         }
         return {
             msg: "Sorry, This Merchant Is Not Exist !!",
             error: true,
             data: {},
-            status: 401
         }
     } catch (err) {
         throw Error(err);
@@ -116,40 +106,36 @@ async function getAdminsCount(merchantId, filters) {
 
 async function getAllAdminsInsideThePage(merchantId, pageNumber, pageSize, filters) {
     try {
-        const merchant = await adminModel.findById(merchantId);
-        if (merchant) {
-            if (merchant.isMerchant) {
-                if (!merchant.isBlocked) {
-                    filters.storeId = merchant.storeId;
+        const admin = await adminModel.findById(merchantId);
+        if (admin) {
+            if (admin.isMerchant) {
+                if (!admin.isBlocked) {
+                    filters.storeId = admin.storeId;
                     return {
                         msg: `Get All Admins Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
                         error: false,
                         data: await adminModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ creatingDate: -1 }),
-                        status: 200
                     }
                 }
                 return {
                     msg: "Sorry, This Merchant Has Been Blocked !!",
                     error: true,
                     data: {
-                        blockingDate: merchant.blockingDate,
-                        blockingReason: merchant.blockingReason,
+                        blockingDate: admin.blockingDate,
+                        blockingReason: admin.blockingReason,
                     },
-                    status: 401
                 }
             }
             return {
                 msg: "Sorry, Permission Denied Because This Admin Is Not Merchant !!",
                 error: true,
                 data: {},
-                status: 401
             }
         }
         return {
             msg: "Sorry, This Merchant Is Not Exist !!",
             error: true,
             data: {},
-            status: 401
         }
     } catch (err) {
         throw Error(err);
@@ -158,10 +144,10 @@ async function getAllAdminsInsideThePage(merchantId, pageNumber, pageSize, filte
 
 async function addNewAdmin(merchantId, adminInfo) {
     try{
-        const merchant = await adminModel.findById(merchantId);
-        if (merchant) {
-            if (merchant.isMerchant){
-                if (!merchant.isBlocked) {
+        const admin = await adminModel.findById(merchantId);
+        if (admin) {
+            if (admin.isMerchant){
+                if (!admin.isBlocked) {
                     const adminDetails = await adminModel.findOne({ email: adminInfo.email });
                     if (!adminDetails) {
                         (new adminModel({
@@ -245,38 +231,33 @@ async function addNewAdmin(merchantId, adminInfo) {
                             msg: "Create New Admin Process Has Been Successfully !!",
                             error: false,
                             data: {},
-                            status: 200
                         }
                     }
                     return {
                         msg: "Sorry, This Admin Is Already Exist !!",
                         error: true,
                         data: {},
-                        status: 200
                     }
                 }
                 return {
                     msg: "Sorry, This Merchant Has Been Blocked !!",
                     error: true,
                     data: {
-                        blockingDate: merchant.blockingDate,
-                        blockingReason: merchant.blockingReason,
+                        blockingDate: admin.blockingDate,
+                        blockingReason: admin.blockingReason,
                     },
-                    status: 401
                 }
             }
             return {
                 msg: "Sorry, Permission Denied Because This Admin Is Not Merchant !!",
                 error: true,
                 data: {},
-                status: 401
             }
         }
         return {
             msg: "Sorry, This Merchant Is Not Exist !!",
             error: true,
             data: {},
-            status: 401
         }
     }
     catch(err) {
@@ -286,48 +267,43 @@ async function addNewAdmin(merchantId, adminInfo) {
 
 async function updateAdminInfo(merchantId, adminId, newAdminDetails) {
     try {
-        const merchant = await adminModel.findById(merchantId);
-        if (merchant) {
-            if (merchant.isMerchant){
-                if (!merchant.isBlocked) {
+        const admin = await adminModel.findById(merchantId);
+        if (admin) {
+            if (admin.isMerchant){
+                if (!admin.isBlocked) {
                     const adminDetails = await adminModel.findOneAndUpdate({ _id: adminId }, newAdminDetails);
                     if (adminDetails) {
                         return {
                             msg: "Updating Admin Details Process Has Been Successfully !!",
                             error: false,
                             data: {},
-                            status: 200
                         }
                     }
                     return {
                         msg: "Sorry, This Admin Is Not Exist !!",
                         error: true,
                         data: {},
-                        status: 401
                     }
                 }
                 return {
                     msg: "Sorry, This Merchant Has Been Blocked !!",
                     error: true,
                     data: {
-                        blockingDate: merchant.blockingDate,
-                        blockingReason: merchant.blockingReason,
+                        blockingDate: admin.blockingDate,
+                        blockingReason: admin.blockingReason,
                     },
-                    status: 401
                 }
             }
             return {
                 msg: "Sorry, Permission Denied Because This Admin Is Not Merchant !!",
                 error: true,
                 data: {},
-                status: 401
             }
         }
         return {
             msg: "Sorry, This Merchant Is Not Exist !!",
             error: true,
             data: {},
-            status: 401
         }
     } catch (err) {
         throw Error(err);
@@ -345,7 +321,6 @@ async function deleteAdmin(merchantId, adminId){
                             msg: "Sorry, Permission Denied Because This Admin Is Merchant !!",
                             error: true,
                             data: {},
-                            status: 401
                         }
                     }
                     const adminDetails = await adminModel.findOneAndDelete({ _id: adminId });
@@ -354,14 +329,12 @@ async function deleteAdmin(merchantId, adminId){
                             msg: "Delete Admin Process Has Been Successfully !!",
                             error: false,
                             data: {},
-                            status: 200
                         }
                     }
                     return {
                         msg: "Sorry, This Admin Is Not Exist !!",
                         error: true,
                         data: {},
-                        status: 401
                     }
                 }
                 return {
@@ -371,21 +344,18 @@ async function deleteAdmin(merchantId, adminId){
                         blockingDate: admin.blockingDate,
                         blockingReason: admin.blockingReason,
                     },
-                    status: 401
                 }
             }
             return {
                 msg: "Sorry, Permission Denied Because This Admin Is Not Merchant !!",
                 error: true,
                 data: {},
-                status: 401
             }
         }
         return {
             msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
-            status: 401
         }
     }
     catch(err){

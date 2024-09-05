@@ -24,9 +24,12 @@ async function addNewAd(authorizationId, adsInfo) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -73,7 +76,7 @@ async function deleteAd(authorizationId, adId) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -85,9 +88,12 @@ async function deleteAd(authorizationId, adId) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -129,21 +135,25 @@ async function updateAdImage(authorizationId, adId, newAdImagePath) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
+                        status: 401
                     }
                 }
                 return {
                     msg: "Sorry, This Ad Is Not Exist !!",
                     error: true,
-                    data: adInfo.imagePath,
+                    data: {},
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -180,7 +190,7 @@ async function updateTextAdContent(authorizationId, adId, newTextAdContent) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -192,9 +202,12 @@ async function updateTextAdContent(authorizationId, adId, newTextAdContent) {
                 };
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
