@@ -4,12 +4,11 @@ const globalPasswordsManagmentFunctions = require("../models/global_passwords.mo
 
 async function putChangeBussinessEmailPassword(req, res) {
     try{
-        const emailAndPasswordAndNewPassword = req.query;
-        const result = await globalPasswordsManagmentFunctions.changeBussinessEmailPassword(req.data._id, emailAndPasswordAndNewPassword.email.toLowerCase(), emailAndPasswordAndNewPassword.password, emailAndPasswordAndNewPassword.newPassword);
+        const { email, password, newPassword } = req.query;
+        const result = await globalPasswordsManagmentFunctions.changeBussinessEmailPassword(req.data._id, email.toLowerCase(), password, newPassword);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, Email Or Password Incorrect !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);

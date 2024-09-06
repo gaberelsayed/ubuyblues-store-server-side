@@ -4,17 +4,16 @@ const { globalPasswordModel, adminModel } = require("./all.models");
 
 // require cryptoJs module for password encrypting
 
-const cryptoJS = require("crypto-js");
+const { AES, enc } = require("crypto-js");
 
 async function getPasswordForBussinessEmail(email){
     try{
-        // Check If Email Is Exist
         const user = await globalPasswordModel.findOne({ email });
         if (user) {
             return {
                 msg: "Get Password For Bussiness Email Process Has Been Successfully !!",
                 error: false,
-                data: cryptoJS.AES.decrypt(user.password, process.env.secretKey).toString(cryptoJS.enc.Utf8),
+                data: AES.decrypt(user.password, process.env.secretKey).toString(enc.Utf8),
             }
         }
         return {
@@ -35,11 +34,10 @@ async function changeBussinessEmailPassword(authorizationId, email, password, ne
             if (admin.isWebsiteOwner) {
                 const user = await globalPasswordModel.findOne({ email });
                 if (user) {
-                    const bytes = cryptoJS.AES.decrypt(user.password, process.env.secretKey);
-                    const decryptedPassword = bytes.toString(cryptoJS.enc.Utf8);
+                    const bytes = AES.decrypt(user.password, process.env.secretKey);
+                    const decryptedPassword = bytes.toString(enc.Utf8);
                     if (decryptedPassword === password) {
-                        const encrypted_password = cryptoJS.AES.encrypt(newPassword, process.env.secretKey).toString();
-                        await globalPasswordModel.updateOne({ password: encrypted_password });
+                        await globalPasswordModel.updateOne({ password: AES.encrypt(newPassword, process.env.secretKey).toString() });
                         return {
                             msg: "Changing Global Password Process Has Been Successfully !!",
                             error: false,
@@ -59,7 +57,7 @@ async function changeBussinessEmailPassword(authorizationId, email, password, ne
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }
