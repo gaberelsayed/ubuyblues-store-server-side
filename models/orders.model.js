@@ -314,13 +314,13 @@ async function updateOrder(authorizationId, orderId, newOrderDetails) {
                             }
                         }
                         return {
-                            msg: "Sorry, Permission Denied !!",
+                            msg: "Sorry, Permission Denied Because This Order Is Not Completed ( Not Payment ) !!",
                             error: true,
                             data: {},
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -332,9 +332,12 @@ async function updateOrder(authorizationId, orderId, newOrderDetails) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -372,7 +375,7 @@ async function changeCheckoutStatusToSuccessfull(orderId) {
                 totalPriceBeforeDiscount: totalPrices.totalPriceBeforeDiscount,
                 totalDiscount: totalPrices.totalDiscount,
                 totalPriceAfterDiscount: totalPrices.totalPriceAfterDiscount,
-                shippingFee: order.shippingFee
+                shippingCost: order.shippingCost
             },
         }
     }
@@ -406,13 +409,13 @@ async function updateOrderProduct(authorizationId, orderId, productId, newOrderP
                             }
                         }
                         return {
-                            msg: `Sorry, This Product For Order Id: ${orderId} Is Not Found !!`,
+                            msg: "Sorry, This Product For This Order Is Not Found !!",
                             error: true,
                             data: {},
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -424,9 +427,12 @@ async function updateOrderProduct(authorizationId, orderId, productId, newOrderP
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -455,7 +461,7 @@ async function deleteOrder(authorizationId, orderId){
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -467,9 +473,12 @@ async function deleteOrder(authorizationId, orderId){
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -503,13 +512,13 @@ async function deleteProductFromOrder(authorizationId, orderId, productId) {
                             }
                         }
                         return {
-                            msg: `Sorry, This Product For Order Id: ${orderId} Is Not Found !!`,
+                            msg: "Sorry, This Product For This Order Is Not Found !!",
                             error: true,
                             data: {},
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -521,9 +530,12 @@ async function deleteProductFromOrder(authorizationId, orderId, productId) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {

@@ -251,7 +251,7 @@ async function putOrder(req, res) {
         const { status, orderAmount } = req.body;
         const result = await ordersManagmentFunctions.updateOrder(req.data._id, req.params.orderId, getFiltersObjectForUpdateOrder({ status, orderAmount }));
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+            if (result.msg !== "Sorry, This Order Is Not Found !!") {
                 return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
@@ -272,7 +272,7 @@ async function putOrderProduct(req, res) {
     try{
         const result = await ordersManagmentFunctions.updateOrderProduct(req.data._id, req.params.orderId, req.params.productId, req.body);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+            if (result.msg !== "Sorry, This Order Is Not Found !!" || result.msg !== "Sorry, This Product For This Order Is Not Found !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
                 return;
             }
@@ -288,9 +288,8 @@ async function deleteOrder(req, res) {
     try{
         const result = await ordersManagmentFunctions.deleteOrder(req.data._id, req.params.orderId);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Order Is Not Found !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
@@ -305,15 +304,13 @@ async function deleteProductFromOrder(req, res) {
         const { orderId, productId } = req.params;
         const result = await ordersManagmentFunctions.deleteProductFromOrder(req.data._id, orderId, productId);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Order Is Not Found !!" || result.msg !== "Sorry, This Product For This Order Is Not Found !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
     }
     catch(err){
-        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
