@@ -6,19 +6,22 @@ async function addNewBrand(authorizationId, brandInfo) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if (!admin.isBlocked && admin.storeId === brandInfo.storeId) {
-                const newBrandInfo = new brandModel(brandInfo);
-                await newBrandInfo.save();
+            if (!admin.isBlocked) {
+                brandInfo.storeId = admin.storeId;
+                await (new brandModel(brandInfo)).save();
                 return {
                     msg: "Adding New Brand Process Has Been Successfuly ...",
                     error: false,
                     data: {},
-                };
+                }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -95,21 +98,24 @@ async function deleteBrand(authorizationId, brandId) {
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Brand Id Is Not Exist !!",
+                    msg: "Sorry, This Brand Is Not Exist !!",
                     error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -139,7 +145,7 @@ async function updateBrandInfo(authorizationId, brandId, newBrandTitle) {
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -151,9 +157,12 @@ async function updateBrandInfo(authorizationId, brandId, newBrandTitle) {
                 };
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -185,7 +194,7 @@ async function changeBrandImage(authorizationId, brandId, newBrandImagePath) {
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -197,9 +206,12 @@ async function changeBrandImage(authorizationId, brandId, newBrandImagePath) {
                 };
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {

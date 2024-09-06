@@ -95,7 +95,7 @@ async function updateCouponInfo(adminId, couponId, newCouponDetails) {
                     }
                 }
                 return {
-                    msg: "Sorry, This Coupon Is Already Exist !!",
+                    msg: "Sorry, This New Code Is Already Exist !!",
                     error: true,
                     data: {},
                 }
@@ -131,6 +131,11 @@ async function deleteCoupon(adminId, couponId){
                         error: false,
                         data: {},
                     }
+                }
+                return {
+                    msg: "Sorry, This Coupon Is Not Exist !!",
+                    error: true,
+                    data: {},
                 }
             }
             return {

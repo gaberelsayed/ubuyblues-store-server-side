@@ -15,7 +15,7 @@ async function postNewCategory(req, res) {
     try{
         const result = await categoriesManagmentFunctions.addNewCategory(req.data._id, req.body.categoryName);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+            if (result.msg !== "Sorry, This Cateogry Is Already Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
                 return;
             }
@@ -68,9 +68,8 @@ async function deleteCategory(req, res) {
     try{
         const result = await categoriesManagmentFunctions.deleteCategory(req.data._id, req.params.categoryId);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Category Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
@@ -84,7 +83,7 @@ async function putCategory(req, res) {
     try{
         const result = await categoriesManagmentFunctions.updateCategory(req.data._id, req.params.categoryId, req.body.newCategoryName);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+            if (result.msg !== "Sorry, This Category Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
                 return;
             }

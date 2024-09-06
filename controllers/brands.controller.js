@@ -22,10 +22,7 @@ async function postNewBrand(req, res) {
             imagePath: outputImageFilePath,
         });
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
-            }
+            return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
         }
         res.json(result);
     }
@@ -69,9 +66,8 @@ async function deleteBrand(req, res) {
             unlinkSync(result.data.deletedBrandPath);
         }
         else {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Brand Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
@@ -85,7 +81,7 @@ async function putBrandInfo(req, res) {
     try{
         const result = await brandsManagmentFunctions.updateBrandInfo(req.data._id, req.params.brandId, req.body.newBrandTitle);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+            if (result.msg !== "Sorry, This Brand Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
                 return;
             }
@@ -103,13 +99,12 @@ async function putBrandImage(req, res) {
         await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], [outputImageFilePath]);
         const result = await brandsManagmentFunctions.changeBrandImage(req.data._id, req.params.brandId, outputImageFilePath);
         if (!result.error) {
-            // unlinkSync(result.data.deletedBrandImagePath);
+            unlinkSync(result.data.deletedBrandImagePath);
         }
         else {
             unlinkSync(outputImageFilePath);
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Brand Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);

@@ -26,9 +26,12 @@ async function addNewCategory(authorizationId, categoryName) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -123,7 +126,7 @@ async function deleteCategory(authorizationId, categoryId) {
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Category Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -135,9 +138,12 @@ async function deleteCategory(authorizationId, categoryId) {
                 };
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -159,7 +165,7 @@ async function updateCategory(authorizationId, categoryId, newCategoryName) {
                 const category = await categoryModel.findOne( { _id: categoryId });
                 if (category) {
                     if (category.storeId === admin.storeId) {
-                        await categoryModel.updateOne( { _id: categoryId } , { name: newCategoryName });
+                        await categoryModel.updateOne({ _id: categoryId } , { name: newCategoryName });
                         return {
                             msg: "Updating Category Process Has Been Successfuly !!",
                             error: false,
@@ -167,7 +173,7 @@ async function updateCategory(authorizationId, categoryId, newCategoryName) {
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Category Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -179,9 +185,12 @@ async function updateCategory(authorizationId, categoryId, newCategoryName) {
                 };
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {

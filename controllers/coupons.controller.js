@@ -6,13 +6,7 @@ async function getAllCoupons(req, res) {
     try{
         const result = await couponsOPerationsManagmentFunctions.getAllCoupons(req.data._id);
         if (result.error) {
-            if (
-                result.msg === "Sorry, This Admin Is Not Exist !!" ||
-                result.msg === "Sorry, This Account Has Been Blocked !!"
-            ) {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
-            }
+            return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
         }
         res.json(result);
     }
@@ -25,18 +19,13 @@ async function postAddNewCoupon(req, res) {
     try{
         const result = await couponsOPerationsManagmentFunctions.addNewCoupon(req.data._id, { code, discountPercentage } = req.body);
         if (result.error) {
-            if (
-                result.msg === "Sorry, This Admin Is Not Exist !!" ||
-                result.msg === "Sorry, This Account Has Been Blocked !!"
-            ) {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Coupon Is Already Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
     }
     catch(err) {
-        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
@@ -46,11 +35,10 @@ async function putCouponInfo(req, res) {
         const result = await couponsOPerationsManagmentFunctions.updateCouponInfo(req.data._id, req.params.couponId, req.body);
         if (result.error) {
             if (
-                result.msg === "Sorry, This Admin Is Not Exist !!" ||
-                result.msg === "Sorry, This Account Has Been Blocked !!"
+                result.msg !== "Sorry, This Coupon Is Not Exist !!" ||
+                result.msg !== "Sorry, This New Code Is Already Exist !!"
             ) {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
@@ -64,12 +52,8 @@ async function deleteCoupon(req, res) {
     try{
         const result = await couponsOPerationsManagmentFunctions.deleteCoupon(req.data._id, req.params.couponId);
         if (result.error) {
-            if (
-                result.msg === "Sorry, This Admin Is Not Exist !!" ||
-                result.msg === "Sorry, This Account Has Been Blocked !!"
-            ) {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Coupon Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);

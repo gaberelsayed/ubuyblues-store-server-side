@@ -29,7 +29,7 @@ async function updateSectionsStatus(authorizationId,sectionsStatus) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }
