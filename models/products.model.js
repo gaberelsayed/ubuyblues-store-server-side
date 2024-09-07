@@ -6,12 +6,13 @@ async function addNewProduct(authorizationId, productInfo) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
-            if (!admin.isBlocked && admin.storeId === productInfo.storeId) {
+            if (!admin.isBlocked) {
                 const product = await productModel.findOne({ name: productInfo.name, categoryId: productInfo.categoryId });
                 if (!product) {
                     const category = await categoryModel.findById(productInfo.categoryId);
                     if (category) {
                         productInfo.category = category.name;
+                        productInfo.storeId = admin.storeId;
                         await (new productModel(productInfo)).save();
                         return {
                             msg: "Adding New Product Process Has Been Successfuly !!",
@@ -32,9 +33,12 @@ async function addNewProduct(authorizationId, productInfo) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -70,7 +74,7 @@ async function addNewImagesToProductGallery(authorizationId, productId, newGalle
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -82,9 +86,12 @@ async function addNewImagesToProductGallery(authorizationId, productId, newGalle
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -328,7 +335,7 @@ async function deleteProduct(authorizationId, productId) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -340,9 +347,12 @@ async function deleteProduct(authorizationId, productId) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -374,7 +384,7 @@ async function deleteImageFromProductGallery(authorizationId, productId, gallery
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -386,9 +396,12 @@ async function deleteImageFromProductGallery(authorizationId, productId, gallery
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -425,7 +438,7 @@ async function updateProduct(authorizationId, productId, newData) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -437,9 +450,12 @@ async function updateProduct(authorizationId, productId, newData) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -480,7 +496,7 @@ async function updateProductGalleryImage(authorizationId, productId, oldGalleryI
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -492,9 +508,12 @@ async function updateProductGalleryImage(authorizationId, productId, oldGalleryI
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -528,7 +547,7 @@ async function updateProductImage(authorizationId, productId, newProductImagePat
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
                         error: true,
                         data: {},
                     }
@@ -540,9 +559,12 @@ async function updateProductImage(authorizationId, productId, newProductImagePat
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {

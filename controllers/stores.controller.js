@@ -86,12 +86,10 @@ async function postApproveStore(req, res) {
     try{
         const result = await storesOPerationsManagmentFunctions.approveStore(req.data._id, req.params.storeId, req.query.password);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
-            res.json(result);
-            return;
+            return res.json(result);
         }
         res.json(await sendApproveStoreEmail(result.data.email, req.query.password, result.data.adminId, req.params.storeId, result.data.language));
     }
@@ -104,9 +102,8 @@ async function putStoreInfo(req, res) {
     try{
         const result = await storesOPerationsManagmentFunctions.updateStoreInfo(req.data._id, req.params.storeId, req.body);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Store Is Not Found !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
@@ -120,12 +117,10 @@ async function putBlockingStore(req, res) {
     try{
         const result = await storesOPerationsManagmentFunctions.blockingStore(req.data._id, req.params.storeId, req.query.blockingReason);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
-            res.json(result);
-            return;
+            return res.json(result);
         }
         res.json(await sendBlockStoreEmail(result.data.email, result.data.adminId, req.params.storeId, result.data.language));
     }
@@ -138,9 +133,8 @@ async function putCancelBlockingStore(req, res) {
     try{
         const result = await storesOPerationsManagmentFunctions.cancelBlockingStore(req.data._id, req.params.storeId);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
@@ -156,7 +150,7 @@ async function putStoreImage(req, res) {
         await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], [outputImageFilePath]);
         const result = await storesOPerationsManagmentFunctions.changeStoreImage(req.params.storeId, outputImageFilePath);
         if (!result.error) {
-            // unlinkSync(result.data.deletedStoreImagePath);
+            unlinkSync(result.data.deletedStoreImagePath);
             res.json({
                 ...result,
                 data: {
@@ -165,7 +159,10 @@ async function putStoreImage(req, res) {
             });
         } else {
             unlinkSync(newStoreImagePath);
-            res.json(result);
+            if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+            }
+            return res.json(result);
         }
 }
     catch (err) {
@@ -177,12 +174,10 @@ async function deleteStore(req, res) {
     try{
         const result = await storesOPerationsManagmentFunctions.deleteStore(req.data._id, req.params.storeId);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Store Is Not Found !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
-            res.json(result);
-            return;
+            return res.json(result);
         }
         unlinkSync(result.data.storeImagePath);
         res.json(await sendDeleteStoreEmail(result.data.email, result.data.adminId, req.params.storeId, result.data.language));
@@ -196,12 +191,10 @@ async function deleteRejectStore(req, res) {
     try{
         const result = await storesOPerationsManagmentFunctions.rejectStore(req.data._id, req.params.storeId);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Store Is Not Found !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
-            res.json(result);
-            return;
+            return res.json(result);
         }
         unlinkSync(result.data.storeImagePath); 
         res.json(await sendRejectStoreEmail(result.data.ownerEmail, result.data.language));

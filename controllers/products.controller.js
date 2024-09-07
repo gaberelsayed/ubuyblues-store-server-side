@@ -24,9 +24,8 @@ async function postNewProduct(req, res) {
         }
         const result = await productsManagmentFunctions.addNewProduct(req.data._id, productInfo);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Category Is Not Exist !!" || result.msg !== "Sorry, This Product Is Already Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
@@ -46,9 +45,8 @@ async function postNewImagesToProductGallery(req, res) {
         await handleResizeImagesAndConvertFormatToWebp(files, outputImageFilePaths);
         const result = await productsManagmentFunctions.addNewImagesToProductGallery(req.data._id, req.params.productId, outputImageFilePaths);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Product Is Not Found !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
@@ -180,9 +178,8 @@ async function deleteProduct(req, res) {
             }
         }
         else {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Product Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
@@ -195,22 +192,17 @@ async function deleteProduct(req, res) {
 async function deleteImageFromProductGallery(req, res) {
     try {
         const galleryImagePath = req.query.galleryImagePath;
-        const result = await productsManagmentFunctions.deleteImageFromProductGallery(req.data._id, req.params.productId, req.query.galleryImagePath);
+        const result = await productsManagmentFunctions.deleteImageFromProductGallery(req.data._id, req.params.productId, galleryImagePath);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Product Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
-            if (result.msg === "Sorry, This Product Is Not Exist !!"){
-                res.json(result);
-                return;
-            }
+            return res.json(result);
         }
         unlinkSync(galleryImagePath);
         res.json(result);
     }
     catch (err) {
-        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
@@ -219,9 +211,8 @@ async function putProduct(req, res) {
     try {
         const result = await productsManagmentFunctions.updateProduct(req.data._id, req.params.productId, req.body);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Product Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
@@ -238,19 +229,17 @@ async function putProductGalleryImage(req, res) {
         const oldGalleryImagePath = req.query.oldGalleryImagePath;
         const result = await productsManagmentFunctions.updateProductGalleryImage(req.data._id, req.params.productId, oldGalleryImagePath, outputImageFilePath);
         if (!result.error) {
-            // unlinkSync(oldGalleryImagePath);
+            unlinkSync(oldGalleryImagePath);
         }
         else {
             unlinkSync(outputImageFilePath);
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Product Is Not Exist !!" || result.msg !== "Sorry, This Path Is Not Found !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);
     }
     catch (err) {
-        console.log(err);
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
@@ -261,13 +250,12 @@ async function putProductImage(req, res) {
         await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], [outputImageFilePath]);
         const result = await productsManagmentFunctions.updateProductImage(req.data._id, req.params.productId, outputImageFilePath);
         if (!result.error) {
-            // unlinkSync(result.data.deletedProductImagePath);
+            unlinkSync(result.data.deletedProductImagePath);
         }
         else {
             unlinkSync(outputImageFilePath);
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This Product Is Not Exist !!") {
+                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
             }
         }
         res.json(result);

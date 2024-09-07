@@ -101,14 +101,14 @@ async function approveStore(authorizationId, storeId, password) {
                 if (store) {
                     if (store.status === "approving") {
                         return {
-                            msg: `Sorry, This Store Is Already Approved !!`,
+                            msg: "Sorry, This Store Is Already Approved !!",
                             error: true,
                             data: {},
                         };
                     }
                     if (store.status === "blocking") {
                         return {
-                            msg: `Sorry, This Store Is Blocked !!`,
+                            msg: "Sorry, This Store Is Blocked !!",
                             error: true,
                             data: {
                                 blockingDate: store.blockingDate,
@@ -143,7 +143,7 @@ async function approveStore(authorizationId, storeId, password) {
                 };
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }
@@ -179,7 +179,7 @@ async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
                 };
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }
@@ -238,7 +238,7 @@ async function blockingStore(authorizationId, storeId, blockingReason) {
                 };
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }
@@ -288,7 +288,7 @@ async function cancelBlockingStore(authorizationId, storeId) {
                 };
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }
@@ -303,23 +303,38 @@ async function cancelBlockingStore(authorizationId, storeId) {
     }
 }
 
-async function changeStoreImage(storeId, newStoreImagePath) {
+async function changeStoreImage(authorizationId, storeId, newStoreImagePath) {
     try{
-        const store = await storeModel.findOneAndUpdate({ _id: storeId }, {
-            imagePath: newStoreImagePath,
-        });
-        if (store) {
+        const admin = await adminModel.findById(authorizationId);
+        if (admin) {
+            if (admin.isWebsiteOwner) {
+                const store = await storeModel.findOneAndUpdate({ _id: storeId }, {
+                    imagePath: newStoreImagePath,
+                });
+                if (store) {
+                    return {
+                        msg: "Updating Store Image Process Has Been Successfully !!",
+                        error: false,
+                        data: { deletedStoreImagePath: store.imagePath }
+                    };    
+                }
+                return {
+                    msg: "Sorry, This Store Is Not Exist !!",
+                    error: true,
+                    data: {}
+                }
+            }
             return {
-                msg: "Updating Store Image Process Has Been Successfully !!",
-                error: false,
-                data: { deletedStoreImagePath: store.imagePath }
-            };    
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
+                error: true,
+                data: {},
+            }
         }
         return {
-            msg: "Sorry, This Store Is Not Exist !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
-            data: {}
-        };
+            data: {},
+        }
     }
     catch(err) {
         throw Error(err);
@@ -352,7 +367,7 @@ async function deleteStore(authorizationId, storeId){
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Store Is Main Store !!",
                         error: true,
                         data: {},
                     }
@@ -364,7 +379,7 @@ async function deleteStore(authorizationId, storeId){
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }
@@ -388,23 +403,23 @@ async function rejectStore(authorizationId, storeId){
                 const store = await storeModel.findOneAndDelete({ _id: storeId });
                 if (store) {
                     return {
-                        msg: `Delete Store Process Has Been Successfully !!`,
+                        msg: "Delete Store Process Has Been Successfully !!",
                         error: false,
                         data: {
                             storeImagePath: store.imagePath,
                             ownerEmail: store.ownerEmail,
                             language: store.language
                         },
-                    };
+                    }
                 }
                 return {
                     msg: "Sorry, This Store Is Not Found !!",
                     error: true,
                     data: {},
-                };
+                }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }
