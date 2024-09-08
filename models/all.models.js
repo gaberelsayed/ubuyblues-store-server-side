@@ -433,6 +433,10 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    totalAmountBeforeApplyCoupon: {
+        type: Number,
+        default: 0,
+    },
     orderAmount: {
         type: Number,
         default: 0,
@@ -469,6 +473,30 @@ const orderSchema = new mongoose.Schema({
             "shipping",
             "completed"
         ]
+    },
+    isApplyCoupon: {
+        type: Boolean,
+        default: false,
+    },
+    couponDetails: {
+        code: {
+            type: String,
+            required: function () {
+                return this.isApplyCoupon;
+            },
+        },
+        discountPercentage: {
+            type: Number,
+            required: function () {
+                return this.isApplyCoupon;
+            },
+        },
+        storeId: {
+            type: String,
+            required: function () {
+                return this.isApplyCoupon;
+            },
+        },
     },
     billingAddress: {
         firstName: {

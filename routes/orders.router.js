@@ -75,11 +75,12 @@ ordersRouter.get("/order-details/:orderId",
 
 ordersRouter.post("/create-new-order",
     (req, res, next) => {
-        const { creator, language, checkoutStatus, billingAddress, shippingAddress, requestNotes, products, shippingMethod } = req.body;
+        const { creator, language, checkoutStatus, billingAddress, shippingAddress, requestNotes, products, shippingMethod, couponCode } = req.body;
         const { country } = req.query;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Country", fieldValue: country, dataType: "string", isRequiredValue: true },
             { fieldName: "Order Creator", fieldValue: creator, dataType: "string", isRequiredValue: true },
+            { fieldName: "Coupon Code", fieldValue: couponCode, dataType: "string", isRequiredValue: false },
             { fieldName: "Language", fieldValue: language, dataType: "string", isRequiredValue: true },
             { fieldName: "Checkout Status", fieldValue: checkoutStatus, dataType: "string", isRequiredValue: false },
             { fieldName: "First Name In Billing Address", fieldValue: billingAddress?.firstName, dataType: "string", isRequiredValue: true },
@@ -196,11 +197,12 @@ ordersRouter.post("/create-new-order",
 
 ordersRouter.post("/create-payment-order",
     (req, res, next) => {
-        const { checkoutStatus, billingAddress, shippingAddress, requestNotes, products, shippingMethod, creator, paymentGateway } = req.body;
+        const { checkoutStatus, billingAddress, shippingAddress, requestNotes, products, shippingMethod, creator, paymentGateway, couponCode } = req.body;
         const { country } = req.query;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Country", fieldValue: country, dataType: "string", isRequiredValue: true },
             { fieldName: "Order Creator", fieldValue: creator, dataType: "string", isRequiredValue: true },
+            { fieldName: "Coupon Code", fieldValue: couponCode, dataType: "string", isRequiredValue: false },
             { fieldName: "Payment Gate", fieldValue: paymentGateway, dataType: "string", isRequiredValue: true },
             { fieldName: "Checkout Status", fieldValue: checkoutStatus, dataType: "string", isRequiredValue: false },
             { fieldName: "First Name In Billing Address", fieldValue: billingAddress?.firstName, dataType: "string", isRequiredValue: true },

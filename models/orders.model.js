@@ -2,6 +2,8 @@
 
 const { orderModel, userModel, adminModel, productsWalletModel, productModel, mongoose } = require("../models/all.models");
 
+const { getCouponDetails } = require("./coupons.model");
+
 const countries = require("countries-list").countries;
 
 const isProductLocalOrInternational = (productCountry, shippingCountry) => {
@@ -185,6 +187,14 @@ async function createNewOrder(orderDetails) {
                 }
             }
         }
+        if (orderDetails.couponCode) {
+            const result = await getCouponDetails(orderDetails.couponCode);
+            if (result.error) {
+                return result;
+            }
+            delete orderDetails.couponCode;
+            orderDetails.couponDetails = { code: result.data.code, discountPercentage: result.data.discountPercentage, storeId: result.data.storeId }
+        }
         let orderProductsDetails = [];
         for(let i = 0; i < orderedProducts.length; i++) {
             orderProductsDetails.push({
@@ -219,6 +229,7 @@ async function createNewOrder(orderDetails) {
             forInternationalProducts: orderDetails.shippingMethod.forInternationalProducts,
         }
         const shippingCost = getShippingCost(localProducts.length, internationalProducts.length, shippingMethod, totalPrices.totalPriceAfterDiscount);
+        const totalAmountBeforeApplyCoupon = totalPrices.totalPriceAfterDiscount + shippingCost.forLocalProducts + shippingCost.forInternationalProducts;
         const newOrder = await (
             new orderModel({
                 storeId: existOrderProducts[0].storeId,
@@ -226,7 +237,10 @@ async function createNewOrder(orderDetails) {
                 totalPriceBeforeDiscount: totalPrices.totalPriceBeforeDiscount,
                 totalDiscount: totalPrices.totalDiscount,
                 totalPriceAfterDiscount: totalPrices.totalPriceAfterDiscount,
-                orderAmount: totalPrices.totalPriceAfterDiscount + shippingCost.forLocalProducts + shippingCost.forInternationalProducts,
+                totalAmountBeforeApplyCoupon,
+                isApplyCoupon: orderDetails.couponDetails ? true : false,
+                couponDetails: orderDetails.couponDetails,
+                orderAmount: orderDetails.couponDetails ? totalAmountBeforeApplyCoupon - (totalAmountBeforeApplyCoupon * orderDetails.couponDetails.discountPercentage) / 100 : totalAmountBeforeApplyCoupon,
                 userId: orderDetails.userId ? orderDetails.userId : "",
                 creator: orderDetails.creator,
                 paymentGateway: orderDetails.paymentGateway,
