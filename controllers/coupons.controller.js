@@ -15,6 +15,15 @@ async function getAllCoupons(req, res) {
     }
 }
 
+async function getCouponDetails(req, res) {
+    try{
+        res.json(await couponsOPerationsManagmentFunctions.getCouponDetails(req.query.code));
+    }
+    catch(err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
 async function postAddNewCoupon(req, res) {
     try{
         const result = await couponsOPerationsManagmentFunctions.addNewCoupon(req.data._id, { code, discountPercentage } = req.body);
@@ -65,6 +74,7 @@ async function deleteCoupon(req, res) {
 
 module.exports = {
     getAllCoupons,
+    getCouponDetails,
     postAddNewCoupon,
     putCouponInfo,
     deleteCoupon

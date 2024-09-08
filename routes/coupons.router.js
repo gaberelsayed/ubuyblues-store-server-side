@@ -11,6 +11,8 @@ couponsRouter.get("/all-coupons",
     couponsController.getAllCoupons
 );
 
+couponsRouter.get("/coupon-details", couponsController.getCouponDetails);
+
 couponsRouter.post("/add-new-coupon",
     validateJWT,
     (req, res, next) => {

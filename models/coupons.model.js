@@ -32,6 +32,28 @@ async function getAllCoupons(admintId) {
     }
 }
 
+async function getCouponDetails(code) {
+    try{
+        const couponDetails = await couponModel.findOne({ code });
+        if (couponDetails) {
+            return {
+                msg: "Get Coupon Details Process Has Been Successfully !!",
+                error: false,
+                data: couponDetails,
+            }
+        } else {
+            return {
+                msg: "Sorry, This Code Is Not Exist !!",
+                error: true,
+                data: {},
+            }
+        }
+    }
+    catch(err) {
+        throw Error(err);
+    }
+}
+
 async function addNewCoupon(adminId, couponInfo) {
     try{
         const admin = await adminModel.findById(adminId);
@@ -160,6 +182,7 @@ async function deleteCoupon(adminId, couponId){
 
 module.exports = {
     getAllCoupons,
+    getCouponDetails,
     addNewCoupon,
     updateCouponInfo,
     deleteCoupon
