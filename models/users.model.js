@@ -170,7 +170,7 @@ async function getUsersCount(authorizationId, filters) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }
@@ -197,7 +197,7 @@ async function getAllUsersInsideThePage(authorizationId, pageNumber, pageSize, f
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }
@@ -384,7 +384,7 @@ async function deleteUser(authorizationId, userId){
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
                 error: true,
                 data: {},
             }

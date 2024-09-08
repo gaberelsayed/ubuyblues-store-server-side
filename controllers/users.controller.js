@@ -78,12 +78,7 @@ async function getUsersCount(req, res) {
     try{
         const result = await usersOPerationsManagmentFunctions.getUsersCount(req.data._id, getFiltersObject(req.query));
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
-            }
-            res.json(result);
-            return;
+            return res.status(401).json(result);
         }
         res.json(result);
     }
@@ -97,12 +92,7 @@ async function getAllUsersInsideThePage(req, res) {
         const filters = req.query;
         const result = await usersOPerationsManagmentFunctions.getAllUsersInsideThePage(req.data._id, filters.pageNumber, filters.pageSize, getFiltersObject(filters));
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
-            }
-            res.json(result);
-            return;
+            return res.status(401).json(result);
         }
         res.json(result);
     }
@@ -166,13 +156,11 @@ async function postAccountVerificationCode(req, res) {
         if (!result.error) {
             result = await isBlockingFromReceiveTheCodeAndReceiveBlockingExpirationDate(email, typeOfUse);
             if (result.error) {
-                res.json(result);
-                return;
+                return res.json(result);
             }
             result = await sendVerificationCodeToUserEmail(email);
             if (!result.error) {
-                res.json(await addNewAccountVerificationCode(email, result.data, typeOfUse));
-                return;
+                return res.json(await addNewAccountVerificationCode(email, result.data, typeOfUse));
             }
         }
         res.json(result);
@@ -239,12 +227,10 @@ async function deleteUser(req, res) {
     try{
         const result = await usersOPerationsManagmentFunctions.deleteUser(req.data._id, req.params.userId);
         if (result.error) {
-            if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+            if (result.msg !== "Sorry, This User Is Not Found !!") {
+                return res.status(401).json(result);
             }
-            res.json(result);
-            return;
+            return res.json(result);
         }
         res.json(result);
     }

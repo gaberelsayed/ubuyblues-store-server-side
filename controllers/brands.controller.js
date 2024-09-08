@@ -22,7 +22,7 @@ async function postNewBrand(req, res) {
             imagePath: outputImageFilePath,
         });
         if (result.error) {
-            return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+            return res.status(401).json(result);
         }
         res.json(result);
     }
@@ -67,7 +67,7 @@ async function deleteBrand(req, res) {
         }
         else {
             if (result.msg !== "Sorry, This Brand Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -104,7 +104,7 @@ async function putBrandImage(req, res) {
         else {
             unlinkSync(outputImageFilePath);
             if (result.msg !== "Sorry, This Brand Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);

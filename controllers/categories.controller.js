@@ -69,7 +69,7 @@ async function deleteCategory(req, res) {
         const result = await categoriesManagmentFunctions.deleteCategory(req.data._id, req.params.categoryId);
         if (result.error) {
             if (result.msg !== "Sorry, This Category Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -84,8 +84,7 @@ async function putCategory(req, res) {
         const result = await categoriesManagmentFunctions.updateCategory(req.data._id, req.params.categoryId, req.body.newCategoryName);
         if (result.error) {
             if (result.msg !== "Sorry, This Category Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+                return res.status(401).json(result);
             }
         }
         res.json(result);

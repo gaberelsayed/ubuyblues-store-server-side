@@ -9,7 +9,7 @@ async function postNewTextAd(req, res) {
         const result = await adsOPerationsManagmentFunctions.addNewAd(req.data._id, { content: req.body.content, type: "text" });
         if (result.error) {
             if (result.msg !== "Sorry, Can't Add New Text Ad Because Arrive To Max Limits For Text Ads Count ( Limits: 10 ) !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -32,7 +32,7 @@ async function postNewImageAd(req, res) {
         const result = await adsOPerationsManagmentFunctions.addNewAd(req.data._id, adInfo);
         if (result.error) {
             if (result.msg !== "Sorry, Can't Add New Text Ad Because Arrive To Max Limits For Text Ads Count ( Limits: 10 ) !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -59,7 +59,7 @@ async function deleteAd(req, res) {
         }
         else {
             if (result.msg !== "Sorry, This Ad Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -80,7 +80,7 @@ async function putAdImage(req, res) {
         else {
             unlinkSync(outputImageFilePath);
             if (result.msg !== "Sorry, Type Of Ad Is Not Image !!" || result.msg !== "Sorry, This Ad Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -95,7 +95,7 @@ async function putTextAdContent(req, res) {
         const result = await adsOPerationsManagmentFunctions.updateTextAdContent(req.data._id, req.params.adId, req.body.content);
         if (result.error) {
             if (result.msg !== "Sorry, Type Of Ad Is Not Text !!" || result.msg !== "Sorry, This Ad Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);

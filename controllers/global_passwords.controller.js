@@ -8,7 +8,7 @@ async function putChangeBussinessEmailPassword(req, res) {
         const result = await globalPasswordsManagmentFunctions.changeBussinessEmailPassword(req.data._id, email.toLowerCase(), password, newPassword);
         if (result.error) {
             if (result.msg !== "Sorry, Email Or Password Incorrect !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);

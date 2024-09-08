@@ -87,7 +87,7 @@ async function postApproveStore(req, res) {
         const result = await storesOPerationsManagmentFunctions.approveStore(req.data._id, req.params.storeId, req.query.password);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
             return res.json(result);
         }
@@ -103,7 +103,7 @@ async function putStoreInfo(req, res) {
         const result = await storesOPerationsManagmentFunctions.updateStoreInfo(req.data._id, req.params.storeId, req.body);
         if (result.error) {
             if (result.msg !== "Sorry, This Store Is Not Found !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -118,7 +118,7 @@ async function putBlockingStore(req, res) {
         const result = await storesOPerationsManagmentFunctions.blockingStore(req.data._id, req.params.storeId, req.query.blockingReason);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
             return res.json(result);
         }
@@ -134,7 +134,7 @@ async function putCancelBlockingStore(req, res) {
         const result = await storesOPerationsManagmentFunctions.cancelBlockingStore(req.data._id, req.params.storeId);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -160,7 +160,7 @@ async function putStoreImage(req, res) {
         } else {
             unlinkSync(newStoreImagePath);
             if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
             return res.json(result);
         }
@@ -175,7 +175,7 @@ async function deleteStore(req, res) {
         const result = await storesOPerationsManagmentFunctions.deleteStore(req.data._id, req.params.storeId);
         if (result.error) {
             if (result.msg !== "Sorry, This Store Is Not Found !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
             return res.json(result);
         }
@@ -192,7 +192,7 @@ async function deleteRejectStore(req, res) {
         const result = await storesOPerationsManagmentFunctions.rejectStore(req.data._id, req.params.storeId);
         if (result.error) {
             if (result.msg !== "Sorry, This Store Is Not Found !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
             return res.json(result);
         }

@@ -25,7 +25,7 @@ async function postNewProduct(req, res) {
         const result = await productsManagmentFunctions.addNewProduct(req.data._id, productInfo);
         if (result.error) {
             if (result.msg !== "Sorry, This Category Is Not Exist !!" || result.msg !== "Sorry, This Product Is Already Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -46,7 +46,7 @@ async function postNewImagesToProductGallery(req, res) {
         const result = await productsManagmentFunctions.addNewImagesToProductGallery(req.data._id, req.params.productId, outputImageFilePaths);
         if (result.error) {
             if (result.msg !== "Sorry, This Product Is Not Found !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -179,7 +179,7 @@ async function deleteProduct(req, res) {
         }
         else {
             if (result.msg !== "Sorry, This Product Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -195,7 +195,7 @@ async function deleteImageFromProductGallery(req, res) {
         const result = await productsManagmentFunctions.deleteImageFromProductGallery(req.data._id, req.params.productId, galleryImagePath);
         if (result.error) {
             if (result.msg !== "Sorry, This Product Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
             return res.json(result);
         }
@@ -212,7 +212,7 @@ async function putProduct(req, res) {
         const result = await productsManagmentFunctions.updateProduct(req.data._id, req.params.productId, req.body);
         if (result.error) {
             if (result.msg !== "Sorry, This Product Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -234,7 +234,7 @@ async function putProductGalleryImage(req, res) {
         else {
             unlinkSync(outputImageFilePath);
             if (result.msg !== "Sorry, This Product Is Not Exist !!" || result.msg !== "Sorry, This Path Is Not Found !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -255,7 +255,7 @@ async function putProductImage(req, res) {
         else {
             unlinkSync(outputImageFilePath);
             if (result.msg !== "Sorry, This Product Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);

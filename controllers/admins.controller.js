@@ -49,7 +49,7 @@ async function getAdminsCount(req, res) {
     try{
         const result = await adminsOPerationsManagmentFunctions.getAdminsCount(req.data._id, getFiltersObject(req.query));
         if (result.error) {
-            return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+            return res.status(401).json(result);
         }
         res.json(result);
     }
@@ -63,7 +63,7 @@ async function getAllAdminsInsideThePage(req, res) {
         const filters = req.query;
         const result = await adminsOPerationsManagmentFunctions.getAllAdminsInsideThePage(req.data._id, filters.pageNumber, filters.pageSize, getFiltersObject(filters));
         if (result.error) {
-            return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+            return res.status(401).json(result);
         }
         res.json(result);
     }
@@ -77,7 +77,7 @@ async function postAddNewAdmin(req, res) {
         const result = await adminsOPerationsManagmentFunctions.addNewAdmin(req.data._id, req.body);
         if (result.error) {
             if (result.msg !== "Sorry, This Admin Is Already Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -92,7 +92,7 @@ async function putAdminInfo(req, res) {
         const result = await adminsOPerationsManagmentFunctions.updateAdminInfo(req.data._id, req.params.adminId, req.body);
         if (result.error) {
             if (result.msg !== "Sorry, This Admin Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -107,7 +107,7 @@ async function deleteAdmin(req, res) {
         const result = await adminsOPerationsManagmentFunctions.deleteAdmin(req.data._id, req.params.adminId);
         if (result.error) {
             if (result.msg !== "Sorry, This Admin Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);

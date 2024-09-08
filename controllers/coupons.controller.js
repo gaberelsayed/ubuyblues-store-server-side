@@ -6,7 +6,7 @@ async function getAllCoupons(req, res) {
     try{
         const result = await couponsOPerationsManagmentFunctions.getAllCoupons(req.data._id);
         if (result.error) {
-            return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+            return res.status(401).json(result);
         }
         res.json(result);
     }
@@ -20,7 +20,7 @@ async function postAddNewCoupon(req, res) {
         const result = await couponsOPerationsManagmentFunctions.addNewCoupon(req.data._id, { code, discountPercentage } = req.body);
         if (result.error) {
             if (result.msg !== "Sorry, This Coupon Is Already Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -38,7 +38,7 @@ async function putCouponInfo(req, res) {
                 result.msg !== "Sorry, This Coupon Is Not Exist !!" ||
                 result.msg !== "Sorry, This New Code Is Already Exist !!"
             ) {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -53,7 +53,7 @@ async function deleteCoupon(req, res) {
         const result = await couponsOPerationsManagmentFunctions.deleteCoupon(req.data._id, req.params.couponId);
         if (result.error) {
             if (result.msg !== "Sorry, This Coupon Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);

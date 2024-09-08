@@ -15,7 +15,7 @@ async function putSectionsStatus(req, res) {
     try{
         const result = await appearedSectionsOPerationsManagmentFunctions.updateSectionsStatus(req.data._id, req.body.sectionsStatus);
         if (result.error) {
-            return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+            return res.status(401).json(result);
         }
         res.json(result);
     }

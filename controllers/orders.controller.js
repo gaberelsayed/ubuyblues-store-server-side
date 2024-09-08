@@ -100,7 +100,7 @@ async function postNewPaymentOrder(req, res) {
         const result = await ordersManagmentFunctions.createNewOrder(orderData);
         if (result.error) {
             if (result.msg === "Sorry, This User Is Not Exist !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
             return res.json(result);
         }
@@ -252,7 +252,7 @@ async function putOrder(req, res) {
         const result = await ordersManagmentFunctions.updateOrder(req.data._id, req.params.orderId, getFiltersObjectForUpdateOrder({ status, orderAmount }));
         if (result.error) {
             if (result.msg !== "Sorry, This Order Is Not Found !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         if (req.query.isSendEmailToTheCustomer) {
@@ -289,7 +289,7 @@ async function deleteOrder(req, res) {
         const result = await ordersManagmentFunctions.deleteOrder(req.data._id, req.params.orderId);
         if (result.error) {
             if (result.msg !== "Sorry, This Order Is Not Found !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
@@ -305,7 +305,7 @@ async function deleteProductFromOrder(req, res) {
         const result = await ordersManagmentFunctions.deleteProductFromOrder(req.data._id, orderId, productId);
         if (result.error) {
             if (result.msg !== "Sorry, This Order Is Not Found !!" || result.msg !== "Sorry, This Product For This Order Is Not Found !!") {
-                return res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
+                return res.status(401).json(result);
             }
         }
         res.json(result);
