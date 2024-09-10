@@ -48,23 +48,24 @@ async function addNewCategory(authorizationId, categoryName) {
 async function getAllCategories(filters) {
     try {
         filters.parent = null;
-        const mainCategoriesAndSuperRelatedSubCategories = await categoryModel.aggregate([
+        const categories = await categoryModel.aggregate([
             {
                 $match: filters,
             },
             {
-                $lookup: {
+                $graphLookup: {
                     from: "categories",
-                    localField: "_id",
-                    foreignField: "parent",
+                    startWith: "$_id",
+                    connectFromField: "_id",
+                    connectToField: "parent",
                     as: "subcategories",
                 }
             },
-        ]);       
+        ]);
         return {
             msg: "Get All Categories Process Has Been Successfully !!",
             error: false,
-            data: mainCategoriesAndSuperRelatedSubCategories
+            data: categories
         }
     }
     catch (err) {
