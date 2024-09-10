@@ -403,12 +403,17 @@ const categorySchema = new mongoose.Schema({
     storeId: {
         type: String,
         required: true,
-    }
+    },
+    parent: {
+        type: mongoose.Types.ObjectId,
+        ref: "categorie",
+        default: null
+    },
 });
 
 // Create Category Model From Category Schema
 
-const categoryModel = mongoose.model("category", categorySchema);
+const categoryModel = mongoose.model("categorie", categorySchema);
 
 // Create Order Schema
 
