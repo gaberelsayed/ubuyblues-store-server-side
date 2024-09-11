@@ -45,27 +45,32 @@ async function addNewCategory(authorizationId, categoryName) {
     }
 }
 
+function buildNestedCategories(categories) {
+    const categoryMap = {};
+    categories.forEach(category => {
+        categoryMap[category._id] = { ...category, subcategories: [] };
+    });
+    const result = [];
+    categories.forEach(category => {
+        if (category.parent) {
+            categoryMap[category.parent].subcategories.push(categoryMap[category._id]);
+        } else {
+            result.push(categoryMap[category._id]);
+        }
+    });
+    return result;
+}
+
 async function getAllCategories(filters) {
     try {
         filters.parent = null;
-        const categories = await categoryModel.aggregate([
-            {
-                $match: filters,
-            },
-            {
-                $graphLookup: {
-                    from: "categories",
-                    startWith: "$_id",
-                    connectFromField: "_id",
-                    connectToField: "parent",
-                    as: "subcategories",
-                }
-            },
-        ]);
+        const mainCategories = await categoryModel.find(filters, { name: 1, storeId: 1, parent: 1 });
+        filters.parent = { $ne: null };
+        const subcategories = await categoryModel.find(filters, { name: 1, storeId: 1, parent: 1 });
         return {
             msg: "Get All Categories Process Has Been Successfully !!",
             error: false,
-            data: categories
+            data: buildNestedCategories([...JSON.parse(JSON.stringify(mainCategories, null, 1)), ...JSON.parse(JSON.stringify(subcategories, null, 1))]),
         }
     }
     catch (err) {
