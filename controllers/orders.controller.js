@@ -229,17 +229,27 @@ async function postNewPaymentOrder(req, res) {
                 );
             } else {
                 const timestamp = Date.now();
-                const nonce = "12345678910111213141516171819202";
+                const nonce = "VeTfR5mdAKjbeErxBXTl20JayTiCz4sb";
                 const data = {
-                    merchantTradeNo: result.data.orderNumber,
+                    env: {
+                        terminalType: "WEB"
+                    },
+                    merchantTradeNo: result.data._id,
+                    currency: "USDT",
                     orderAmount: result.data.orderAmount,
-                    currency: "USDT"
+                    description: "Pay In Ubuyblues",
+                    goodsDetails: result.data.products.map((product => ({
+                        goodsType: "01",
+                        goodsCategory: "D000",
+                        referenceGoodsId: product.productId,
+                        goodsName: product.name,
+                    })))
                 }
                 const signaturePayload = `${timestamp}\n${nonce}\n${JSON.stringify(data)}\n`;
                 const signature = createHmac("sha512", process.env.BINANCE_API_SECRET_KEY, {
                     encoding: "utf8"
-                }).update(signaturePayload).digest("hex");
-                result = await post(`${process.env.BINANCE_BASE_API_URL}/binancepay/openapi/v3/order`, data, {
+                }).update(signaturePayload).digest("hex").toUpperCase();
+                result = (await post(`${process.env.BINANCE_BASE_API_URL}/binancepay/openapi/v3/order`, data, {
                     headers: {
                         "Content-Type": "application/json",
                         "BinancePay-Timestamp": timestamp,
@@ -247,13 +257,14 @@ async function postNewPaymentOrder(req, res) {
                         "BinancePay-Certificate-SN": process.env.BINANCE_API_KEY,
                         "BinancePay-Signature": signature
                     }
-                });
-                res.json(result);
+                })).data;
+                res.json(getResponseObject("Creating New Payment Order By Binance Process Has Been Successfully !!", false, {
+                    checkoutURL: result.data.checkoutUrl
+                }));
             }
         }
     }
     catch(err) {
-        console.log(err)
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
