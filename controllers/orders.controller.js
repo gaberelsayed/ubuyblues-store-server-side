@@ -246,7 +246,6 @@ async function postNewPaymentOrder(req, res) {
                     }))),
                     returnUrl: `https://ubuyblues.com/confirmation/${result.data._id}`,
                     cancelUrl: `https://ubuyblues.com/checkout?storeId=${result.data.storeId}`,
-                    orderExpireTime: `https://ubuyblues.com/checkout?storeId=${result.data.storeId}`,
                     webhookUrl: `https://api.ubuyblues.com/orders/handle-checkout-complete/${result.data._id}`
                 }
                 const signaturePayload = `${timestamp}\n${nonce}\n${JSON.stringify(data)}\n`;
