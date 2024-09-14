@@ -231,14 +231,14 @@ async function postNewPaymentOrder(req, res) {
                 const timestamp = Date.now();
                 const nonce = "12345678910111213141516171819202";
                 const data = {
-                    merchantTradeNo: result.data.orderNumber.toString(),
+                    merchantTradeNo: result.data.orderNumber,
                     orderAmount: result.data.orderAmount,
                     currency: "USDT"
                 }
                 const signaturePayload = `${timestamp}\n${nonce}\n${JSON.stringify(data)}\n`;
                 const signature = createHmac("sha512", process.env.BINANCE_API_SECRET_KEY, {
                     encoding: "utf8"
-                }).update(signaturePayload).digest("hex").toUpperCase();
+                }).update(signaturePayload).digest("hex");
                 result = await post(`${process.env.BINANCE_BASE_API_URL}/binancepay/openapi/v3/order`, data, {
                     headers: {
                         "Content-Type": "application/json",
