@@ -4,6 +4,8 @@ const ordersManagmentFunctions = require("../models/orders.model");
 
 const { post } = require("axios");
 
+const { createHmac } = require("crypto");
+
 function getFiltersObject(filters) {
     let filtersObject = {};
     for (let objectKey in filters) {
@@ -97,7 +99,7 @@ async function postNewPaymentOrder(req, res) {
         if (req?.data._id){
             orderData.userId = req.data._id;
         }
-        const result = await ordersManagmentFunctions.createNewOrder(orderData);
+        let result = await ordersManagmentFunctions.createNewOrder(orderData);
         if (result.error) {
             if (result.msg === "Sorry, This User Is Not Exist !!") {
                 return res.status(401).json(result);
@@ -106,7 +108,7 @@ async function postNewPaymentOrder(req, res) {
         }
         else {
             if (orderData.paymentGateway === "tap") {
-                const response = await post(`${process.env.TAP_PAYMENT_GATEWAY_BASE_API_URL}/charges`, {
+                result = (await post(`${process.env.TAP_PAYMENT_GATEWAY_BASE_API_URL}/charges`, {
                     amount: result.data.orderAmount,
                     currency: "USD",
                     receipt: {
@@ -135,10 +137,10 @@ async function postNewPaymentOrder(req, res) {
                     headers: {
                         Authorization: `Bearer ${process.env.TAP_PAYMENT_GATEWAY_SECRET_KEY}`
                     }
-                });
-                return res.json(getResponseObject("Creating New Payment Order By Tap Process Has Been Successfully !!", false, response.data));
-            } else {
-                const response = await post(`${process.env.TABBY_PAYMENT_GATEWAY_BASE_API_URL}/api/v2/checkout`, {
+                })).data;
+                return res.json(getResponseObject("Creating New Payment Order By Tap Process Has Been Successfully !!", false, result));
+            } else if (orderData.paymentGateway === "tabby") {
+                result = (await post(`${process.env.TABBY_PAYMENT_GATEWAY_BASE_API_URL}/api/v2/checkout`, {
                     payment: {
                         amount: String((result.data.orderAmount * 0.31).toFixed(3)),
                         currency: "KWD",
@@ -218,17 +220,40 @@ async function postNewPaymentOrder(req, res) {
                     headers: {
                         Authorization: `Bearer ${process.env.TAPPY_PUBLIC_API_KEY}`
                     }
-                });
-                return res.json(response.data.status === "created" ?
+                })).data;
+                return res.json(result.status === "created" ?
                     getResponseObject("Creating New Payment Order By Tabby Process Has Been Successfully !!", false, {
-                        checkoutURL: response.data.configuration.available_products.installments[0].web_url
+                        checkoutURL: result.configuration.available_products.installments[0].web_url
                     }) :
                     getResponseObject("Sorry, Can't Creating New Payment Order By Tabby Because Exceeding The Payment Limit !!" , true, {})
                 );
+            } else {
+                const timestamp = Date.now();
+                const nonce = "12345678910111213141516171819202";
+                const data = {
+                    merchantTradeNo: result.data.orderNumber.toString(),
+                    orderAmount: result.data.orderAmount,
+                    currency: "USDT"
+                }
+                const signaturePayload = `${timestamp}\n${nonce}\n${JSON.stringify(data)}\n`;
+                const signature = createHmac("sha512", process.env.BINANCE_API_SECRET_KEY, {
+                    encoding: "utf8"
+                }).update(signaturePayload).digest("hex").toUpperCase();
+                result = await post(`${process.env.BINANCE_BASE_API_URL}/binancepay/openapi/v3/order`, data, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "BinancePay-Timestamp": timestamp,
+                        "BinancePay-Nonce": nonce,
+                        "BinancePay-Certificate-SN": process.env.BINANCE_API_KEY,
+                        "BinancePay-Signature": signature
+                    }
+                });
+                res.json(result);
             }
         }
     }
     catch(err) {
+        console.log(err)
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
     }
 }
