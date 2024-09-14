@@ -243,6 +243,9 @@ async function postNewPaymentOrder(req, res) {
                         goodsCategory: "D000",
                         referenceGoodsId: product.productId,
                         goodsName: product.name,
+                        returnUrl: `https://ubuyblues.com/confirmation/${result.data._id}`,
+                        cancelUrl: `https://ubuyblues.com/checkout?storeId=${result.data.storeId}`,
+                        orderExpireTime: `https://ubuyblues.com/checkout?storeId=${result.data.storeId}`
                     })))
                 }
                 const signaturePayload = `${timestamp}\n${nonce}\n${JSON.stringify(data)}\n`;
