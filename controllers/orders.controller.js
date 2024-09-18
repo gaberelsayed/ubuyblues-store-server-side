@@ -246,7 +246,7 @@ async function postNewPaymentOrder(req, res) {
                     }))),
                     returnUrl: `https://ubuyblues.com/confirmation/${result.data._id}`,
                     cancelUrl: `https://ubuyblues.com/checkout?storeId=${result.data.storeId}`,
-                    webhookUrl: `https://api.ubuyblues.com/orders/handle-checkout-complete/${result.data._id}`
+                    webhookUrl: `https://api.ubuyblues.com/orders/handle-change-binance-payment-status/${result.data._id}`
                 }
                 const signaturePayload = `${timestamp}\n${nonce}\n${JSON.stringify(data)}\n`;
                 const signature = createHmac("sha512", process.env.BINANCE_API_SECRET_KEY, {
@@ -279,6 +279,30 @@ async function postCheckoutComplete(req, res) {
         if (!result.error) {
             await sendReceiveOrderEmail(result.data.billingAddress.email, result.data, "ar");
         }
+    }
+    catch(err) {
+        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+    }
+}
+
+async function postChangeBinancePaymentStatus(req, res) {
+    try{
+        console.log(req.body);
+        if (req.body.bizStatus === "PAY_SUCCESS") {
+            res.json({
+                returnCode:"SUCCESS",
+                returnMessage: null
+            });
+            const result = await ordersManagmentFunctions.changeCheckoutStatusToSuccessfull(req.params.orderId);
+            if (!result.error) {
+                await sendReceiveOrderEmail(result.data.billingAddress.email, result.data, "ar");
+            }
+            return;
+        }
+        res.json({
+            returnCode:"SUCCESS",
+            returnMessage: null
+        });
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -362,6 +386,7 @@ module.exports = {
     postNewOrder,
     postNewPaymentOrder,
     postCheckoutComplete,
+    postChangeBinancePaymentStatus,
     putOrder,
     putOrderProduct,
     deleteOrder,
