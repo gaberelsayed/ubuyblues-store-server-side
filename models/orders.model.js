@@ -4,10 +4,8 @@ const { orderModel, userModel, adminModel, productsWalletModel, productModel, mo
 
 const { getCouponDetails } = require("./coupons.model");
 
-const countries = require("countries-list").countries;
-
-const isProductLocalOrInternational = (productCountry, shippingCountry) => {
-    return countries[productCountry].name === shippingCountry ? "local" : "international";
+const isProductLocalOrInternational = (productCountries, shippingCountry) => {
+    return productCountries.includes(shippingCountry) ? "local" : "international";
 }
 
 const getShippingCost = (localProductsLength, internationalProductsLength, shippingMethod, totalPriceAfterDiscount) => {
@@ -217,7 +215,7 @@ async function createNewOrder(orderDetails) {
         for(let product of orderProductsDetails){
             totalPrices.totalPriceBeforeDiscount += product.totalAmount;
             totalPrices.totalDiscount += product.discount * product.quantity;
-            if (isProductLocalOrInternational(product.country, orderDetails.shippingAddress.country) === "local") {
+            if (isProductLocalOrInternational(product.countries, orderDetails.shippingAddress.country) === "local") {
                 localProducts.push(product);
             } else {
                 internationalProducts.push(product);
