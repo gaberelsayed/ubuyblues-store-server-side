@@ -4,7 +4,7 @@ const productsController = require("../controllers/products.controller");
 
 const multer = require("multer");
 
-const { validateJWT, validateNumbersIsGreaterThanZero, validateNumbersIsNotFloat, validateSortMethod, validateSortType, validateIsExistErrorInFiles } = require("../middlewares/global.middlewares");
+const { validateJWT, validateNumbersIsGreaterThanZero, validateNumbersIsNotFloat, validateSortMethod, validateSortType, validateIsExistErrorInFiles, validateCountries } = require("../middlewares/global.middlewares");
 
 const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
@@ -33,14 +33,16 @@ productsRouter.post("/add-new-product",
     ]),
     validateIsExistErrorInFiles,
     (req, res, next) => {
-        const { name, price, description, categoryId, discount, quantity } = Object.assign({}, req.body);
+        const { name, price, description, categoryId, discount, quantity, countries } = Object.assign({}, req.body);
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Name", fieldValue: name, dataType: "string", isRequiredValue: true },
             { fieldName: "Price", fieldValue: Number(price), dataType: "number", isRequiredValue: true },
             { fieldName: "Description", fieldValue: description, dataType: "string", isRequiredValue: true },
             { fieldName: "CategoryId", fieldValue: categoryId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "CategoryId", fieldValue: categoryId, dataType: "ObjectId", isRequiredValue: true },
             { fieldName: "discount", fieldValue: Number(discount), dataType: "number", isRequiredValue: discount < 0 },
             { fieldName: "quantity", fieldValue: Number(quantity), dataType: "number", isRequiredValue: true },
+            { fieldName: "Countries", fieldValue: countries, dataType: "array", isRequiredValue: true },
         ], res, next);
     },
     (req, res, next) => {
@@ -48,6 +50,14 @@ productsRouter.post("/add-new-product",
         validateNumbersIsGreaterThanZero([price, discount, quantity], res, next, ["Sorry, Please Send Valid Product Price ( Number Must Be Greater Than Zero ) !!", "Sorry, Please Send Valid Product Discount ( Number Must Be Greater Than Zero ) !!", "Sorry, Please Send Valid Product Quantity ( Number Must Be Greater Than Zero ) !!"]);
     },
     (req, res, next) => validateNumbersIsNotFloat([(Object.assign({}, req.body)).quantity], res, next, [], "Sorry, Please Send Valid Product Quantity !!"),
+    (req, res, next) => {
+        const { countries } = Object.assign({}, req.body);
+        let errorMsgs = [];
+        for(let i = 0; i < countries.length; i++) {
+            errorMsgs.push(`Sorry, Please Send Valid Country At Index: ${i + 1} !!`);
+        }
+        validateCountries(countries, res, next, errorMsgs);
+    },
     productsController.postNewProduct
 );
 
