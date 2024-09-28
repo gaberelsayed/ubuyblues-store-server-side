@@ -220,8 +220,9 @@ async function getAllFlashProductsInsideThePage(pageNumber, pageSize, filters, s
             data: {
                 products: await productModel
                             .find(filters)
+                            .sort(sortDetailsObject)
                             .skip((pageNumber - 1) * pageSize)
-                            .limit(pageSize).sort(sortDetailsObject),
+                            .limit(pageSize),
                 currentDate: new Date(),
             },
         }
@@ -237,7 +238,7 @@ async function getAllProductsInsideThePage(pageNumber, pageSize, filters, sortDe
             msg: `Get Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
             error: false,
             data: {
-                products: await productModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort(sortDetailsObject),
+                products: await productModel.find(filters).sort(sortDetailsObject).skip((pageNumber - 1) * pageSize).limit(pageSize),
                 currentDate: new Date()
             },
         }
