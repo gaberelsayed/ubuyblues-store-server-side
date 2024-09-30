@@ -199,7 +199,7 @@ async function deleteCategory(authorizationId, categoryId) {
     }
 }
 
-async function updateCategory(authorizationId, categoryId, newCategoryName) {
+async function updateCategory(authorizationId, categoryId, newCategoryData) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -207,7 +207,18 @@ async function updateCategory(authorizationId, categoryId, newCategoryName) {
                 const category = await categoryModel.findOne( { _id: categoryId });
                 if (category) {
                     if (category.storeId === admin.storeId) {
-                        await categoryModel.updateOne({ _id: categoryId } , { name: newCategoryName });
+                        if (newCategoryData.parent) {
+                            if (!(await categoryModel.findById(newCategoryData.parent))) {
+                                return {
+                                    msg: "Sorry, This Parent Cateogry Is Not Exist !!",
+                                    error: true,
+                                    data: {},
+                                }
+                            }
+                        } else {
+                            delete newCategoryData.parent;
+                        }
+                        await categoryModel.updateOne({ _id: categoryId } , newCategoryData);
                         return {
                             msg: "Updating Category Process Has Been Successfuly !!",
                             error: false,

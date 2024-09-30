@@ -64,9 +64,11 @@ categoriesRouter.delete("/:categoryId",
 categoriesRouter.put("/:categoryId",
     validateJWT,
     (req, res, next) => {
+        const { name, parent } = req.body;
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "category Id", fieldValue: req.params.categoryId, dataType: "ObjectId", isRequiredValue: true },
-            { fieldName: "new Category Name", fieldValue: req.body.newCategoryName, dataType: "string", isRequiredValue: true },
+            { fieldName: "Category Id", fieldValue: req.params.categoryId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "New Category Name", fieldValue: name, dataType: "string", isRequiredValue: true },
+            { fieldName: "Category Parent Id", fieldValue: parent, dataType: "ObjectId", isRequiredValue: false },
         ], res, next);
     },
     categoriesController.putCategory
