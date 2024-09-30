@@ -63,12 +63,25 @@ function buildNestedCategories(categories) {
 
 async function getAllCategories(filters) {
     try {
+        return {
+            msg: "Get All Categories Process Has Been Successfully !!",
+            error: false,
+            data: await categoryModel.find(filters, { name: 1, storeId: 1, parent: 1 }),
+        }
+    }
+    catch (err) {
+        throw Error(err);
+    }
+}
+
+async function getAllCategoriesWithHierarechy(filters) {
+    try {
         filters.parent = null;
         const mainCategories = await categoryModel.find(filters, { name: 1, storeId: 1, parent: 1 });
         filters.parent = { $ne: null };
         const subcategories = await categoryModel.find(filters, { name: 1, storeId: 1, parent: 1 });
         return {
-            msg: "Get All Categories Process Has Been Successfully !!",
+            msg: "Get All Categories With Hierarechy Process Has Been Successfully !!",
             error: false,
             data: buildNestedCategories([...JSON.parse(JSON.stringify(mainCategories, null, 1)), ...JSON.parse(JSON.stringify(subcategories, null, 1))]),
         }
@@ -227,6 +240,7 @@ async function updateCategory(authorizationId, categoryId, newCategoryName) {
 module.exports = {
     addNewCategory,
     getAllCategories,
+    getAllCategoriesWithHierarechy,
     getCategoriesCount,
     getAllCategoriesInsideThePage,
     getCategoryInfo,

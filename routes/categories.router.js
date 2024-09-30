@@ -27,6 +27,8 @@ categoriesRouter.get("/category-info/:categoryId",
 
 categoriesRouter.get("/all-categories", categoriesController.getAllCategories);
 
+categoriesRouter.get("/all-categories-with-hierarechy", categoriesController.getAllCategoriesWithHierarechy);
+
 categoriesRouter.get("/categories-count",
     (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
