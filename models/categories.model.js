@@ -75,7 +75,7 @@ async function getAllCategories(filters) {
         return {
             msg: "Get All Categories Process Has Been Successfully !!",
             error: false,
-            data: await categoryModel.find(filters, { name: 1, storeId: 1, parent: 1 }),
+            data: await categoryModel.find(filters, { name: 1, storeId: 1, parent: 1 }).populate("parent"),
         }
     }
     catch (err) {
