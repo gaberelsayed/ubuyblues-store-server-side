@@ -216,7 +216,9 @@ async function updateCategory(authorizationId, categoryId, newCategoryData) {
                                 }
                             }
                         } else {
-                            delete newCategoryData.parent;
+                            if (newCategoryData.parent === "") {
+                                newCategoryData.parent = null;
+                            }
                         }
                         await categoryModel.updateOne({ _id: categoryId } , newCategoryData);
                         return {
