@@ -2,12 +2,12 @@
 
 const { categoryModel, adminModel, productModel } = require("../models/all.models");
 
-async function addNewCategory(authorizationId, categoryName) {
+async function addNewCategory(authorizationId, categoryData) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (!admin.isBlocked) {
-                const category = await categoryModel.findOne({ name: categoryName });
+                const category = await categoryModel.findOne({ name: categoryData.name });
                 if (category) {
                     return {
                         msg: "Sorry, This Cateogry Is Already Exist !!",
@@ -15,14 +15,22 @@ async function addNewCategory(authorizationId, categoryName) {
                         data: {},
                     }
                 }
-                await (new categoryModel({
-                    name: categoryName,
-                    storeId: admin.storeId,
-                })).save();
+                if (categoryData.parent) {
+                    if (!(await categoryModel.findById(categoryData.parent))) {
+                        return {
+                            msg: "Sorry, This Parent Cateogry Is Not Exist !!",
+                            error: true,
+                            data: {},
+                        }
+                    }
+                } else {
+                    delete categoryData.parent;
+                }
+                categoryData.storeId = admin.storeId;
                 return {
                     msg: "Adding New Category Process Has Been Successfuly ...",
                     error: false,
-                    data: {},
+                    data: await (new categoryModel(categoryData)).save(),
                 }
             }
             return {
@@ -41,6 +49,7 @@ async function addNewCategory(authorizationId, categoryName) {
         }
     }
     catch(err){
+        console.log(err)
         throw Error(err);
     }
 }

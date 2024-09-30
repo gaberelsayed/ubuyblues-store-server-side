@@ -9,8 +9,10 @@ const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functio
 categoriesRouter.post("/add-new-category",
     validateJWT,
     (req, res, next) => {
+        const { name, parent } = req.body;
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Category Name", fieldValue: req.body.categoryName, dataType: "string", isRequiredValue: true },
+            { fieldName: "Category Name", fieldValue: name, dataType: "string", isRequiredValue: true },
+            { fieldName: "Category Parent Id", fieldValue: parent, dataType: "ObjectId", isRequiredValue: false },
         ], res, next);
     },
     categoriesController.postNewCategory
