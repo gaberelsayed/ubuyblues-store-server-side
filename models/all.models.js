@@ -165,13 +165,12 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    category: {
-        type: String,
-        required: true,
-    },
-    categoryId: {
-        type: String,
-        required: true,
+    categories: {
+        type: [{
+            type: mongoose.Types.ObjectId,
+            ref: "categorie",
+            required: true
+        }],
     },
     discount: {
         type: Number,

@@ -9,9 +9,9 @@ async function addNewProduct(authorizationId, productInfo) {
             if (!admin.isBlocked) {
                 const product = await productModel.findOne({ name: productInfo.name, categoryId: productInfo.categoryId });
                 if (!product) {
-                    const category = await categoryModel.findById(productInfo.categoryId);
-                    if (category) {
-                        productInfo.category = category.name;
+                    const categories = await categoryModel.find({ _id: { $in: productInfo.categories } });
+                    if (categories.length === productInfo.categories.length) {
+                        productInfo.categories = categories.map((category) => category._id);
                         productInfo.storeId = admin.storeId;
                         await (new productModel(productInfo)).save();
                         return {
