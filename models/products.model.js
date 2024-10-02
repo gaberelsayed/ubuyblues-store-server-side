@@ -424,12 +424,11 @@ async function updateProduct(authorizationId, productId, newData) {
                 const product = await productModel.findById(productId);
                 if (product) {
                     if (product.storeId === admin.storeId) {
-                        const category = await categoryModel.findById(newData.categoryId);
-                        if (category) {
-                            newData.category = category.name;
-                        }
-                        else {
-                            newData.category = "uncategorized";
+                        const categories = await categoryModel.find({ _id: { $in: newData.categories } });
+                        if (categories.length > 0) {
+                            newData.categories = categories.map((category) => category._id);
+                        } else {
+                            newData.categories = [];
                         }
                         await productModel.updateOne({ _id: productId }, newData);
                         return {

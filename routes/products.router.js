@@ -223,16 +223,24 @@ productsRouter.delete("/gallery-images/:productId",
 productsRouter.put("/:productId",
     validateJWT,
     (req, res, next) => {
-        const { name, price, description, categoryId, discount, countries } = req.body;
+        const { name, price, description, categories, discount, countries } = req.body;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Product Id", fieldValue: req.params.productId, dataType: "ObjectId", isRequiredValue: true },
             { fieldName: "Name", fieldValue: name, dataType: "string", isRequiredValue: true },
             { fieldName: "Price", fieldValue: Number(price), dataType: "number", isRequiredValue: true },
             { fieldName: "Description", fieldValue: description, dataType: "string", isRequiredValue: true },
-            { fieldName: "CategoryId", fieldValue: categoryId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "Categories", fieldValue: categories, dataType: "array", isRequiredValue: true },
             { fieldName: "discount", fieldValue: Number(discount), dataType: "number", isRequiredValue: discount < 0 },
             { fieldName: "discount", fieldValue: countries, dataType: "array", isRequiredValue: true },
         ], res, next);
+    },
+    (req, res, next) => {
+        const { categories } = req.body;
+        validateIsExistValueForFieldsAndDataTypes(
+            categories.map((categoryId, index) => (
+                { fieldName: `Id In Category ${index + 1}`, fieldValue: categoryId, dataType: "ObjectId", isRequiredValue: true }
+            ))
+        , res, next);
     },
     productsController.putProduct
 );
