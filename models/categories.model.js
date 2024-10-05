@@ -28,7 +28,7 @@ async function addNewCategory(authorizationId, categoryData) {
                 }
                 categoryData.storeId = admin.storeId;
                 return {
-                    msg: "Adding New Category Process Has Been Successfuly ...",
+                    msg: "Adding New Category Process Has Been Successfuly !!",
                     error: false,
                     data: await (new categoryModel(categoryData)).save(),
                 }
@@ -49,7 +49,6 @@ async function addNewCategory(authorizationId, categoryData) {
         }
     }
     catch(err){
-        console.log(err)
         throw Error(err);
     }
 }
@@ -111,7 +110,7 @@ async function getCategoryInfo(categoryId) {
             }
         }
         return {
-            msg: "Sorry, This Category It Not Exist !!",
+            msg: "Sorry, This Category Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -124,7 +123,7 @@ async function getCategoryInfo(categoryId) {
 async function getCategoriesCount(filters) {
     try {
         return {
-            msg: "Get All Categories Process Has Been Successfully !!",
+            msg: "Get Categories Count Process Has Been Successfully !!",
             error: false,
             data: await categoryModel.countDocuments(filters),
         }
@@ -162,13 +161,13 @@ async function deleteCategory(authorizationId, categoryId) {
                         });
                         await productModel.updateMany({ categoryId }, { category: "uncategorized" });
                         return {
-                            msg: "Deleting Category Process Has Been Successfuly ...",
+                            msg: "Deleting Category Process Has Been Successfuly !!",
                             error: false,
                             data: {},
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Category Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Category Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -218,13 +217,13 @@ async function updateCategory(authorizationId, categoryId, newCategoryData) {
                         }
                         await categoryModel.updateOne({ _id: categoryId } , newCategoryData);
                         return {
-                            msg: "Updating Category Process Has Been Successfuly !!",
+                            msg: "Updating Category Info Process Has Been Successfuly !!",
                             error: false,
                             data: {},
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Category Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Category Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }

@@ -5,7 +5,7 @@ const { productsWalletModel, userModel } = require("./all.models");
 async function getWalletProductsCount(filters) {
     try {
         return {
-            msg: "Get All Products Count Inside The Wallet Process Has Been Successfully !!",
+            msg: "Get Products Count Inside The Wallet For This User Process Has Been Successfully !!",
             error: false,
             data: await productsWalletModel.countDocuments(filters),
         }
@@ -35,13 +35,13 @@ async function deleteWalletProduct(userId, productId) {
             const walletProduct = await productsWalletModel.findOneAndDelete({ productId, userId });
             if (walletProduct) {
                 return {
-                    msg: "Deleting Product From Wallet Process Has Been Successfully !!",
+                    msg: "Deleting Product From Wallet For This User Process Has Been Successfully !!",
                     error: false,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Product Inside The Wallet Is Not Exist !!",
+                msg: "Sorry, This Product Inside The Wallet For This User Is Not Exist !!",
                 error: true,
                 data: {},
             }

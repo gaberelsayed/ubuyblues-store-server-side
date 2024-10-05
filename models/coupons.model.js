@@ -14,7 +14,7 @@ async function getAllCoupons(admintId) {
                 }
             }
             return {
-                msg: "Sorry, This Account Has Been Blocked !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -76,7 +76,7 @@ async function addNewCoupon(adminId, couponInfo) {
                 }
             }
             return {
-                msg: "Sorry, This Account Has Been Blocked !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -123,7 +123,7 @@ async function updateCouponInfo(adminId, couponId, newCouponDetails) {
                 }
             }
             return {
-                msg: "Sorry, This Account Has Been Blocked !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -161,7 +161,7 @@ async function deleteCoupon(adminId, couponId){
                 }
             }
             return {
-                msg: "Sorry, This Account Has Been Blocked !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,

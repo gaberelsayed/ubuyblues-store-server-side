@@ -21,13 +21,13 @@ async function adminLogin(email, password) {
                         },
                     };
                 return {
-                    msg: "Sorry, The Email Or Password Is Not Valid !!",
+                    msg: "Sorry, The Email Or Password Incorrect !!",
                     error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Account Has Been Blocked !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -36,7 +36,7 @@ async function adminLogin(email, password) {
             }
         }
         return {
-            msg: "Sorry, The Email Or Password Is Not Valid !!",
+            msg: "Sorry, The Email Or Password Incorrect !!",
             error: true,
             data: {},
         }
@@ -57,7 +57,7 @@ async function getAdminUserInfo(userId) {
             }
         }
         return {
-            msg: "Sorry, The User Is Not Exist !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -228,7 +228,7 @@ async function addNewAdmin(merchantId, adminInfo) {
                             ],
                         })).save();
                         return {
-                            msg: "Create New Admin Process Has Been Successfully !!",
+                            msg: "Creating New Admin Process Has Been Successfully !!",
                             error: false,
                             data: {},
                         }
@@ -326,7 +326,7 @@ async function deleteAdmin(merchantId, adminId){
                     const adminDetails = await adminModel.findOneAndDelete({ _id: adminId });
                     if (adminDetails) {
                         return {
-                            msg: "Delete Admin Process Has Been Successfully !!",
+                            msg: "Deleting Admin Process Has Been Successfully !!",
                             error: false,
                             data: {},
                         }

@@ -35,7 +35,7 @@ async function getStoreDetails(storeId) {
         const store = await storeModel.findById(storeId);
         if (store) {
             return {
-                msg: `Get Details For Store: ${storeId} Process Has Been Successfully !!`,
+                msg: "Get Details For This Store Process Has Been Successfully !!",
                 error: false,
                 data: store,
             }
@@ -55,7 +55,7 @@ async function getMainStoreDetails() {
         const store = await storeModel.findOne({ isMainStore: true });
         if (store) {
             return {
-                msg: `Get Main Store Details Process Has Been Successfully !!`,
+                msg: "Get Main Store Details Process Has Been Successfully !!",
                 error: false,
                 data: store,
             }
@@ -127,7 +127,7 @@ async function approveStore(authorizationId, storeId, password) {
                     });
                     await newMerchant.save();
                     return {
-                        msg: `Approve Store: ( Store Id: ${ storeId }) And Create Merchant Account Process Has Been Successfully !!`,
+                        msg: "Approving On This Store And Create Merchant Account Process Has Been Successfully !!",
                         error: false,
                         data: {
                             adminId: newMerchant._id,
@@ -167,7 +167,7 @@ async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
                 const store = await storeModel.findOneAndUpdate({ _id: storeId }, { ...newStoreDetails });
                 if (store) {
                     return {
-                        msg: `Update Details For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
+                        msg: "Updating Details Process For This Store Has Been Successfully !!",
                         error: false,
                         data: {},
                     };
@@ -214,7 +214,7 @@ async function blockingStore(authorizationId, storeId, blockingReason) {
                         });
                         const merchant = await adminModel.findOne({ storeId, isMerchant: true });
                         return {
-                            msg: `Blocking For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
+                            msg: "Blocking Process For This Store Has Been Successfully !!",
                             error: false,
                             data: {
                                 adminId: merchant._id,
@@ -270,7 +270,7 @@ async function cancelBlockingStore(authorizationId, storeId) {
                             isBlocked: false
                         });
                         return {
-                            msg: `Cancel Blocking For Store That : ( Id: ${ storeId }) Process Has Been Successfully !!`,
+                            msg: "Cancel Blocking Process For This Store That Has Been Successfully !!",
                             error: false,
                             data: {},
                         };
@@ -356,7 +356,7 @@ async function deleteStore(authorizationId, storeId){
                         const merchant = await adminModel.findOne({ storeId, isMerchant: true });
                         await adminModel.deleteMany({ storeId });
                         return {
-                            msg: "Delete Store Process Has Been Successfully !!",
+                            msg: "Deleting Store Process Has Been Successfully !!",
                             error: false,
                             data: {
                                 storeImagePath: store.imagePath,
@@ -403,7 +403,7 @@ async function rejectStore(authorizationId, storeId){
                 const store = await storeModel.findOneAndDelete({ _id: storeId });
                 if (store) {
                     return {
-                        msg: "Delete Store Process Has Been Successfully !!",
+                        msg: "Rejecting Store Process Has Been Successfully !!",
                         error: false,
                         data: {
                             storeImagePath: store.imagePath,

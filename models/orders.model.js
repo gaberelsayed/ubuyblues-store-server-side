@@ -332,7 +332,7 @@ async function updateOrder(authorizationId, orderId, newOrderDetails) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -376,7 +376,7 @@ async function changeCheckoutStatusToSuccessfull(orderId) {
             totalPrices.totalPriceAfterDiscount = totalPrices.totalPriceBeforeDiscount - totalPrices.totalDiscount;
         }
         return {
-            msg: "Updating Order Checkout Status Process Has Been Successfully !!",
+            msg: "Updating Order Checkout Status To Successfull Process Has Been Successfully !!",
             error: false,
             data: {
                 orderId: order._id,
@@ -427,7 +427,7 @@ async function updateOrderProduct(authorizationId, orderId, productId, newOrderP
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -467,13 +467,13 @@ async function deleteOrder(authorizationId, orderId){
                     if (order.storeId === admin.storeId) {
                         await orderModel.updateOne({ _id: orderId }, { isDeleted: true });
                         return {
-                            msg: "Deleting This Order Has Been Successfuly !!",
+                            msg: "Deleting Order Has Been Successfuly !!",
                             error: false,
                             data: {},
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -530,7 +530,7 @@ async function deleteProductFromOrder(authorizationId, orderId, productId) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Order Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }

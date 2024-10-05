@@ -33,13 +33,13 @@ app.listen(PORT, async () => {
         console.log(err);
     }
 
-    const { keyGeneratorForRequestsRateLimit } = require("./middlewares/global.middlewares");
-
     /* Start Config The Server */
 
     app.use(cors({
         origin: "*"
     }));
+
+    const { keyGeneratorForRequestsRateLimit } = require("./middlewares/global.middlewares");
 
     const globalLimiter = rateLimit({
         windowMs: 24 * 60 * 60 * 1000,
@@ -69,6 +69,27 @@ app.listen(PORT, async () => {
     app.use("/assets", express.static(path.join(__dirname, "assets")));
 
     /* End direct the browser to statics files path */
+
+    const { validateLanguage } = require("./middlewares/global.middlewares");
+        
+    app.use((req, res, next) => {
+        const { language } = req.query;
+        if (language) {
+            validateLanguage(language, res, next);
+            return;
+        }
+        next();
+    });
+
+    const i18n = require("i18n");
+
+    i18n.configure({
+        locales: ["ar", "en", "tr", "ge"],
+        directory: __dirname + "/translations",
+        defaultLocale: "en"
+    });
+
+    app.use(i18n.init);
 
     /* Start Handle The Routes */
 

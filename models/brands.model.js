@@ -10,7 +10,7 @@ async function addNewBrand(authorizationId, brandInfo) {
                 brandInfo.storeId = admin.storeId;
                 await (new brandModel(brandInfo)).save();
                 return {
-                    msg: "Adding New Brand Process Has Been Successfuly ...",
+                    msg: "Adding New Brand Process Has Been Successfuly !!",
                     error: false,
                     data: {},
                 }
@@ -42,7 +42,7 @@ async function getLastSevenBrandsByStoreId(filters) {
             filters = { storeId: mainStoreDetails._id };
         }
         return {
-            msg: "Get All Brands Process Has Been Successfully !!",
+            msg: "Get Last Seven Brands By Store Id Process Has Been Successfully !!",
             error: false,
             data: await brandModel.find(filters).limit(7),
         }
@@ -91,14 +91,14 @@ async function deleteBrand(authorizationId, brandId) {
                         await brandModel.deleteOne({ _id: brandId });
                         return {
                             error: false,
-                            msg: "Deleting Brand Process Has Been Successfuly ...",
+                            msg: "Deleting Brand Process Has Been Successfuly !!",
                             data: {
                                 deletedBrandPath: brandInfo.imagePath,
                             },
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -139,13 +139,13 @@ async function updateBrandInfo(authorizationId, brandId, newBrandTitle) {
                     if (brandInfo.storeId === admin.storeId) {
                         await brandModel.updateOne( { _id: brandId } , { title: newBrandTitle });
                         return {
-                            msg:  "Updating Brand Info Process Has Been Successfuly ...",
+                            msg: "Updating Brand Info Process Has Been Successfuly !!",
                             error: false,
                             data: {},
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -194,7 +194,7 @@ async function changeBrandImage(authorizationId, brandId, newBrandImagePath) {
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }

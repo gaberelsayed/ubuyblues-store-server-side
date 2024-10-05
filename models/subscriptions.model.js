@@ -12,13 +12,11 @@ async function addNewSubscription(email) {
                 data: {},
             }
         }
-        const newSubscription = new subscriptionModel({
+        await (new subscriptionModel({
             email,
-        });
-        // Save The New User As Document In User Collection
-        await newSubscription.save();
+        })).save();
         return {
-            msg: "Ok !!, Create New Subscription Process Has Been Successfuly !!",
+            msg: "Creating New Subscription Process Has Been Successfuly !!",
             error: false,
             data: {},
         }

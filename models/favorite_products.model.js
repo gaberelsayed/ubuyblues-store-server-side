@@ -18,13 +18,13 @@ async function addNewFavoriteProduct(userId, productId) {
                         userId
                     });
                     return {
-                        msg: "Adding New Favorite Product Process Has Been Successfully !!",
+                        msg: "Adding New Product To Favorite Products List For This User Process Has Been Successfully !!",
                         error: false,
                         data: await newFavoriteProduct.save(),
                     }
                 }
                 return {
-                    msg: "Sorry, This Favorite Product For This User Is Already Exist !!",
+                    msg: "Sorry, This Product For This User Is Already Exist In Specific Favorite Products List !!",
                     error: true,
                     data: {},
                 }
@@ -49,7 +49,7 @@ async function addNewFavoriteProduct(userId, productId) {
 async function getFavoriteProductsCount(filters) {
     try {
         return {
-            msg: "Get All Favorite Products Count Process Has Been Successfully !!",
+            msg: "Get Favorite Products Count Process Has Been Successfully !!",
             error: false,
             data: await favoriteProductModel.countDocuments(filters),
         }
@@ -92,13 +92,13 @@ async function deleteFavoriteProduct(userId, productId) {
             const favoriteProduct = await favoriteProductModel.findOneAndDelete({ productId, userId });
             if (favoriteProduct) {
                 return {
-                    msg: "Deleting Favorite Product Process Has Been Successfully !!",
+                    msg: "Deleting Product From Favorite Products List For This User Process Has Been Successfully !!",
                     error: false,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Favorite Product Is Not Exist !!",
+                msg: "Sorry, This Product Is Not Exist In Favorite Products List For This User !!",
                 error: true,
                 data: {},
             }

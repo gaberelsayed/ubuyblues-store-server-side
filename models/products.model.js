@@ -74,7 +74,7 @@ async function addNewImagesToProductGallery(authorizationId, productId, newGalle
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -170,7 +170,7 @@ async function getProductInfo(productId) {
             }
         }
         return {
-            msg: "Sorry, This Product It Not Exist !!",
+            msg: "Sorry, This Product Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -209,6 +209,22 @@ async function getFlashProductsCount(filters) {
     }
 }
 
+async function getAllProductsInsideThePage(pageNumber, pageSize, filters, sortDetailsObject) {
+    try {
+        return {
+            msg: `Get Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            error: false,
+            data: {
+                products: await productModel.find(filters).sort(sortDetailsObject).skip((pageNumber - 1) * pageSize).limit(pageSize),
+                currentDate: new Date()
+            },
+        }
+    }
+    catch (err) {
+        throw Error(err);
+    }
+}
+
 async function getAllFlashProductsInsideThePage(pageNumber, pageSize, filters, sortDetailsObject) {
     try {
         const currentDate = new Date();
@@ -232,22 +248,6 @@ async function getAllFlashProductsInsideThePage(pageNumber, pageSize, filters, s
     }
 }
 
-async function getAllProductsInsideThePage(pageNumber, pageSize, filters, sortDetailsObject) {
-    try {
-        return {
-            msg: `Get Products Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
-            error: false,
-            data: {
-                products: await productModel.find(filters).sort(sortDetailsObject).skip((pageNumber - 1) * pageSize).limit(pageSize),
-                currentDate: new Date()
-            },
-        }
-    }
-    catch (err) {
-        throw Error(err);
-    }
-}
-
 async function getRelatedProductsInTheProduct(productId) {
     try {
         const productInfo = await productModel.findById(productId);
@@ -262,7 +262,7 @@ async function getRelatedProductsInTheProduct(productId) {
             }
         }
         return {
-            msg: "Sorry, This Product It Not Exist !!",
+            msg: "Sorry, This Product Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -281,13 +281,13 @@ async function getAllGalleryImages(authorizationId, productId) {
                 if (product) {
                     if (product.storeId === admin.storeId) {
                         return {
-                            msg: "Get All Gallery Images Process Has Been Successfully !!",
+                            msg: "Get All Gallery Images For This Product Process Has Been Successfully !!",
                             error: false,
                             data: product.galleryImagesPaths,
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -299,9 +299,12 @@ async function getAllGalleryImages(authorizationId, productId) {
                 }
             }
             return {
-                msg: "Sorry, Permission Denied !!",
+                msg: "Sorry, This Admin Has Been Blocked !!",
                 error: true,
-                data: {},
+                data: {
+                    blockingDate: admin.blockingDate,
+                    blockingReason: admin.blockingReason,
+                },
             }
         }
         return {
@@ -336,7 +339,7 @@ async function deleteProduct(authorizationId, productId) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -385,7 +388,7 @@ async function deleteImageFromProductGallery(authorizationId, productId, gallery
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -432,13 +435,13 @@ async function updateProduct(authorizationId, productId, newData) {
                         }
                         await productModel.updateOne({ _id: productId }, newData);
                         return {
-                            msg: "Updating Product Process Has Been Successfully !!",
+                            msg: "Updating Product Info Process Has Been Successfully !!",
                             error: false,
                             data: {},
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -496,7 +499,7 @@ async function updateProductGalleryImage(authorizationId, productId, oldGalleryI
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -547,7 +550,7 @@ async function updateProductImage(authorizationId, productId, newProductImagePat
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Product Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }

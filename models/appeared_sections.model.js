@@ -23,7 +23,7 @@ async function updateSectionsStatus(authorizationId,sectionsStatus) {
                     await appearedSectionsModel.updateOne({ _id: sectionsStatus[i]._id }, { isAppeared: sectionsStatus[i].isAppeared });
                 }
                 return {
-                    msg: "Updating Section Status Has Been Successfully !!",
+                    msg: "Updating Sections Status Has Been Successfully !!",
                     error: false,
                     data: {},
                 }

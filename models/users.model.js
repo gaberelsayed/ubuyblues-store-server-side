@@ -14,21 +14,18 @@ async function createNewUser(email, password, language) {
         const user = await userModel.findOne({ email });
         if (user) {
             return {
-                msg: "Sorry, Can't Create User Because it is Exist !!",
+                msg: "Sorry, Can't Create New User Because It Is Already Exist !!",
                 error: true,
                 data: {},
             }
         }
-        // Create New Document From User Schema
-        const newUser = new userModel({
+        await (new userModel({
             email,
             password: await hash(password, 10),
             language
-        });
-        // Save The New User As Document In User Collection
-        await newUser.save();
+        })).save();
         return {
-            msg: "Ok !!, Create New User Process Has Been Successfuly !!",
+            msg: "Creating New User Process Has Been Successfuly !!",
             error: false,
             data: {},
         }
@@ -44,8 +41,7 @@ async function login(email, password) {
         const user = await userModel.findOne({ email });
         if (user) {
             // Check From Password
-            const isTruePassword = await compare(password, user.password);
-            if (isTruePassword) {
+            if (await compare(password, user.password)) {
                 return {
                     msg: "Logining Process Has Been Successfully !!",
                     error: false,
@@ -72,12 +68,12 @@ async function login(email, password) {
     }
 }
 
-async function loginWithGoogle(userInfo) {
+async function loginByGoogle(userInfo) {
     try{
         const user = await userModel.findOne({ email: userInfo.email });
         if (user) {
             return {
-                msg: "Logining Process Has Been Successfully !!",
+                msg: "Logining Process By Google Has Been Successfully !!",
                 error: false,
                 data: {
                     _id: user._id,
@@ -85,18 +81,17 @@ async function loginWithGoogle(userInfo) {
                 },
             };
         }
-        const newUser = new userModel({
+        const { _id, isVerified } = (new userModel({
             email: userInfo.email,
-            first_name: userInfo.first_name,
-            last_name: userInfo.last_name,
-            preview_name: userInfo.preview_name,
-            password: await hash("anasDerk1999", 10),
+            firstName: userInfo.first_name,
+            lastName: userInfo.last_name,
+            previewName: userInfo.preview_name,
+            password: await hash(process.env.secretKey, 10),
             isVerified: true,
             provider: "google",
-        });
-        const { _id, isVerified } = await newUser.save();
+        })).save();
         return {
-            msg: "Logining Process Has Been Successfully !!",
+            msg: "Logining Process By Google Has Been Successfully !!",
             error: false,
             data: {
                 _id,
@@ -111,7 +106,6 @@ async function loginWithGoogle(userInfo) {
 
 async function getUserInfo(userId) {
     try {
-        // Check If User Is Exist
         const user = await userModel.findById(userId);
         if (user) {
             return {
@@ -121,7 +115,7 @@ async function getUserInfo(userId) {
             }
         }
         return {
-            msg: "Sorry, The User Is Not Exist !!, Please Enter Another User Id ..",
+            msg: "Sorry, This User Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -143,13 +137,13 @@ async function isExistUserAndVerificationEmail(email) {
                 };
             }
             return {
-                msg: "Sorry, The Email For This User Has Been Verified !!",
+                msg: "Sorry, This Email Has Been Verified !!",
                 error: true,
                 data: {},
             };
         };
         return {
-            msg: "Sorry, The User Is Not Exist !!, Please Enter Another User Email ..",
+            msg: "Sorry, This User Is Not Exist !!",
             error: true,
             data: {},
         };
@@ -227,7 +221,7 @@ async function isExistUserAccount(email, userType) {
                 }
             }
             return {
-                msg: "Sorry, This User Is Not Found !!",
+                msg: "Sorry, This Admin Is Not Exist !!",
                 error: true,
                 data: {},
             }
@@ -243,7 +237,7 @@ async function isExistUserAccount(email, userType) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Found !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -258,7 +252,7 @@ async function updateUserInfo(userId, newUserData) {
         if (userInfo) {
             let newUserInfo = newUserData;
             if (newUserData.password && newUserData.newPassword) {
-                if (!await compare(newUserData.password, userInfo.password)) {
+                if (!(await compare(newUserData.password, userInfo.password))) {
                     return {
                         msg: "Sorry, This Password Is Uncorrect !!",
                         error: true,
@@ -274,7 +268,7 @@ async function updateUserInfo(userId, newUserData) {
                 const user = await userModel.findOne({ email: newUserData.email });
                 if (user) {
                     return {
-                        msg: "Sorry, This Email Are Already Exist !!",
+                        msg: "Sorry, This Email Is Already Exist !!",
                         error: true,
                         data: {},
                     }
@@ -288,12 +282,11 @@ async function updateUserInfo(userId, newUserData) {
             }
         }
         return {
-            msg: "Sorry, This User Is Not Found !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }
     } catch (err) {
-        console.log(err)
         throw Error(err);
     }
 }
@@ -313,7 +306,7 @@ async function updateVerificationStatus(email) {
             };
         }
         return {
-            msg: "Sorry, This User Is Not Found !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         };
@@ -337,7 +330,7 @@ async function resetUserPassword(email, userType, newPassword) {
                 };
             }
             return {
-                msg: "Sorry, This User Is Not Found !!",
+                msg: "Sorry, This Admin Is Not Exist !!",
                 error: true,
                 data: {},
             }
@@ -353,7 +346,7 @@ async function resetUserPassword(email, userType, newPassword) {
             };
         }
         return {
-            msg: "Sorry, This Admin Is Not Found !!",
+            msg: "Sorry, This Admin Is Not Exist !!",
             error: true,
             data: {},
         }
@@ -378,7 +371,7 @@ async function deleteUser(authorizationId, userId){
                     }
                 }
                 return {
-                    msg: "Sorry, This User Is Not Found !!",
+                    msg: "Sorry, This Admin Is Not Exist !!",
                     error: true,
                     data: {},
                 }
@@ -403,7 +396,7 @@ async function deleteUser(authorizationId, userId){
 module.exports = {
     createNewUser,
     login,
-    loginWithGoogle,
+    loginByGoogle,
     getUserInfo,
     isExistUserAccount,
     isExistUserAndVerificationEmail,

@@ -18,7 +18,7 @@ async function addNewAd(authorizationId, adsInfo) {
                 adsInfo.storeId = admin.storeId;
                 await (new adsModel(adsInfo)).save();
                 return {
-                    msg: "Adding New Text Ad Process Has Been Successfully",
+                    msg: "Adding New Text Ad Process Has Been Successfully !!",
                     error: false,
                     data: {},
                 }
@@ -76,7 +76,7 @@ async function deleteAd(authorizationId, adId) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }
@@ -135,7 +135,7 @@ async function updateAdImage(authorizationId, adId, newAdImagePath) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                         status: 401
@@ -178,7 +178,7 @@ async function updateTextAdContent(authorizationId, adId, newTextAdContent) {
                         if (adInfo.type === "text") {
                             await adsModel.updateOne( { _id: adId } , { content: newTextAdContent });
                             return {
-                                msg:  "Updating Text Ad Content Process Has Been Successfuly ...",
+                                msg:  "Updating Text Ad Content Process Has Been Successfuly !!",
                                 error: false,
                                 data: {},
                             }
@@ -190,7 +190,7 @@ async function updateTextAdContent(authorizationId, adId, newTextAdContent) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed Admin !!",
+                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed By This Admin !!",
                         error: true,
                         data: {},
                     }

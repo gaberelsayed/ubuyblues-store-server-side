@@ -66,7 +66,7 @@ async function getProductRatingByUserId(userId, productId) {
                     }
                 }
                 return {
-                    msg: "Sorry, This Product Can't Exist Any Rating By This User !!",
+                    msg: "Sorry, This Product Is Not Exist Any Rating By This User !!",
                     error: true,
                     data: {},
                 }

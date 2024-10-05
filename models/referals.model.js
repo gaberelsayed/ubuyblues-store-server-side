@@ -12,11 +12,9 @@ async function addNewReferal(referalDetails) {
                 data: {},
             }
         }
-        const newReferal = new referalModel(referalDetails);
-        // Save The New User As Document In User Collection
-        await newReferal.save();
+        await (new referalModel(referalDetails)).save();
         return {
-            msg: "Ok !!, Create New Referal Process Has Been Successfuly !!",
+            msg: "Creating New Referal Process Has Been Successfuly !!",
             error: false,
             data: {},
         }
@@ -29,7 +27,7 @@ async function addNewReferal(referalDetails) {
 async function getProductReferalsCount(filters) {
     try {
         return {
-            msg: "Get Products Count Process Has Been Successfully !!",
+            msg: "Get Product Referals Count Process Has Been Successfully !!",
             error: false,
             data: await referalModel.countDocuments(filters),
         }

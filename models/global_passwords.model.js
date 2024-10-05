@@ -39,7 +39,7 @@ async function changeBussinessEmailPassword(authorizationId, email, password, ne
                     if (decryptedPassword === password) {
                         await globalPasswordModel.updateOne({ password: AES.encrypt(newPassword, process.env.secretKey).toString() });
                         return {
-                            msg: "Changing Global Password Process Has Been Successfully !!",
+                            msg: "Changing Bussiness Email Password Process Has Been Successfully !!",
                             error: false,
                             data: {},
                         }
