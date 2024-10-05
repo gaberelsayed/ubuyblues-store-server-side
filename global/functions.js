@@ -14,7 +14,7 @@ const { compile } = require("ejs");
 
 const sharp = require("sharp");
 
-const translations = require("./translations.json");
+const arTranslations = require("./translations/ar.json");
 
 function isEmail(email) {
     return email.match(/[^\s@]+@[^\s@]+\.[^\s@]+/);
@@ -432,14 +432,32 @@ async function handleResizeImagesAndConvertFormatToWebp(files, outputImageFilePa
     }
 }
 
-function getSuitableTranslations(msg, language) {
-    if (language) {
-        if (language === "en") {
-            return msg;
-        }
-        else return translations[msg][language];
+function processingTranslation(variablesObject, translation) {
+    const variables = Object.keys(variablesObject);
+    if (variables.length > 0) {
+        variables.forEach((variable) => {
+            translation = translation.replace(`{{${variable}}}`, variablesObject[variable]);
+        });
+        return translation;
     }
-    return translations[msg];
+    return translation;
+}
+
+function getSuitableTranslations(msg, language, variables = {}) {
+    if (language) {
+        switch(language) {
+            case "ar": return processingTranslation(variables, arTranslations[msg]);
+            case "tr": return processingTranslation(variables, arTranslations[msg]);
+            case "ge": return processingTranslation(variables, arTranslations[msg]);
+            default: return processingTranslation(variables, msg);
+        }
+    }
+    return {
+        en: processingTranslation(variables, msg),
+        ar: processingTranslation(variables, arTranslations[msg]),
+        tr: processingTranslation(variables, arTranslations[msg]),
+        ge: processingTranslation(variables, arTranslations[msg])
+    }
 }
 
 module.exports = {

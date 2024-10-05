@@ -11,7 +11,7 @@ async function addNewAd(authorizationId, adsInfo) {
                 const textAdsCount = await adsModel.countDocuments({ type: adsInfo.type });
                 if (textAdsCount >= 10) {
                     return {
-                        msg: "Sorry, Can't Add New Text Ad Because Arrive To Max Limits For Text Ads Count ( Limits: 10 ) !!",
+                        msg: getSuitableTranslations("Sorry, Can't Add New Text Ad Because Arrive To Max Limits For Text Ads Count ( Limits: 10 ) !!", language),
                         error: true,
                         data: {},
                     }
@@ -19,13 +19,13 @@ async function addNewAd(authorizationId, adsInfo) {
                 adsInfo.storeId = admin.storeId;
                 await (new adsModel(adsInfo)).save();
                 return {
-                    msg: "Adding New Text Ad Process Has Been Successfully !!",
+                    msg: getSuitableTranslations("Adding New Text Ad Process Has Been Successfully !!", language),
                     error: false,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -34,7 +34,7 @@ async function addNewAd(authorizationId, adsInfo) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -57,7 +57,7 @@ async function getAllAds(filters, language) {
     }
 }
 
-async function deleteAd(authorizationId, adId) {
+async function deleteAd(authorizationId, adId, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -69,7 +69,7 @@ async function deleteAd(authorizationId, adId) {
                             _id: adId,
                         });
                         return {
-                            msg: "Deleting Ad Process Has Been Successfuly !!",
+                            msg: getSuitableTranslations("Deleting Ad Process Has Been Successfuly !!", language),
                             error: false,
                             data: adInfo.type === "image" ? {
                                 deletedAdImagePath: adInfo.imagePath,
@@ -77,19 +77,19 @@ async function deleteAd(authorizationId, adId) {
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed By This Admin !!",
+                        msg: getSuitableTranslations("Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed By This Admin !!", language),
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Ad Is Not Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Ad Is Not Exist !!", language),
                     error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -98,7 +98,7 @@ async function deleteAd(authorizationId, adId) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -108,7 +108,7 @@ async function deleteAd(authorizationId, adId) {
     }
 }
 
-async function updateAdImage(authorizationId, adId, newAdImagePath) {
+async function updateAdImage(authorizationId, adId, newAdImagePath, language) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -121,7 +121,7 @@ async function updateAdImage(authorizationId, adId, newAdImagePath) {
                                 imagePath: newAdImagePath,
                             });
                             return {
-                                msg: "Change Ad Image Process Has Been Successfully !!",
+                                msg: getSuitableTranslations("Change Ad Image Process Has Been Successfully !!", language),
                                 error: false,
                                 data: {
                                     oldAdImagePath: adInfo.imagePath,
@@ -130,26 +130,26 @@ async function updateAdImage(authorizationId, adId, newAdImagePath) {
                             }
                         }
                         return {
-                            msg: "Sorry, Type Of Ad Is Not Image !!",
+                            msg: getSuitableTranslations("Sorry, Type Of Ad Is Not Image !!", language),
                             error: true,
                             data: {},
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed By This Admin !!",
+                        msg: getSuitableTranslations("Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed By This Admin !!", language),
                         error: true,
                         data: {},
                         status: 401
                     }
                 }
                 return {
-                    msg: "Sorry, This Ad Is Not Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Ad Is Not Exist !!", language),
                     error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -158,7 +158,7 @@ async function updateAdImage(authorizationId, adId, newAdImagePath) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -168,7 +168,7 @@ async function updateAdImage(authorizationId, adId, newAdImagePath) {
     }
 }
 
-async function updateTextAdContent(authorizationId, adId, newTextAdContent) {
+async function updateTextAdContent(authorizationId, adId, newTextAdContent, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -179,31 +179,31 @@ async function updateTextAdContent(authorizationId, adId, newTextAdContent) {
                         if (adInfo.type === "text") {
                             await adsModel.updateOne( { _id: adId } , { content: newTextAdContent });
                             return {
-                                msg:  "Updating Text Ad Content Process Has Been Successfuly !!",
+                                msg: getSuitableTranslations("Updating Text Ad Content Process Has Been Successfuly !!", language),
                                 error: false,
                                 data: {},
                             }
                         }
                         return {
-                            msg: "Sorry, Type Of Ad Is Not Text !!",
+                            msg: getSuitableTranslations("Sorry, Type Of Ad Is Not Text !!", language),
                             error: true,
                             data: {},
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed By This Admin !!",
+                        msg: getSuitableTranslations("Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed By This Admin !!", language),
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Ad Is Not Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Ad Is Not Exist !!", language),
                     error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -212,7 +212,7 @@ async function updateTextAdContent(authorizationId, adId, newTextAdContent) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
