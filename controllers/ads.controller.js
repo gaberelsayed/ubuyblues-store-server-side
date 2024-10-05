@@ -4,6 +4,14 @@ const adsOPerationsManagmentFunctions = require("../models/ads.model");
 
 const { unlinkSync } = require("fs");
 
+function getFiltersObject(filters) {
+    let filtersObject = {};
+    for (let objectKey in filters) {
+        if (objectKey === "storeId") filtersObject[objectKey] = filters[objectKey];
+    }
+    return filtersObject;
+}
+
 async function postNewTextAd(req, res) {
     try{
         const result = await adsOPerationsManagmentFunctions.addNewAd(req.data._id, { content: req.body.content, type: "text" });
@@ -44,7 +52,9 @@ async function postNewImageAd(req, res) {
 
 async function getAllAds(req, res) {
     try{
-        res.json(await adsOPerationsManagmentFunctions.getAllAds());
+        const filters = req.query;
+        res.json(await adsOPerationsManagmentFunctions.getAllAds(getFiltersObject(filters), req.__));
+
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

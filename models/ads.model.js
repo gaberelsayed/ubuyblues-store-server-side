@@ -43,7 +43,7 @@ async function addNewAd(authorizationId, adsInfo) {
     }
 }
 
-async function getAllAds(filters) {
+async function getAllAds(filters, translator) {
     try{
         return {
             msg: "Get All Ads Process Has Been Successfully !!",

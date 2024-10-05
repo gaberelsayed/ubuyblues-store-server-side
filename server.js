@@ -86,7 +86,8 @@ app.listen(PORT, async () => {
     i18n.configure({
         locales: ["ar", "en", "tr", "ge"],
         directory: __dirname + "/translations",
-        defaultLocale: "en"
+        defaultLocale: "en",
+        queryParameter: "language"
     });
 
     app.use(i18n.init);
