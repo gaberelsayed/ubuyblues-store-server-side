@@ -53,7 +53,7 @@ async function postNewImageAd(req, res) {
 async function getAllAds(req, res) {
     try{
         const filters = req.query;
-        res.json(await adsOPerationsManagmentFunctions.getAllAds(getFiltersObject(filters), req.__));
+        res.json(await adsOPerationsManagmentFunctions.getAllAds(getFiltersObject(filters), filters.language));
 
     }
     catch(err) {

@@ -14,6 +14,8 @@ const { compile } = require("ejs");
 
 const sharp = require("sharp");
 
+const translations = require("./translations.json");
+
 function isEmail(email) {
     return email.match(/[^\s@]+@[^\s@]+\.[^\s@]+/);
 }
@@ -430,6 +432,16 @@ async function handleResizeImagesAndConvertFormatToWebp(files, outputImageFilePa
     }
 }
 
+function getSuitableTranslations(msg, language) {
+    if (language) {
+        if (language === "en") {
+            return msg;
+        }
+        else return translations[msg][language];
+    }
+    return translations[msg];
+}
+
 module.exports = {
     isEmail,
     isValidPassword,
@@ -450,5 +462,6 @@ module.exports = {
     getResponseObject,
     checkIsExistValueForFieldsAndDataTypes,
     validateIsExistValueForFieldsAndDataTypes,
-    handleResizeImagesAndConvertFormatToWebp
+    handleResizeImagesAndConvertFormatToWebp,
+    getSuitableTranslations
 }

@@ -80,18 +80,7 @@ app.listen(PORT, async () => {
         }
         next();
     });
-
-    const i18n = require("i18n");
-
-    i18n.configure({
-        locales: ["ar", "en", "tr", "ge"],
-        directory: __dirname + "/translations",
-        defaultLocale: "en",
-        queryParameter: "language"
-    });
-
-    app.use(i18n.init);
-
+    
     /* Start Handle The Routes */
 
     app.use("/admins", require("./routes/admins.router"));

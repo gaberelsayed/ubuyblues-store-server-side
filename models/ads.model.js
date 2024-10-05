@@ -1,5 +1,6 @@
 // Import Product Model Object
 
+const { getSuitableTranslations } = require("../global/functions");
 const { adsModel, adminModel } = require("../models/all.models");
 
 async function addNewAd(authorizationId, adsInfo) {
@@ -43,10 +44,10 @@ async function addNewAd(authorizationId, adsInfo) {
     }
 }
 
-async function getAllAds(filters, translator) {
+async function getAllAds(filters, language) {
     try{
         return {
-            msg: "Get All Ads Process Has Been Successfully !!",
+            msg: getSuitableTranslations("Get All Ads Process Has Been Successfully !!", language),
             error: false,
             data: await adsModel.find(filters),
         }
