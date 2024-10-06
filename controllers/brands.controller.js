@@ -20,7 +20,7 @@ async function postNewBrand(req, res) {
         const result = await brandsManagmentFunctions.addNewBrand(req.data._id, {
             ...Object.assign({}, req.body),
             imagePath: outputImageFilePath,
-        });
+        }, req.query.language);
         if (result.error) {
             return res.status(401).json(result);
         }
@@ -33,7 +33,7 @@ async function postNewBrand(req, res) {
 
 async function getLastSevenBrandsByStoreId(req, res) {
     try{
-        res.json(await brandsManagmentFunctions.getLastSevenBrandsByStoreId(getFiltersObject(req.query)));
+        res.json(await brandsManagmentFunctions.getLastSevenBrandsByStoreId(getFiltersObject(req.query), req.query.language));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -42,7 +42,7 @@ async function getLastSevenBrandsByStoreId(req, res) {
 
 async function getBrandsCount(req, res) {
     try {
-        res.json(await brandsManagmentFunctions.getBrandsCount(getFiltersObject(req.query)));
+        res.json(await brandsManagmentFunctions.getBrandsCount(getFiltersObject(req.query), req.query.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -52,7 +52,7 @@ async function getBrandsCount(req, res) {
 async function getAllBrandsInsideThePage(req, res) {
     try {
         const filters = req.query;
-        res.json(await brandsManagmentFunctions.getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        res.json(await brandsManagmentFunctions.getAllBrandsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters), filters.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -61,7 +61,7 @@ async function getAllBrandsInsideThePage(req, res) {
 
 async function deleteBrand(req, res) {
     try{
-        const result = await brandsManagmentFunctions.deleteBrand(req.data._id, req.params.brandId);
+        const result = await brandsManagmentFunctions.deleteBrand(req.data._id, req.params.brandId, req.query.language);
         if (!result.error) {
             unlinkSync(result.data.deletedBrandPath);
         }
@@ -79,7 +79,7 @@ async function deleteBrand(req, res) {
 
 async function putBrandInfo(req, res) {
     try{
-        const result = await brandsManagmentFunctions.updateBrandInfo(req.data._id, req.params.brandId, req.body.newBrandTitle);
+        const result = await brandsManagmentFunctions.updateBrandInfo(req.data._id, req.params.brandId, req.body.newBrandTitle, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, This Brand Is Not Exist !!") {
                 res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
@@ -97,7 +97,7 @@ async function putBrandImage(req, res) {
     try {
         const outputImageFilePath = `assets/images/brands/${Math.random()}_${Date.now()}__${req.file.originalname.replaceAll(" ", "_").replace(/\.[^/.]+$/, ".webp")}`;
         await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], [outputImageFilePath]);
-        const result = await brandsManagmentFunctions.changeBrandImage(req.data._id, req.params.brandId, outputImageFilePath);
+        const result = await brandsManagmentFunctions.changeBrandImage(req.data._id, req.params.brandId, outputImageFilePath, req.query.language);
         if (!result.error) {
             unlinkSync(result.data.deletedBrandImagePath);
         }

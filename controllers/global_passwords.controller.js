@@ -4,8 +4,8 @@ const globalPasswordsManagmentFunctions = require("../models/global_passwords.mo
 
 async function putChangeBussinessEmailPassword(req, res) {
     try{
-        const { email, password, newPassword } = req.query;
-        const result = await globalPasswordsManagmentFunctions.changeBussinessEmailPassword(req.data._id, email.toLowerCase(), password, newPassword);
+        const { email, password, newPassword, language } = req.query;
+        const result = await globalPasswordsManagmentFunctions.changeBussinessEmailPassword(req.data._id, email.toLowerCase(), password, newPassword, language);
         if (result.error) {
             if (result.msg !== "Sorry, Email Or Password Incorrect !!") {
                 return res.status(401).json(result);

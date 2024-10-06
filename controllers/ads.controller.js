@@ -14,7 +14,7 @@ function getFiltersObject(filters) {
 
 async function postNewTextAd(req, res) {
     try{
-        const result = await adsOPerationsManagmentFunctions.addNewAd(req.data._id, { content: req.body.content, type: "text" });
+        const result = await adsOPerationsManagmentFunctions.addNewAd(req.data._id, { content: req.body.content, type: "text" }, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, Can't Add New Text Ad Because Arrive To Max Limits For Text Ads Count ( Limits: 10 ) !!") {
                 return res.status(401).json(result);
@@ -37,7 +37,7 @@ async function postNewImageAd(req, res) {
             imagePath: outputImageFilePath,
             type: "image"
         };
-        const result = await adsOPerationsManagmentFunctions.addNewAd(req.data._id, adInfo);
+        const result = await adsOPerationsManagmentFunctions.addNewAd(req.data._id, adInfo, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, Can't Add New Text Ad Because Arrive To Max Limits For Text Ads Count ( Limits: 10 ) !!") {
                 return res.status(401).json(result);
@@ -63,7 +63,7 @@ async function getAllAds(req, res) {
 
 async function deleteAd(req, res) {
     try {
-        const result = await adsOPerationsManagmentFunctions.deleteAd(req.data._id, req.params.adId);
+        const result = await adsOPerationsManagmentFunctions.deleteAd(req.data._id, req.params.adId, req.query.language);
         if(!result.error && result.data?.deletedAdImagePath) {
             unlinkSync(result.data.deletedAdImagePath);
         }
@@ -83,7 +83,7 @@ async function putAdImage(req, res) {
     try {
         const outputImageFilePath = `assets/images/ads/${Math.random()}_${Date.now()}__${req.file.originalname.replaceAll(" ", "_").replace(/\.[^/.]+$/, ".webp")}`;
         await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], [outputImageFilePath]);
-        const result = await adsOPerationsManagmentFunctions.updateAdImage(req.data._id, req.params.adId, outputImageFilePath);
+        const result = await adsOPerationsManagmentFunctions.updateAdImage(req.data._id, req.params.adId, outputImageFilePath, req.query.language);
         if (!result.error) {
             unlinkSync(result.data.oldAdImagePath);
         }
@@ -102,7 +102,7 @@ async function putAdImage(req, res) {
 
 async function putTextAdContent(req, res) {
     try{
-        const result = await adsOPerationsManagmentFunctions.updateTextAdContent(req.data._id, req.params.adId, req.body.content);
+        const result = await adsOPerationsManagmentFunctions.updateTextAdContent(req.data._id, req.params.adId, req.body.content, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, Type Of Ad Is Not Text !!" || result.msg !== "Sorry, This Ad Is Not Exist !!") {
                 return res.status(401).json(result);

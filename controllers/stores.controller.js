@@ -28,7 +28,7 @@ function getFiltersObject(filters) {
 
 async function getStoresCount(req, res) {
     try{
-        res.json(await storesOPerationsManagmentFunctions.getStoresCount(getFiltersObject(req.query)));
+        res.json(await storesOPerationsManagmentFunctions.getStoresCount(getFiltersObject(req.query), req.query.language));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -38,7 +38,7 @@ async function getStoresCount(req, res) {
 async function getAllStoresInsideThePage(req, res) {
     try{
         const filters = req.query;
-        res.json(await storesOPerationsManagmentFunctions.getAllStoresInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        res.json(await storesOPerationsManagmentFunctions.getAllStoresInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters), filters.language));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -47,7 +47,7 @@ async function getAllStoresInsideThePage(req, res) {
 
 async function getStoreDetails(req, res) {
     try{
-        res.json(await storesOPerationsManagmentFunctions.getStoreDetails(req.params.storeId));
+        res.json(await storesOPerationsManagmentFunctions.getStoreDetails(req.params.storeId, req.query.language));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -56,7 +56,7 @@ async function getStoreDetails(req, res) {
 
 async function getMainStoreDetails(req, res) {
     try{
-        res.json(await storesOPerationsManagmentFunctions.getMainStoreDetails());
+        res.json(await storesOPerationsManagmentFunctions.getMainStoreDetails(req.query.language));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -67,7 +67,7 @@ async function postNewStore(req, res) {
     try{
         const outputImageFilePath = `assets/images/stores/${Math.random()}_${Date.now()}__${req.file.originalname.replaceAll(" ", "_").replace(/\.[^/.]+$/, ".webp")}`;
         await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], [outputImageFilePath]);
-        const result = await storesOPerationsManagmentFunctions.createNewStore({...Object.assign({}, req.body), outputImageFilePath});
+        const result = await storesOPerationsManagmentFunctions.createNewStore({...Object.assign({}, req.body), outputImageFilePath}, req.query.language);
         if (result.error) {
             unlinkSync(outputImageFilePath);
         }
@@ -84,7 +84,7 @@ async function postNewStore(req, res) {
 
 async function postApproveStore(req, res) {
     try{
-        const result = await storesOPerationsManagmentFunctions.approveStore(req.data._id, req.params.storeId, req.query.password);
+        const result = await storesOPerationsManagmentFunctions.approveStore(req.data._id, req.params.storeId, req.query.password, req.query.language);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 return res.status(401).json(result);
@@ -100,7 +100,7 @@ async function postApproveStore(req, res) {
 
 async function putStoreInfo(req, res) {
     try{
-        const result = await storesOPerationsManagmentFunctions.updateStoreInfo(req.data._id, req.params.storeId, req.body);
+        const result = await storesOPerationsManagmentFunctions.updateStoreInfo(req.data._id, req.params.storeId, req.body, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, This Store Is Not Found !!") {
                 return res.status(401).json(result);
@@ -115,7 +115,7 @@ async function putStoreInfo(req, res) {
 
 async function putBlockingStore(req, res) {
     try{
-        const result = await storesOPerationsManagmentFunctions.blockingStore(req.data._id, req.params.storeId, req.query.blockingReason);
+        const result = await storesOPerationsManagmentFunctions.blockingStore(req.data._id, req.params.storeId, req.query.blockingReason, req.query.language);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 return res.status(401).json(result);
@@ -131,7 +131,7 @@ async function putBlockingStore(req, res) {
 
 async function putCancelBlockingStore(req, res) {
     try{
-        const result = await storesOPerationsManagmentFunctions.cancelBlockingStore(req.data._id, req.params.storeId);
+        const result = await storesOPerationsManagmentFunctions.cancelBlockingStore(req.data._id, req.params.storeId, req.query.language);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied Because This Admin Is Not Website Owner !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
                 return res.status(401).json(result);
@@ -148,7 +148,7 @@ async function putStoreImage(req, res) {
     try {
         const outputImageFilePath = `assets/images/stores/${Math.random()}_${Date.now()}__${req.file.originalname.replaceAll(" ", "_").replace(/\.[^/.]+$/, ".webp")}`;
         await handleResizeImagesAndConvertFormatToWebp([req.file.buffer], [outputImageFilePath]);
-        const result = await storesOPerationsManagmentFunctions.changeStoreImage(req.params.storeId, outputImageFilePath);
+        const result = await storesOPerationsManagmentFunctions.changeStoreImage(req.data._id, req.params.storeId, outputImageFilePath, req.query.language);
         if (!result.error) {
             unlinkSync(result.data.deletedStoreImagePath);
             res.json({
@@ -172,7 +172,7 @@ async function putStoreImage(req, res) {
 
 async function deleteStore(req, res) {
     try{
-        const result = await storesOPerationsManagmentFunctions.deleteStore(req.data._id, req.params.storeId);
+        const result = await storesOPerationsManagmentFunctions.deleteStore(req.data._id, req.params.storeId, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, This Store Is Not Found !!") {
                 return res.status(401).json(result);
@@ -189,7 +189,7 @@ async function deleteStore(req, res) {
 
 async function deleteRejectStore(req, res) {
     try{
-        const result = await storesOPerationsManagmentFunctions.rejectStore(req.data._id, req.params.storeId);
+        const result = await storesOPerationsManagmentFunctions.rejectStore(req.data._id, req.params.storeId, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, This Store Is Not Found !!") {
                 return res.status(401).json(result);

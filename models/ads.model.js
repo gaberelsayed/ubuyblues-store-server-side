@@ -4,7 +4,7 @@ const { adsModel, adminModel } = require("../models/all.models");
 
 const { getSuitableTranslations } = require("../global/functions");
 
-async function addNewAd(authorizationId, adsInfo) {
+async function addNewAd(authorizationId, adsInfo, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){

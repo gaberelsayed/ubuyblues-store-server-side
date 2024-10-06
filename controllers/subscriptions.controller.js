@@ -4,7 +4,7 @@ const subscriptionsManagmentFunctions = require("../models/subscriptions.model")
 
 async function postAddNewSubscription(req, res) {
     try{
-        res.json(await subscriptionsManagmentFunctions.addNewSubscription(req.body.email));
+        res.json(await subscriptionsManagmentFunctions.addNewSubscription(req.body.email, req.query.language));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

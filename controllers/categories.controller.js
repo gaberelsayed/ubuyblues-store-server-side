@@ -13,7 +13,7 @@ function getFiltersObject(filters) {
 
 async function postNewCategory(req, res) {
     try{
-        const result = await categoriesManagmentFunctions.addNewCategory(req.data._id, { name, parent } = req.body);
+        const result = await categoriesManagmentFunctions.addNewCategory(req.data._id, { name, parent } = req.body, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, This Cateogry Is Already Exist !!" || result.msg !== "Sorry, This Parent Cateogry Is Not Exist !!") {
                 return res.status(401).json(result);
@@ -28,7 +28,7 @@ async function postNewCategory(req, res) {
 
 async function getAllCategories(req, res) {
     try {
-        res.json(await categoriesManagmentFunctions.getAllCategories(getFiltersObject(req.query)));
+        res.json(await categoriesManagmentFunctions.getAllCategories(getFiltersObject(req.query), req.query.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -37,7 +37,7 @@ async function getAllCategories(req, res) {
 
 async function getAllCategoriesWithHierarechy(req, res) {
     try {
-        res.json(await categoriesManagmentFunctions.getAllCategoriesWithHierarechy(getFiltersObject(req.query)));
+        res.json(await categoriesManagmentFunctions.getAllCategoriesWithHierarechy(getFiltersObject(req.query), req.query.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -46,7 +46,7 @@ async function getAllCategoriesWithHierarechy(req, res) {
 
 async function getCategoryInfo(req, res) {
     try {
-        res.json(await categoriesManagmentFunctions.getCategoryInfo(req.params.categoryId));
+        res.json(await categoriesManagmentFunctions.getCategoryInfo(req.params.categoryId, req.query.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -55,7 +55,7 @@ async function getCategoryInfo(req, res) {
 
 async function getCategoriesCount(req, res) {
     try {
-        res.json(await categoriesManagmentFunctions.getCategoriesCount(getFiltersObject(req.query)));
+        res.json(await categoriesManagmentFunctions.getCategoriesCount(getFiltersObject(req.query), req.query.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -65,7 +65,7 @@ async function getCategoriesCount(req, res) {
 async function getAllCategoriesInsideThePage(req, res) {
     try {
         const filters = req.query;
-        res.json(await categoriesManagmentFunctions.getAllCategoriesInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters)));
+        res.json(await categoriesManagmentFunctions.getAllCategoriesInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters), filters.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -74,7 +74,7 @@ async function getAllCategoriesInsideThePage(req, res) {
 
 async function deleteCategory(req, res) {
     try{
-        const result = await categoriesManagmentFunctions.deleteCategory(req.data._id, req.params.categoryId);
+        const result = await categoriesManagmentFunctions.deleteCategory(req.data._id, req.params.categoryId, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, This Category Is Not Exist !!") {
                 return res.status(401).json(result);
@@ -89,7 +89,7 @@ async function deleteCategory(req, res) {
 
 async function putCategory(req, res) {
     try{
-        const result = await categoriesManagmentFunctions.updateCategory(req.data._id, req.params.categoryId, { name, parent } = req.body);
+        const result = await categoriesManagmentFunctions.updateCategory(req.data._id, req.params.categoryId, { name, parent } = req.body, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, This Category Is Not Exist !!" || result.msg !== "Sorry, This Parent Cateogry Is Not Exist !!") {
                 return res.status(401).json(result);

@@ -195,7 +195,7 @@ async function getProductsCount(filters, language) {
     }
 }
 
-async function getFlashProductsCount(filters) {
+async function getFlashProductsCount(filters, language) {
     try {
         const currentDate = new Date();
         filters.startDiscountPeriod = { $lte: currentDate };

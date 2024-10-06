@@ -1,7 +1,10 @@
-const { hash, compare } = require("bcryptjs");
 const { accountVerificationCodesModel } = require("../models/all.models");
 
-async function addNewAccountVerificationCode(email, code, typeOfUse) {
+const { getSuitableTranslations } = require("../global/functions");
+
+const { hash, compare } = require("bcryptjs");
+
+async function addNewAccountVerificationCode(email, code, typeOfUse, language) {
     try{
         const creatingDate = new Date(Date.now());
         const expirationDate = new Date(creatingDate.getTime() + 24 * 60 * 60 * 1000);
@@ -20,7 +23,7 @@ async function addNewAccountVerificationCode(email, code, typeOfUse) {
                 }
             );
             return {
-                msg: "Sending Code To Your Email Process Has Been Succssfuly !!",
+                msg: getSuitableTranslations("Sending Code To Your Email Process Has Been Succssfuly !!", language),
                 error: false,
                 data: {},
             }
@@ -33,7 +36,7 @@ async function addNewAccountVerificationCode(email, code, typeOfUse) {
             typeOfUse
         })).save();
         return {
-            msg: "Sending Code To Your Email Process Has Been Succssfuly !!",
+            msg: getSuitableTranslations("Sending Code To Your Email Process Has Been Succssfuly !!", language),
             error: false,
             data: {},
         }
@@ -43,25 +46,25 @@ async function addNewAccountVerificationCode(email, code, typeOfUse) {
     }
 }
 
-async function isAccountVerificationCodeValid(email, code, typeOfUse) {
+async function isAccountVerificationCodeValid(email, code, typeOfUse, language) {
     try{
         const accountVerificationCode = await accountVerificationCodesModel.findOne({ email, typeOfUse });
         if (accountVerificationCode) {
             if (await compare(code, accountVerificationCode.code)) {
                 return {
-                    msg: "This Code For This Email Is Valid !!",
+                    msg: getSuitableTranslations("This Code For This Email Is Valid !!", language),
                     error: false,
                     data: {},
                 }
             }
             return {
-                msg: "This Code For This Email Is Not Valid !!",
+                msg: getSuitableTranslations("This Code For This Email Is Not Valid !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This User Is Not Found !!",
+            msg: getSuitableTranslations("Sorry, This User Is Not Found !!", language),
             error: true,
             data: {},
         }
@@ -71,7 +74,7 @@ async function isAccountVerificationCodeValid(email, code, typeOfUse) {
     }
 }
 
-async function isBlockingFromReceiveTheCodeAndReceiveBlockingExpirationDate(email, typeOfUse) {
+async function isBlockingFromReceiveTheCodeAndReceiveBlockingExpirationDate(email, typeOfUse, language) {
     try{
         const accountVerificationCode = await accountVerificationCodesModel.findOne({ email, typeOfUse });
         if (accountVerificationCode) {
@@ -81,7 +84,7 @@ async function isBlockingFromReceiveTheCodeAndReceiveBlockingExpirationDate(emai
                 currentDate < accountVerificationCode.receiveBlockingExpirationDate
             ) {
                 return {
-                    msg: "Sorry, This Email Has Been Blocked From Receiving Code Messages For 24 Hours Due To Exceeding The Maximum Number Of Resend Attempts !!",
+                    msg: getSuitableTranslations("Sorry, This Email Has Been Blocked From Receiving Code Messages For 24 Hours Due To Exceeding The Maximum Number Of Resend Attempts !!", language),
                     error: true,
                     data: {
                         receiveBlockingExpirationDate: accountVerificationCode.receiveBlockingExpirationDate,
@@ -90,7 +93,7 @@ async function isBlockingFromReceiveTheCodeAndReceiveBlockingExpirationDate(emai
             }
         }
         return {
-            msg: "Sorry, There Is No Code For This Email !!",
+            msg: getSuitableTranslations("Sorry, There Is No Code For This Email !!", language),
             error: false,
             data: {},
         }

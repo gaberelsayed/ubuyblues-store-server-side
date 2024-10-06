@@ -13,7 +13,7 @@ function getFiltersObject(filters) {
 
 async function postAddNewReferal(req, res) {
     try{
-        res.json(await referalsManagmentFunctions.addNewReferal(req.body));
+        res.json(await referalsManagmentFunctions.addNewReferal(req.body, req.query.language));
     }
     catch(err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -23,7 +23,7 @@ async function postAddNewReferal(req, res) {
 async function getProductReferalsCount(req, res) {
     try {
         const productId = req.params.productId;
-        res.json(await referalsManagmentFunctions.getProductReferalsCount(getFiltersObject({ ...req.query, productId})));
+        res.json(await referalsManagmentFunctions.getProductReferalsCount(getFiltersObject({ ...req.query, productId}), req.query.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
@@ -32,9 +32,8 @@ async function getProductReferalsCount(req, res) {
 
 async function getAllProductReferalsInsideThePage(req, res) {
     try {
-        const productId = req.params.productId;
         const filters = req.query;
-        res.json(await referalsManagmentFunctions.getAllProductReferalsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject({...filters, productId})));
+        res.json(await referalsManagmentFunctions.getAllProductReferalsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject({...filters, productId: req.params.productId}), filters.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));

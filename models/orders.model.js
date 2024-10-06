@@ -508,7 +508,7 @@ async function deleteOrder(authorizationId, orderId, language){
     }
 }
 
-async function deleteProductFromOrder(authorizationId, orderId, productId) {
+async function deleteProductFromOrder(authorizationId, orderId, productId, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
