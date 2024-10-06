@@ -2,7 +2,9 @@
 
 const { brandModel, adminModel, storeModel } = require("../models/all.models");
 
-async function addNewBrand(authorizationId, brandInfo) {
+const { getSuitableTranslations } = require("../global/functions");
+
+async function addNewBrand(authorizationId, brandInfo, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -10,13 +12,13 @@ async function addNewBrand(authorizationId, brandInfo) {
                 brandInfo.storeId = admin.storeId;
                 await (new brandModel(brandInfo)).save();
                 return {
-                    msg: "Adding New Brand Process Has Been Successfuly !!",
+                    msg: getSuitableTranslations("Adding New Brand Process Has Been Successfuly !!", language),
                     error: false,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -25,7 +27,7 @@ async function addNewBrand(authorizationId, brandInfo) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -35,14 +37,14 @@ async function addNewBrand(authorizationId, brandInfo) {
     }
 }
 
-async function getLastSevenBrandsByStoreId(filters) {
+async function getLastSevenBrandsByStoreId(filters, language) {
     try {
         if (filters["isMainStore"]) {
             const mainStoreDetails = await storeModel.findOne({ isMainStore: true });
             filters = { storeId: mainStoreDetails._id };
         }
         return {
-            msg: "Get Last Seven Brands By Store Id Process Has Been Successfully !!",
+            msg: getSuitableTranslations("Get Last Seven Brands By Store Id Process Has Been Successfully !!", language),
             error: false,
             data: await brandModel.find(filters).limit(7),
         }
@@ -52,10 +54,10 @@ async function getLastSevenBrandsByStoreId(filters) {
     }
 }
 
-async function getBrandsCount(filters) {
+async function getBrandsCount(filters, language) {
     try {
         return {
-            msg: "Get Brands Count Process Has Been Successfully !!",
+            msg: getSuitableTranslations("Get Brands Count Process Has Been Successfully !!", language),
             error: false,
             data: await brandModel.countDocuments(filters),
         }
@@ -65,10 +67,10 @@ async function getBrandsCount(filters) {
     }
 }
 
-async function getAllBrandsInsideThePage(pageNumber, pageSize, filters) {
+async function getAllBrandsInsideThePage(pageNumber, pageSize, filters, language) {
     try {
         return {
-            msg: `Get All Brands Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            msg: getSuitableTranslations("Get All Brands Inside The Page: {{pageNumber}} Process Has Been Successfully !!", language, { pageNumber }),
             error: false,
             data: await brandModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize),
         };
@@ -78,7 +80,7 @@ async function getAllBrandsInsideThePage(pageNumber, pageSize, filters) {
     }
 }
 
-async function deleteBrand(authorizationId, brandId) {
+async function deleteBrand(authorizationId, brandId, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -91,26 +93,26 @@ async function deleteBrand(authorizationId, brandId) {
                         await brandModel.deleteOne({ _id: brandId });
                         return {
                             error: false,
-                            msg: "Deleting Brand Process Has Been Successfuly !!",
+                            msg: getSuitableTranslations("Deleting Brand Process Has Been Successfuly !!", language),
                             data: {
                                 deletedBrandPath: brandInfo.imagePath,
                             },
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed By This Admin !!",
+                        msg: getSuitableTranslations("Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed By This Admin !!", language),
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Brand Is Not Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Brand Is Not Exist !!", language),
                     error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -119,7 +121,7 @@ async function deleteBrand(authorizationId, brandId) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -129,7 +131,7 @@ async function deleteBrand(authorizationId, brandId) {
     }
 }
 
-async function updateBrandInfo(authorizationId, brandId, newBrandTitle) {
+async function updateBrandInfo(authorizationId, brandId, newBrandTitle, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -139,25 +141,25 @@ async function updateBrandInfo(authorizationId, brandId, newBrandTitle) {
                     if (brandInfo.storeId === admin.storeId) {
                         await brandModel.updateOne( { _id: brandId } , { title: newBrandTitle });
                         return {
-                            msg: "Updating Brand Info Process Has Been Successfuly !!",
+                            msg: getSuitableTranslations("Updating Brand Info Process Has Been Successfuly !!", language),
                             error: false,
                             data: {},
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed By This Admin !!",
+                        msg: getSuitableTranslations("Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed By This Admin !!", language),
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Brand Is Not Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Brand Is Not Exist !!", language),
                     error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -166,7 +168,7 @@ async function updateBrandInfo(authorizationId, brandId, newBrandTitle) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -176,7 +178,7 @@ async function updateBrandInfo(authorizationId, brandId, newBrandTitle) {
     }
 }
 
-async function changeBrandImage(authorizationId, brandId, newBrandImagePath) {
+async function changeBrandImage(authorizationId, brandId, newBrandImagePath, language) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -188,25 +190,25 @@ async function changeBrandImage(authorizationId, brandId, newBrandImagePath) {
                             imagePath: newBrandImagePath,
                         });
                         return {
-                            msg: "Updating Brand Image Process Has Been Successfully !!",
+                            msg: getSuitableTranslations("Updating Brand Image Process Has Been Successfully !!", language),
                             error: false,
                             data: { deletedBrandImagePath: brand.imagePath }
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed By This Admin !!",
+                        msg: getSuitableTranslations("Sorry, Permission Denied Because This Brand Is Not Exist At Store Managed By This Admin !!", language),
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Brand Is Not Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Brand Is Not Exist !!", language),
                     error: true,
                     data: {}
                 };
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -215,7 +217,7 @@ async function changeBrandImage(authorizationId, brandId, newBrandImagePath) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }

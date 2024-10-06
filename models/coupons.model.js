@@ -2,19 +2,21 @@
 
 const { adminModel, couponModel } = require("./all.models");
 
-async function getAllCoupons(admintId) {
+const { getSuitableTranslations } = require("../global/functions");
+
+async function getAllCoupons(admintId, language) {
     try {
         const admin = await adminModel.findById(admintId);
         if (admin) {
             if (!admin.isBlocked) {
                 return {
-                    msg: "Get All Coupons Process Has Been Successfully !!",
+                    msg: getSuitableTranslations("Get All Coupons Process Has Been Successfully !!", language),
                     error: false,
                     data: await couponModel.find({ storeId: admin.storeId }),
                 }
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -23,7 +25,7 @@ async function getAllCoupons(admintId) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -32,18 +34,18 @@ async function getAllCoupons(admintId) {
     }
 }
 
-async function getCouponDetails(code) {
+async function getCouponDetails(code, language) {
     try{
         const couponDetails = await couponModel.findOne({ code });
         if (couponDetails) {
             return {
-                msg: "Get Coupon Details Process Has Been Successfully !!",
+                msg: getSuitableTranslations("Get Coupon Details Process Has Been Successfully !!", language),
                 error: false,
                 data: couponDetails,
             }
         } else {
             return {
-                msg: "Sorry, This Code Is Not Exist !!",
+                msg: getSuitableTranslations("Sorry, This Code Is Not Exist !!", language),
                 error: true,
                 data: {},
             }
@@ -54,7 +56,7 @@ async function getCouponDetails(code) {
     }
 }
 
-async function addNewCoupon(adminId, couponInfo) {
+async function addNewCoupon(adminId, couponInfo, language) {
     try{
         const admin = await adminModel.findById(adminId);
         if (admin) {
@@ -64,19 +66,19 @@ async function addNewCoupon(adminId, couponInfo) {
                     couponInfo.storeId = admin.storeId;
                     await(new couponModel(couponInfo)).save();
                     return {
-                        msg: "Create New Coupon Process Has Been Successfully !!",
+                        msg: getSuitableTranslations("Creating New Coupon Process Has Been Successfully !!", language),
                         error: false,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Coupon Is Already Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Coupon Is Already Exist !!", language),
                     error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -85,7 +87,7 @@ async function addNewCoupon(adminId, couponInfo) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -95,7 +97,7 @@ async function addNewCoupon(adminId, couponInfo) {
     }
 }
 
-async function updateCouponInfo(adminId, couponId, newCouponDetails) {
+async function updateCouponInfo(adminId, couponId, newCouponDetails, language) {
     try {
         const admin = await adminModel.findById(adminId);
         if (admin) {
@@ -105,25 +107,25 @@ async function updateCouponInfo(adminId, couponId, newCouponDetails) {
                     const couponInfo = await couponModel.findOneAndUpdate({ _id: couponId }, newCouponDetails);
                     if (couponInfo) {
                         return {
-                            msg: "Updating Coupon Details Process Has Been Successfully !!",
+                            msg: getSuitableTranslations("Updating Coupon Details Process Has Been Successfully !!", language),
                             error: false,
                             data: {},
                         }
                     }
                     return {
-                        msg: "Sorry, This Coupon Is Not Exist !!",
+                        msg: getSuitableTranslations("Sorry, This Coupon Is Not Exist !!", language),
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This New Code Is Already Exist !!",
+                    msg: getSuitableTranslations("Sorry, This New Code Is Already Exist !!", language),
                     error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -132,7 +134,7 @@ async function updateCouponInfo(adminId, couponId, newCouponDetails) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -141,7 +143,7 @@ async function updateCouponInfo(adminId, couponId, newCouponDetails) {
     }
 }
 
-async function deleteCoupon(adminId, couponId){
+async function deleteCoupon(adminId, couponId, language){
     try{
         const admin = await adminModel.findById(adminId);
         if (admin) {
@@ -149,19 +151,19 @@ async function deleteCoupon(adminId, couponId){
                 const couponDetails = await couponModel.findOneAndDelete({ _id: couponId });
                 if (couponDetails) {
                     return {
-                        msg: "Delete Coupon Process Has Been Successfully !!",
+                        msg: getSuitableTranslations("Delete Coupon Process Has Been Successfully !!", language),
                         error: false,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Coupon Is Not Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Coupon Is Not Exist !!", language),
                     error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -170,7 +172,7 @@ async function deleteCoupon(adminId, couponId){
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }

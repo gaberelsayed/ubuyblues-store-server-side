@@ -2,22 +2,24 @@
 
 const { globalPasswordModel, adminModel } = require("./all.models");
 
+const { getSuitableTranslations } = require("../global/functions");
+
 // require cryptoJs module for password encrypting
 
 const { AES, enc } = require("crypto-js");
 
-async function getPasswordForBussinessEmail(email){
+async function getPasswordForBussinessEmail(email, language){
     try{
         const user = await globalPasswordModel.findOne({ email });
         if (user) {
             return {
-                msg: "Get Password For Bussiness Email Process Has Been Successfully !!",
+                msg: getSuitableTranslations("Get Password For Bussiness Email Process Has Been Successfully !!", language),
                 error: false,
                 data: AES.decrypt(user.password, process.env.secretKey).toString(enc.Utf8),
             }
         }
         return {
-            msg: "Sorry, Email Incorrect !!",
+            msg: getSuitableTranslations("Sorry, Email Incorrect !!", language),
             error: true,
             data: {},
         }
@@ -27,43 +29,41 @@ async function getPasswordForBussinessEmail(email){
     }
 }
 
-async function changeBussinessEmailPassword(authorizationId, email, password, newPassword) {
+async function changeBussinessEmailPassword(authorizationId, email, password, newPassword, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (admin.isWebsiteOwner) {
                 const user = await globalPasswordModel.findOne({ email });
                 if (user) {
-                    const bytes = AES.decrypt(user.password, process.env.secretKey);
-                    const decryptedPassword = bytes.toString(enc.Utf8);
-                    if (decryptedPassword === password) {
+                    if (AES.decrypt(user.password, process.env.secretKey).toString(enc.Utf8) === password) {
                         await globalPasswordModel.updateOne({ password: AES.encrypt(newPassword, process.env.secretKey).toString() });
                         return {
-                            msg: "Changing Bussiness Email Password Process Has Been Successfully !!",
+                            msg: getSuitableTranslations("Changing Bussiness Email Password Process Has Been Successfully !!", language),
                             error: false,
                             data: {},
                         }
                     }
                     return {
-                        msg: "Sorry, Email Or Password Incorrect !!",
+                        msg: getSuitableTranslations("Sorry, Email Or Password Incorrect !!", language),
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, Email Or Password Incorrect !!",
+                    msg: getSuitableTranslations("Sorry, Email Or Password Incorrect !!", language),
                     error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
+                msg: getSuitableTranslations("Sorry, Permission Denied Because This Admin Is Not Website Owner !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }

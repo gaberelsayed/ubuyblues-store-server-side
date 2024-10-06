@@ -1,7 +1,8 @@
 // Import Product Model Object
 
-const { getSuitableTranslations } = require("../global/functions");
 const { adsModel, adminModel } = require("../models/all.models");
+
+const { getSuitableTranslations } = require("../global/functions");
 
 async function addNewAd(authorizationId, adsInfo) {
     try {

@@ -2,7 +2,9 @@
 
 const { categoryModel, adminModel, productModel } = require("../models/all.models");
 
-async function addNewCategory(authorizationId, categoryData) {
+const { getSuitableTranslations } = require("../global/functions");
+
+async function addNewCategory(authorizationId, categoryData, language) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -10,7 +12,7 @@ async function addNewCategory(authorizationId, categoryData) {
                 const category = await categoryModel.findOne({ name: categoryData.name });
                 if (category) {
                     return {
-                        msg: "Sorry, This Cateogry Is Already Exist !!",
+                        msg: getSuitableTranslations("Sorry, This Cateogry Is Already Exist !!", language),
                         error: true,
                         data: {},
                     }
@@ -18,7 +20,7 @@ async function addNewCategory(authorizationId, categoryData) {
                 if (categoryData.parent) {
                     if (!(await categoryModel.findById(categoryData.parent))) {
                         return {
-                            msg: "Sorry, This Parent Cateogry Is Not Exist !!",
+                            msg: getSuitableTranslations("Sorry, This Parent Cateogry Is Not Exist !!", language),
                             error: true,
                             data: {},
                         }
@@ -28,13 +30,13 @@ async function addNewCategory(authorizationId, categoryData) {
                 }
                 categoryData.storeId = admin.storeId;
                 return {
-                    msg: "Adding New Category Process Has Been Successfuly !!",
+                    msg: getSuitableTranslations("Adding New Category Process Has Been Successfuly !!", language),
                     error: false,
                     data: await (new categoryModel(categoryData)).save(),
                 }
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -43,7 +45,7 @@ async function addNewCategory(authorizationId, categoryData) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -69,10 +71,10 @@ function buildNestedCategories(categories) {
     return result;
 }
 
-async function getAllCategories(filters) {
+async function getAllCategories(filters, language) {
     try {
         return {
-            msg: "Get All Categories Process Has Been Successfully !!",
+            msg: getSuitableTranslations("Get All Categories Process Has Been Successfully !!", language),
             error: false,
             data: await categoryModel.find(filters, { name: 1, storeId: 1, parent: 1 }).populate("parent"),
         }
@@ -82,14 +84,14 @@ async function getAllCategories(filters) {
     }
 }
 
-async function getAllCategoriesWithHierarechy(filters) {
+async function getAllCategoriesWithHierarechy(filters, language) {
     try {
         filters.parent = null;
         const mainCategories = await categoryModel.find(filters, { name: 1, storeId: 1, parent: 1 });
         filters.parent = { $ne: null };
         const subcategories = await categoryModel.find(filters, { name: 1, storeId: 1, parent: 1 });
         return {
-            msg: "Get All Categories With Hierarechy Process Has Been Successfully !!",
+            msg: getSuitableTranslations("Get All Categories With Hierarechy Process Has Been Successfully !!", language),
             error: false,
             data: buildNestedCategories([...JSON.parse(JSON.stringify(mainCategories, null, 1)), ...JSON.parse(JSON.stringify(subcategories, null, 1))]),
         }
@@ -99,18 +101,18 @@ async function getAllCategoriesWithHierarechy(filters) {
     }
 }
 
-async function getCategoryInfo(categoryId) {
+async function getCategoryInfo(categoryId, language) {
     try {
         const categoryInfo = await categoryModel.findById(categoryId);
         if (categoryInfo) {
             return {
-                msg: "Get Category Info Process Has Been Successfuly !!",
+                msg: getSuitableTranslations("Get Category Info Process Has Been Successfuly !!", language),
                 error: false,
                 data: categoryInfo,
             }
         }
         return {
-            msg: "Sorry, This Category Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Category Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -120,10 +122,10 @@ async function getCategoryInfo(categoryId) {
     }
 }
 
-async function getCategoriesCount(filters) {
+async function getCategoriesCount(filters, language) {
     try {
         return {
-            msg: "Get Categories Count Process Has Been Successfully !!",
+            msg: getSuitableTranslations("Get Categories Count Process Has Been Successfully !!", language),
             error: false,
             data: await categoryModel.countDocuments(filters),
         }
@@ -133,10 +135,10 @@ async function getCategoriesCount(filters) {
     }
 }
 
-async function getAllCategoriesInsideThePage(pageNumber, pageSize, filters) {
+async function getAllCategoriesInsideThePage(pageNumber, pageSize, filters, language) {
     try {
         return {
-            msg: `Get All Categories Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            msg: getSuitableTranslations("Get All Categories Inside The Page: {{pageNumber}} Process Has Been Successfully !!", language, { pageNumber }),
             error: false,
             data: await categoryModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).populate("parent"),
         }
@@ -146,7 +148,7 @@ async function getAllCategoriesInsideThePage(pageNumber, pageSize, filters) {
     }
 }
 
-async function deleteCategory(authorizationId, categoryId) {
+async function deleteCategory(authorizationId, categoryId, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -161,25 +163,25 @@ async function deleteCategory(authorizationId, categoryId) {
                         });
                         await productModel.updateMany({ categoryId }, { category: "uncategorized" });
                         return {
-                            msg: "Deleting Category Process Has Been Successfuly !!",
+                            msg: getSuitableTranslations("Deleting Category Process Has Been Successfuly !!", language),
                             error: false,
                             data: {},
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Category Is Not Exist At Store Managed By This Admin !!",
+                        msg: getSuitableTranslations("Sorry, Permission Denied Because This Category Is Not Exist At Store Managed By This Admin !!", language),
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Category Is Not Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Category Is Not Exist !!", language),
                     error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -188,7 +190,7 @@ async function deleteCategory(authorizationId, categoryId) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -198,7 +200,7 @@ async function deleteCategory(authorizationId, categoryId) {
     }
 }
 
-async function updateCategory(authorizationId, categoryId, newCategoryData) {
+async function updateCategory(authorizationId, categoryId, newCategoryData, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin){
@@ -209,7 +211,7 @@ async function updateCategory(authorizationId, categoryId, newCategoryData) {
                         if (newCategoryData.parent) {
                             if (!(await categoryModel.findById(newCategoryData.parent))) {
                                 return {
-                                    msg: "Sorry, This Parent Cateogry Is Not Exist !!",
+                                    msg: getSuitableTranslations("Sorry, This Parent Cateogry Is Not Exist !!", language),
                                     error: true,
                                     data: {},
                                 }
@@ -217,25 +219,25 @@ async function updateCategory(authorizationId, categoryId, newCategoryData) {
                         }
                         await categoryModel.updateOne({ _id: categoryId } , newCategoryData);
                         return {
-                            msg: "Updating Category Info Process Has Been Successfuly !!",
+                            msg: getSuitableTranslations("Updating Category Info Process Has Been Successfuly !!", language),
                             error: false,
                             data: {},
                         };
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Category Is Not Exist At Store Managed By This Admin !!",
+                        msg: getSuitableTranslations("Sorry, Permission Denied Because This Category Is Not Exist At Store Managed By This Admin !!", language),
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Category Is Not Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Category Is Not Exist !!", language),
                     error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, This Admin Has Been Blocked !!",
+                msg: getSuitableTranslations("Sorry, This Admin Has Been Blocked !!", language),
                 error: true,
                 data: {
                     blockingDate: admin.blockingDate,
@@ -244,7 +246,7 @@ async function updateCategory(authorizationId, categoryId, newCategoryData) {
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
