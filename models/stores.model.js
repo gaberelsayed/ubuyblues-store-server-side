@@ -2,14 +2,16 @@
 
 const { storeModel, adminModel, categoryModel, productModel, brandModel } = require("../models/all.models");
 
+const { getSuitableTranslations } = require("../global/functions");
+
 // require bcryptjs module for password encrypting
 
 const { hash } = require("bcryptjs");
 
-async function getStoresCount(filters) {
+async function getStoresCount(filters, language) {
     try {
         return {
-            msg: "Get Stores Count Process Has Been Successfully !!",
+            msg: getSuitableTranslations("Get Stores Count Process Has Been Successfully !!", language),
             error: false,
             data: await storeModel.countDocuments(filters),
         }
@@ -18,10 +20,10 @@ async function getStoresCount(filters) {
     }
 }
 
-async function getAllStoresInsideThePage(pageNumber, pageSize, filters) {
+async function getAllStoresInsideThePage(pageNumber, pageSize, filters, language) {
     try {
         return {
-            msg: `Get All Stores Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            msg: getSuitableTranslations("Get All Stores Inside The Page: {{pageNumber}} Process Has Been Successfully !!", language, { pageNumber }),
             error: false,
             data: await storeModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ creatingOrderDate: -1 }),
         }
@@ -30,18 +32,18 @@ async function getAllStoresInsideThePage(pageNumber, pageSize, filters) {
     }
 }
 
-async function getStoreDetails(storeId) {
+async function getStoreDetails(storeId, language) {
     try {
         const store = await storeModel.findById(storeId);
         if (store) {
             return {
-                msg: "Get Details For This Store Process Has Been Successfully !!",
+                msg: getSuitableTranslations("Get Details For This Store Process Has Been Successfully !!", language),
                 error: false,
                 data: store,
             }
         }
         return {
-            msg: "Sorry, This Store Is Not Found !!",
+            msg: getSuitableTranslations("Sorry, This Store Is Not Found !!", language),
             error: true,
             data: {},
         }
@@ -50,18 +52,18 @@ async function getStoreDetails(storeId) {
     }
 }
 
-async function getMainStoreDetails() {
+async function getMainStoreDetails(language) {
     try {
         const store = await storeModel.findOne({ isMainStore: true });
         if (store) {
             return {
-                msg: "Get Main Store Details Process Has Been Successfully !!",
+                msg: getSuitableTranslations("Get Main Store Details Process Has Been Successfully !!", language),
                 error: false,
                 data: store,
             }
         }
         return {
-            msg: "Sorry, This Store Is Not Found !!",
+            msg: getSuitableTranslations("Sorry, This Store Is Not Found !!", language),
             error: true,
             data: {},
         }
@@ -70,19 +72,19 @@ async function getMainStoreDetails() {
     }
 }
 
-async function createNewStore(storeDetails) {
+async function createNewStore(storeDetails, language) {
     try{
         const store = await storeModel.findOne({ ownerEmail: storeDetails.ownerEmail });
         if (store) {
             return {
-                msg: "Sorry, This Email Is Already Exist !!",
+                msg: getSuitableTranslations("Sorry, This Email Is Already Exist !!", language),
                 error: true,
                 data: {},
             }
         }
         const newStoreDetails = await (new storeModel(storeDetails)).save();
         return {
-            msg: "Creating Licence Request New Store Process Has Been Successfully !!",
+            msg: getSuitableTranslations("Creating Licence Request New Store Process Has Been Successfully !!", language),
             error: false,
             data: newStoreDetails,
         }
@@ -92,7 +94,7 @@ async function createNewStore(storeDetails) {
     }
 }
 
-async function approveStore(authorizationId, storeId, password) {
+async function approveStore(authorizationId, storeId, password, language) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin) {
@@ -101,14 +103,14 @@ async function approveStore(authorizationId, storeId, password) {
                 if (store) {
                     if (store.status === "approving") {
                         return {
-                            msg: "Sorry, This Store Is Already Approved !!",
+                            msg: getSuitableTranslations("Sorry, This Store Is Already Approved !!", language),
                             error: true,
                             data: {},
                         };
                     }
                     if (store.status === "blocking") {
                         return {
-                            msg: "Sorry, This Store Is Blocked !!",
+                            msg: getSuitableTranslations("Sorry, This Store Is Blocked !!", language),
                             error: true,
                             data: {
                                 blockingDate: store.blockingDate,
@@ -127,7 +129,7 @@ async function approveStore(authorizationId, storeId, password) {
                     });
                     await newMerchant.save();
                     return {
-                        msg: "Approving On This Store And Create Merchant Account Process Has Been Successfully !!",
+                        msg: getSuitableTranslations("Approving On This Store And Create Merchant Account Process Has Been Successfully !!", language),
                         error: false,
                         data: {
                             adminId: newMerchant._id,
@@ -137,19 +139,19 @@ async function approveStore(authorizationId, storeId, password) {
                     };
                 }
                 return {
-                    msg: "Sorry, This Store Is Not Found !!",
+                    msg: getSuitableTranslations("Sorry, This Store Is Not Found !!", language),
                     error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
+                msg: getSuitableTranslations("Sorry, Permission Denied Because This Admin Is Not Website Owner !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -159,7 +161,7 @@ async function approveStore(authorizationId, storeId, password) {
     }
 }
 
-async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
+async function updateStoreInfo(authorizationId, storeId, newStoreDetails, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin) {
@@ -167,25 +169,25 @@ async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
                 const store = await storeModel.findOneAndUpdate({ _id: storeId }, { ...newStoreDetails });
                 if (store) {
                     return {
-                        msg: "Updating Details Process For This Store Has Been Successfully !!",
+                        msg: getSuitableTranslations("Updating Details Process For This Store Has Been Successfully !!", language),
                         error: false,
                         data: {},
                     };
                 }
                 return {
-                    msg: "Sorry, This Store Is Not Found !!",
+                    msg: getSuitableTranslations("Sorry, This Store Is Not Found !!", language),
                     error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
+                msg: getSuitableTranslations("Sorry, Permission Denied Because This Admin Is Not Website Owner !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -194,7 +196,7 @@ async function updateStoreInfo(authorizationId, storeId, newStoreDetails) {
     }
 }
 
-async function blockingStore(authorizationId, storeId, blockingReason) {
+async function blockingStore(authorizationId, storeId, blockingReason, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin) {
@@ -214,7 +216,7 @@ async function blockingStore(authorizationId, storeId, blockingReason) {
                         });
                         const merchant = await adminModel.findOne({ storeId, isMerchant: true });
                         return {
-                            msg: "Blocking Process For This Store Has Been Successfully !!",
+                            msg: getSuitableTranslations("Blocking Process For This Store Has Been Successfully !!", language),
                             error: false,
                             data: {
                                 adminId: merchant._id,
@@ -225,26 +227,26 @@ async function blockingStore(authorizationId, storeId, blockingReason) {
                     }
                     if (store.status === "blocking") {
                         return {
-                            msg: "Sorry, This Store Is Already Blocked !!",
+                            msg: getSuitableTranslations("Sorry, This Store Is Already Blocked !!", language),
                             error: true,
                             data: {},
                         };
                     }
                 }
                 return {
-                    msg: "Sorry, This Store Is Not Found !!",
+                    msg: getSuitableTranslations("Sorry, This Store Is Not Found !!", language),
                     error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
+                msg: getSuitableTranslations("Sorry, Permission Denied Because This Admin Is Not Website Owner !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -253,7 +255,7 @@ async function blockingStore(authorizationId, storeId, blockingReason) {
     }
 }
 
-async function cancelBlockingStore(authorizationId, storeId) {
+async function cancelBlockingStore(authorizationId, storeId, language) {
     try {
         const admin = await adminModel.findById(authorizationId);
         if (admin) {
@@ -270,31 +272,31 @@ async function cancelBlockingStore(authorizationId, storeId) {
                             isBlocked: false
                         });
                         return {
-                            msg: "Cancel Blocking Process For This Store That Has Been Successfully !!",
+                            msg: getSuitableTranslations("Cancel Blocking Process For This Store That Has Been Successfully !!", language),
                             error: false,
                             data: {},
                         };
                     }
                     return {
-                        msg: "Sorry, This Store Is Not Blocked !!",
+                        msg: getSuitableTranslations("Sorry, This Store Is Not Blocked !!", language),
                         error: true,
                         data: {},
                     };
                 }
                 return {
-                    msg: "Sorry, This Store Is Not Found !!",
+                    msg: getSuitableTranslations("Sorry, This Store Is Not Found !!", language),
                     error: true,
                     data: {},
                 };
             }
             return {
-                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
+                msg: getSuitableTranslations("Sorry, Permission Denied Because This Admin Is Not Website Owner !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -303,7 +305,7 @@ async function cancelBlockingStore(authorizationId, storeId) {
     }
 }
 
-async function changeStoreImage(authorizationId, storeId, newStoreImagePath) {
+async function changeStoreImage(authorizationId, storeId, newStoreImagePath, language) {
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin) {
@@ -313,25 +315,25 @@ async function changeStoreImage(authorizationId, storeId, newStoreImagePath) {
                 });
                 if (store) {
                     return {
-                        msg: "Updating Store Image Process Has Been Successfully !!",
+                        msg: getSuitableTranslations("Updating Store Image Process Has Been Successfully !!", language),
                         error: false,
                         data: { deletedStoreImagePath: store.imagePath }
                     };    
                 }
                 return {
-                    msg: "Sorry, This Store Is Not Exist !!",
+                    msg: getSuitableTranslations("Sorry, This Store Is Not Exist !!", language),
                     error: true,
                     data: {}
                 }
             }
             return {
-                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
+                msg: getSuitableTranslations("Sorry, Permission Denied Because This Admin Is Not Website Owner !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -341,7 +343,7 @@ async function changeStoreImage(authorizationId, storeId, newStoreImagePath) {
     }
 }
 
-async function deleteStore(authorizationId, storeId){
+async function deleteStore(authorizationId, storeId, language){
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin) {
@@ -356,7 +358,7 @@ async function deleteStore(authorizationId, storeId){
                         const merchant = await adminModel.findOne({ storeId, isMerchant: true });
                         await adminModel.deleteMany({ storeId });
                         return {
-                            msg: "Deleting Store Process Has Been Successfully !!",
+                            msg: getSuitableTranslations("Deleting Store Process Has Been Successfully !!", language),
                             error: false,
                             data: {
                                 storeImagePath: store.imagePath,
@@ -367,25 +369,25 @@ async function deleteStore(authorizationId, storeId){
                         }
                     }
                     return {
-                        msg: "Sorry, Permission Denied Because This Store Is Main Store !!",
+                        msg: getSuitableTranslations("Sorry, Permission Denied Because This Store Is Main Store !!", language),
                         error: true,
                         data: {},
                     }
                 }
                 return {
-                    msg: "Sorry, This Store Is Not Found !!",
+                    msg: getSuitableTranslations("Sorry, This Store Is Not Found !!", language),
                     error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
+                msg: getSuitableTranslations("Sorry, Permission Denied Because This Admin Is Not Website Owner !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -395,7 +397,7 @@ async function deleteStore(authorizationId, storeId){
     }
 }
 
-async function rejectStore(authorizationId, storeId){
+async function rejectStore(authorizationId, storeId, language){
     try{
         const admin = await adminModel.findById(authorizationId);
         if (admin) {
@@ -403,7 +405,7 @@ async function rejectStore(authorizationId, storeId){
                 const store = await storeModel.findOneAndDelete({ _id: storeId });
                 if (store) {
                     return {
-                        msg: "Rejecting Store Process Has Been Successfully !!",
+                        msg: getSuitableTranslations("Rejecting Store Process Has Been Successfully !!", language),
                         error: false,
                         data: {
                             storeImagePath: store.imagePath,
@@ -413,19 +415,19 @@ async function rejectStore(authorizationId, storeId){
                     }
                 }
                 return {
-                    msg: "Sorry, This Store Is Not Found !!",
+                    msg: getSuitableTranslations("Sorry, This Store Is Not Found !!", language),
                     error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, Permission Denied Because This Admin Is Not Website Owner !!",
+                msg: getSuitableTranslations("Sorry, Permission Denied Because This Admin Is Not Website Owner !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, This Admin Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, This Admin Is Not Exist !!", language),
             error: true,
             data: {},
         }

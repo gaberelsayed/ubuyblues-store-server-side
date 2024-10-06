@@ -2,19 +2,21 @@
 
 const { referalModel } = require("../models/all.models");
 
-async function addNewReferal(referalDetails) {
+const { getSuitableTranslations } = require("../global/functions");
+
+async function addNewReferal(referalDetails, language) {
     try {
         const referal = await referalModel.findOne({ email: referalDetails.email });
         if (referal) {
             return {
-                msg: "Sorry, This Referal Is Already Exist !!",
+                msg: getSuitableTranslations("Sorry, This Referal Is Already Exist !!", language),
                 error: true,
                 data: {},
             }
         }
         await (new referalModel(referalDetails)).save();
         return {
-            msg: "Creating New Referal Process Has Been Successfuly !!",
+            msg: getSuitableTranslations("Creating New Referal Process Has Been Successfuly !!", language),
             error: false,
             data: {},
         }
@@ -24,10 +26,10 @@ async function addNewReferal(referalDetails) {
     }
 }
 
-async function getProductReferalsCount(filters) {
+async function getProductReferalsCount(filters, language) {
     try {
         return {
-            msg: "Get Product Referals Count Process Has Been Successfully !!",
+            msg: getSuitableTranslations("Get Product Referals Count Process Has Been Successfully !!", language),
             error: false,
             data: await referalModel.countDocuments(filters),
         }
@@ -37,10 +39,10 @@ async function getProductReferalsCount(filters) {
     }
 }
 
-async function getAllProductReferalsInsideThePage(pageNumber, pageSize, filters) {
+async function getAllProductReferalsInsideThePage(pageNumber, pageSize, filters, language) {
     try {
         return {
-            msg: `Get Products Count Inside The Page: ${pageNumber} Process Has Been Successfully !!`,
+            msg: getSuitableTranslations("Get Products Count Inside The Page: {{pageNumber}} Process Has Been Successfully !!", language, { pageNumber }),
             error: false,
             data: await referalModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize),
         }

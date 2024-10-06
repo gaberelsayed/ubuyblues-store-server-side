@@ -2,7 +2,9 @@
 
 const { userModel, productModel, productsRatingModel } = require("../models/all.models");
 
-async function selectProductRating(userId, ratingInfo) {
+const { getSuitableTranslations } = require("../global/functions");
+
+async function selectProductRating(userId, ratingInfo, language) {
     try{
         const user = await userModel.findById(userId);
         if (user) {
@@ -15,7 +17,7 @@ async function selectProductRating(userId, ratingInfo) {
                     product.ratings[ratingInfo.rating] = product.ratings[ratingInfo.rating] + 1;
                     await productModel.updateOne({ _id: ratingInfo.productId }, { ratings: product.ratings });
                     return {
-                        msg: "Updating Product Rating By This User Process Has Been Successfully !!",
+                        msg: getSuitableTranslations("Updating Product Rating By This User Process Has Been Successfully !!", language),
                         error: false,
                         data: {},
                     }
@@ -29,19 +31,19 @@ async function selectProductRating(userId, ratingInfo) {
                 product.ratings[ratingInfo.rating] = product.ratings[ratingInfo.rating] + 1;
                 await productModel.updateOne({ _id: ratingInfo.productId }, { ratings: product.ratings });
                 return {
-                    msg: "Adding New Product Rating By This User Process Has Been Successfully !!",
+                    msg: getSuitableTranslations("Adding New Product Rating By This User Process Has Been Successfully !!", language),
                     error: false,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Product Is Not Found !!",
+                msg: getSuitableTranslations("Sorry, This Product Is Not Found !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, The User Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, The User Is Not Exist !!", language),
             error: true,
             data: {},
         }
@@ -51,7 +53,7 @@ async function selectProductRating(userId, ratingInfo) {
     }
 }
 
-async function getProductRatingByUserId(userId, productId) {
+async function getProductRatingByUserId(userId, productId, language) {
     try{
         const user = await userModel.findById(userId);
         if (user) {
@@ -60,25 +62,25 @@ async function getProductRatingByUserId(userId, productId) {
                 const ratingInfo = await productsRatingModel.findOne({ userId, productId });
                 if (ratingInfo) {
                     return {
-                        msg: "Get Product Rating By User Process Has Been Successfully !!",
+                        msg: getSuitableTranslations("Get Product Rating By User Process Has Been Successfully !!", language),
                         error: false,
                         data: ratingInfo.rating,
                     }
                 }
                 return {
-                    msg: "Sorry, This Product Is Not Exist Any Rating By This User !!",
+                    msg: getSuitableTranslations("Sorry, This Product Is Not Exist Any Rating By This User !!", language),
                     error: true,
                     data: {},
                 }
             }
             return {
-                msg: "Sorry, This Product Is Not Found !!",
+                msg: getSuitableTranslations("Sorry, This Product Is Not Found !!", language),
                 error: true,
                 data: {},
             }
         }
         return {
-            msg: "Sorry, The User Is Not Exist !!",
+            msg: getSuitableTranslations("Sorry, The User Is Not Exist !!", language),
             error: true,
             data: {},
         }

@@ -2,12 +2,12 @@
 
 const { subscriptionModel } = require("../models/all.models");
 
-async function addNewSubscription(email) {
+async function addNewSubscription(email, language) {
     try {
         const subscription = await subscriptionModel.findOne({ email });
         if (subscription) {
             return {
-                msg: "Sorry, This Subscription Is Already Exist !!",
+                msg: getSuitableTranslations("Sorry, This Subscription Is Already Exist !!", language),
                 error: true,
                 data: {},
             }
@@ -16,7 +16,7 @@ async function addNewSubscription(email) {
             email,
         })).save();
         return {
-            msg: "Creating New Subscription Process Has Been Successfuly !!",
+            msg: getSuitableTranslations("Creating New Subscription Process Has Been Successfuly !!", language),
             error: false,
             data: {},
         }
