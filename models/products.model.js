@@ -233,7 +233,7 @@ async function getAllFlashProductsInsideThePage(pageNumber, pageSize, filters, s
         filters.startDiscountPeriod = { $lte: currentDate };
         filters.endDiscountPeriod = { $gte: currentDate };
         return {
-            msg: getSuitableTranslations("Get Flash Products Inside The Page: {{pageNumber}} Process Has Been Successfully !!", language, { pageNumber }),
+            msg: getSuitableTranslations("Get All Flash Products Inside The Page: {{pageNumber}} Process Has Been Successfully !!", language, { pageNumber }),
             error: false,
             data: {
                 products: await productModel
