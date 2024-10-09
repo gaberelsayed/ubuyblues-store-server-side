@@ -1,4 +1,4 @@
-const { getResponseObject, handleResizeImagesAndConvertFormatToWebp } = require("../global/functions");
+const { getResponseObject, handleResizeImagesAndConvertFormatToWebp, getSuitableTranslations } = require("../global/functions");
 
 const adsOPerationsManagmentFunctions = require("../models/ads.model");
 
@@ -23,7 +23,7 @@ async function postNewTextAd(req, res) {
         res.json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -46,7 +46,7 @@ async function postNewImageAd(req, res) {
         res.json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -57,7 +57,7 @@ async function getAllAds(req, res) {
 
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -75,7 +75,7 @@ async function deleteAd(req, res) {
         res.json(result);
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -96,7 +96,7 @@ async function putAdImage(req, res) {
         res.json(result);
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -111,7 +111,7 @@ async function putTextAdContent(req, res) {
         res.json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 

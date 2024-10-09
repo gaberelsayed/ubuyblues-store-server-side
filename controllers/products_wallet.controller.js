@@ -1,4 +1,4 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, getSuitableTranslations } = require("../global/functions");
 
 const walletOPerationsManagmentFunctions = require("../models/products_wallet.model");
 
@@ -15,7 +15,7 @@ async function getWalletProductsCount(req, res) {
         res.json(await walletOPerationsManagmentFunctions.getWalletProductsCount(getFiltersObject({ ...req.query, userId: req.data._id }), req.query.language));
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -25,7 +25,7 @@ async function getAllWalletProductsInsideThePage(req, res) {
         res.json(await walletOPerationsManagmentFunctions.getAllWalletProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject({ ...filters, userId: req.data._id }), req.query.language));
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -34,7 +34,7 @@ async function deleteWalletProduct(req, res) {
         res.json(await walletOPerationsManagmentFunctions.deleteWalletProduct(req.data._id, req.params.productId, req.query.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 

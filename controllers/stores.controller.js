@@ -6,7 +6,8 @@ const {
     sendDeleteStoreEmail,
     sendConfirmRequestAddStoreArrivedEmail,
     sendReceiveAddStoreRequestEmail,
-    handleResizeImagesAndConvertFormatToWebp
+    handleResizeImagesAndConvertFormatToWebp,
+    getSuitableTranslations
 } = require("../global/functions");
 
 const storesOPerationsManagmentFunctions = require("../models/stores.model");
@@ -31,7 +32,7 @@ async function getStoresCount(req, res) {
         res.json(await storesOPerationsManagmentFunctions.getStoresCount(getFiltersObject(req.query), req.query.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -41,7 +42,7 @@ async function getAllStoresInsideThePage(req, res) {
         res.json(await storesOPerationsManagmentFunctions.getAllStoresInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters), filters.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -50,7 +51,7 @@ async function getStoreDetails(req, res) {
         res.json(await storesOPerationsManagmentFunctions.getStoreDetails(req.params.storeId, req.query.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -59,7 +60,7 @@ async function getMainStoreDetails(req, res) {
         res.json(await storesOPerationsManagmentFunctions.getMainStoreDetails(req.query.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -78,7 +79,7 @@ async function postNewStore(req, res) {
         res.json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -94,7 +95,7 @@ async function postApproveStore(req, res) {
         res.json(await sendApproveStoreEmail(result.data.email, req.query.password, result.data.adminId, req.params.storeId, result.data.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -109,7 +110,7 @@ async function putStoreInfo(req, res) {
         res.json(result);
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -125,7 +126,7 @@ async function putBlockingStore(req, res) {
         res.json(await sendBlockStoreEmail(result.data.email, result.data.adminId, req.params.storeId, result.data.language));
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -140,7 +141,7 @@ async function putCancelBlockingStore(req, res) {
         res.json(result);
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -166,7 +167,7 @@ async function putStoreImage(req, res) {
         }
 }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -183,7 +184,7 @@ async function deleteStore(req, res) {
         res.json(await sendDeleteStoreEmail(result.data.email, result.data.adminId, req.params.storeId, result.data.language));
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -200,7 +201,7 @@ async function deleteRejectStore(req, res) {
         res.json(await sendRejectStoreEmail(result.data.ownerEmail, result.data.language));
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 

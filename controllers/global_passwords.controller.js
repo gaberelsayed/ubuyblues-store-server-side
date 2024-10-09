@@ -1,4 +1,4 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, getSuitableTranslations } = require("../global/functions");
 
 const globalPasswordsManagmentFunctions = require("../models/global_passwords.model");
 
@@ -14,7 +14,7 @@ async function putChangeBussinessEmailPassword(req, res) {
         res.json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 

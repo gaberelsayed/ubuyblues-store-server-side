@@ -1,4 +1,4 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, getSuitableTranslations } = require("../global/functions");
 
 const referalsManagmentFunctions = require("../models/referals.model");
 
@@ -16,7 +16,7 @@ async function postAddNewReferal(req, res) {
         res.json(await referalsManagmentFunctions.addNewReferal(req.body, req.query.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -26,7 +26,7 @@ async function getProductReferalsCount(req, res) {
         res.json(await referalsManagmentFunctions.getProductReferalsCount(getFiltersObject({ ...req.query, productId}), req.query.language));
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -36,7 +36,7 @@ async function getAllProductReferalsInsideThePage(req, res) {
         res.json(await referalsManagmentFunctions.getAllProductReferalsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject({...filters, productId: req.params.productId}), filters.language));
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 

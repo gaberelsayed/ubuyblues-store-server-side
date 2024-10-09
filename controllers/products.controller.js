@@ -1,4 +1,4 @@
-const { getResponseObject, handleResizeImagesAndConvertFormatToWebp } = require("../global/functions");
+const { getResponseObject, handleResizeImagesAndConvertFormatToWebp, getSuitableTranslations } = require("../global/functions");
 
 const productsManagmentFunctions = require("../models/products.model");
 
@@ -19,8 +19,7 @@ async function postNewProduct(req, res) {
             galleryImagesPaths: outputImageFilePaths.slice(1),
         };
         if(Number(productInfo.discount) < 0 || Number(productInfo.discount) > Number(productInfo.price)) {
-            res.status(400).json(getResponseObject("Sorry, Please Send Valid Discount Value !!", true, {}));
-            return;
+            return res.status(400).json(getResponseObject("Sorry, Please Send Valid Discount Value !!", true, {}));
         }
         const result = await productsManagmentFunctions.addNewProduct(req.data._id, productInfo, req.query.language);
         if (result.error) {
@@ -31,7 +30,7 @@ async function postNewProduct(req, res) {
         res.json(result);
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -52,7 +51,7 @@ async function postNewImagesToProductGallery(req, res) {
         res.json(result);
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -61,7 +60,7 @@ async function getProductsByIds(req, res) {
         res.json(await productsManagmentFunctions.getProductsByIds(req.body.productsIds, req.query.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -70,7 +69,7 @@ async function getProductsByIdsAndStoreId(req, res) {
         res.json(await productsManagmentFunctions.getProductsByIdsAndStoreId(req.query.storeId, req.body.productsIds, req.query.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -91,7 +90,7 @@ async function getProductInfo(req, res) {
         res.json(await productsManagmentFunctions.getProductInfo(req.params.productId, req.query.language));
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -100,7 +99,7 @@ async function getFlashProductsCount(req, res) {
         res.json(await productsManagmentFunctions.getFlashProductsCount(getFiltersAndSortDetailsObject(req.query).filtersObject, req.query.language));
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -109,7 +108,7 @@ async function getProductsCount(req, res) {
         res.json(await productsManagmentFunctions.getProductsCount(getFiltersAndSortDetailsObject(req.query).filtersObject, req.query.language));
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -124,7 +123,7 @@ async function getAllProductsInsideThePage(req, res) {
         res.json(await productsManagmentFunctions.getAllProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject, queryObject.language));
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -139,7 +138,7 @@ async function getAllFlashProductsInsideThePage(req, res) {
         res.json(await productsManagmentFunctions.getAllFlashProductsInsideThePage(queryObject.pageNumber, queryObject.pageSize, filtersAndSortDetailsObject.filtersObject, sortDetailsObject, queryObject.language));
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -148,7 +147,7 @@ async function getRelatedProductsInTheProduct(req, res) {
         res.json(await productsManagmentFunctions.getRelatedProductsInTheProduct(req.params.productId, req.query.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -157,14 +156,13 @@ async function getAllGalleryImages(req, res) {
         const result = await productsManagmentFunctions.getAllGalleryImages(req.data._id, req.params.productId, req.query.language);
         if (result.error) {
             if (result.msg === "Sorry, Permission Denied !!" || result.msg === "Sorry, This Admin Is Not Exist !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+                return res.status(401).json(result);
             }
         }
         res.json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -185,7 +183,7 @@ async function deleteProduct(req, res) {
         res.json(result);
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -203,7 +201,7 @@ async function deleteImageFromProductGallery(req, res) {
         res.json(result);
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -218,7 +216,7 @@ async function putProduct(req, res) {
         res.json(result);
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -240,7 +238,7 @@ async function putProductGalleryImage(req, res) {
         res.json(result);
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -261,7 +259,7 @@ async function putProductImage(req, res) {
         res.json(result);
     }
     catch (err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 

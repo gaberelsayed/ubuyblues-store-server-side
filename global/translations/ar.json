@@ -150,5 +150,11 @@
     "Updating User Info Process Has Been Successfuly !!": "عملية تحديث معلومات المستخدم تمت بنجاح !!",
     "Updating Verification Status Process Has Been Successfully !!": "عملية تحديث حالة التحقق تمت بنجاح !!",
     "Reseting Password Process Has Been Successfully !!": "عملية إعادة تعيين كلمة السر تمت بنجاح !!",
-    "Deleting User Process Has Been Successfully !!": "عملية حذف المستخدم تمت بنجاح !!"
+    "Deleting User Process Has Been Successfully !!": "عملية حذف المستخدم تمت بنجاح !!",
+    "Internal Server Error !!": "خطأ داخلي في الخادم !!",
+    "Creating New Payment Order By Tap Process Has Been Successfully !!": "عملية إنشاء طلب دفع جديد من خلال Tap تمت بنجاح !!",
+    "Creating New Payment Order By Tabby Process Has Been Successfully !!": "عملية إنشاء طلب دفع من خلال Tabby تمت بنجاح !!",
+    "Sorry, Can't Creating New Payment Order By Tabby Because Exceeding The Payment Limit !!": "عذراً ، لا يمكن إنشاء طلب دفع جديد من خلال Tabby بسبب تجاوز حدود الدفع !!",
+    "Creating New Payment Order By Binance Process Has Been Successfully !!": "عملية إنشاء طلب دفع جديد من خلال Binance تمت بنجاح !!",
+    "Sorry, Please Send Valid Discount Value !!": "عذراً ، الرجاء إرسال قيمة تخفيض صالحة !!"
 }

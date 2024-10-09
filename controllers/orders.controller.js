@@ -1,4 +1,4 @@
-const { getResponseObject, sendReceiveOrderEmail, sendUpdateOrderEmail } = require("../global/functions");
+const { getResponseObject, sendReceiveOrderEmail, sendUpdateOrderEmail, getSuitableTranslations } = require("../global/functions");
 
 const ordersManagmentFunctions = require("../models/orders.model");
 
@@ -45,10 +45,10 @@ function getFiltersObjectForUpdateOrder(acceptableData) {
 
 async function getOrdersCount(req, res) {
     try{
-        res.json(await ordersManagmentFunctions.getOrdersCount(req.data._id, getFiltersObject(req.query)));
+        res.json(await ordersManagmentFunctions.getOrdersCount(req.data._id, getFiltersObject(req.query), req.query.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -58,7 +58,7 @@ async function getAllOrdersInsideThePage(req, res) {
         res.json(await ordersManagmentFunctions.getAllOrdersInsideThePage(req.data._id, filters.pageNumber, filters.pageSize, getFiltersObject(filters), filters.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -67,7 +67,7 @@ async function getOrderDetails(req, res) {
         res.json(await ordersManagmentFunctions.getOrderDetails(req.params.orderId, req.query.language));
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -89,7 +89,7 @@ async function postNewOrder(req, res) {
         res.json(result);
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -99,7 +99,8 @@ async function postNewPaymentOrder(req, res) {
         if (req?.data._id){
             orderData.userId = req.data._id;
         }
-        let result = await ordersManagmentFunctions.createNewOrder(orderData, req.query.language);
+        const { language } = req.query;
+        let result = await ordersManagmentFunctions.createNewOrder(orderData, language);
         if (result.error) {
             if (result.msg === "Sorry, This User Is Not Exist !!") {
                 return res.status(401).json(result);
@@ -138,7 +139,7 @@ async function postNewPaymentOrder(req, res) {
                         Authorization: `Bearer ${process.env.TAP_PAYMENT_GATEWAY_SECRET_KEY}`
                     }
                 })).data;
-                return res.json(getResponseObject("Creating New Payment Order By Tap Process Has Been Successfully !!", false, result));
+                return res.json(getResponseObject(getSuitableTranslations("Creating New Payment Order By Tap Process Has Been Successfully !!", language), false, result));
             } else if (orderData.paymentGateway === "tabby") {
                 result = (await post(`${process.env.TABBY_PAYMENT_GATEWAY_BASE_API_URL}/api/v2/checkout`, {
                     payment: {
@@ -222,10 +223,10 @@ async function postNewPaymentOrder(req, res) {
                     }
                 })).data;
                 return res.json(result.status === "created" ?
-                    getResponseObject("Creating New Payment Order By Tabby Process Has Been Successfully !!", false, {
+                    getResponseObject(getSuitableTranslations("Creating New Payment Order By Tabby Process Has Been Successfully !!", language), false, {
                         checkoutURL: result.configuration.available_products.installments[0].web_url
                     }) :
-                    getResponseObject("Sorry, Can't Creating New Payment Order By Tabby Because Exceeding The Payment Limit !!" , true, {})
+                    getResponseObject(getSuitableTranslations("Sorry, Can't Creating New Payment Order By Tabby Because Exceeding The Payment Limit !!", language) , true, {})
                 );
             } else {
                 const timestamp = Date.now();
@@ -261,14 +262,14 @@ async function postNewPaymentOrder(req, res) {
                         "BinancePay-Signature": signature
                     }
                 })).data;
-                res.json(getResponseObject("Creating New Payment Order By Binance Process Has Been Successfully !!", false, {
+                res.json(getResponseObject(getSuitableTranslations("Creating New Payment Order By Binance Process Has Been Successfully !!", language), false, {
                     checkoutURL: result.data.checkoutUrl
                 }));
             }
         }
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -281,7 +282,7 @@ async function postCheckoutComplete(req, res) {
         }
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -304,7 +305,7 @@ async function postChangeBinancePaymentStatus(req, res) {
         });
     }
     catch(err) {
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -326,7 +327,7 @@ async function putOrder(req, res) {
         res.json(result);
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -335,14 +336,13 @@ async function putOrderProduct(req, res) {
         const result = await ordersManagmentFunctions.updateOrderProduct(req.data._id, req.params.orderId, req.params.productId, req.body, req.query.language);
         if (result.error) {
             if (result.msg !== "Sorry, This Order Is Not Found !!" || result.msg !== "Sorry, This Product For This Order Is Not Found !!") {
-                res.status(401).json(getResponseObject("Unauthorized Error", true, {}));
-                return;
+                return res.status(401).json(result);
             }
         }
         res.json(result);
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -357,7 +357,7 @@ async function deleteOrder(req, res) {
         res.json(result);
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
@@ -373,7 +373,7 @@ async function deleteProductFromOrder(req, res) {
         res.json(result);
     }
     catch(err){
-        res.status(500).json(getResponseObject("Internal Server Error !!", true, {}));
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
 
