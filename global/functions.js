@@ -449,19 +449,18 @@ function processingTranslation(variablesObject, translation) {
 
 function getSuitableTranslations(msg, language, variables = {}) {
     if (language) {
-        console.log(variables)
         switch(language) {
-            case "ar": return processingTranslation(variables, arTranslations[msg]);
-            case "tr": return processingTranslation(variables, trTranslations[msg]);
-            case "de": return processingTranslation(variables, deTranslations[msg]);
+            case "ar": return processingTranslation(variables, arTranslations[msg] ? arTranslations[msg] : msg);
+            case "tr": return processingTranslation(variables, trTranslations[msg] ? trTranslations[msg] : msg);
+            case "de": return processingTranslation(variables, deTranslations[msg] ? deTranslations[msg] : msg);
             default: return processingTranslation(variables, msg);
         }
     }
     return {
         en: processingTranslation(variables, msg),
-        ar: processingTranslation(variables, arTranslations[msg]),
-        tr: processingTranslation(variables, trTranslations[msg]),
-        de: processingTranslation(variables, deTranslations[msg])
+        ar: processingTranslation(variables, arTranslations[msg] ? arTranslations[msg] : msg),
+        tr: processingTranslation(variables, trTranslations[msg] ? trTranslations[msg] : msg),
+        de: processingTranslation(variables, deTranslations[msg] ? deTranslations[msg] : msg)
     }
 }
 
