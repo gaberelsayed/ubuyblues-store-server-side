@@ -2,14 +2,13 @@
 
 const { globalPasswordModel, adminModel } = require("./all.models");
 
-const { getSuitableTranslations } = require("../global/functions");
-
 // require cryptoJs module for password encrypting
 
 const { AES, enc } = require("crypto-js");
 
 async function getPasswordForBussinessEmail(email, language){
     try{
+    const { getSuitableTranslations } = require("../global/functions");
         const user = await globalPasswordModel.findOne({ email });
         if (user) {
             return {
@@ -31,6 +30,7 @@ async function getPasswordForBussinessEmail(email, language){
 
 async function changeBussinessEmailPassword(authorizationId, email, password, newPassword, language) {
     try {
+    const { getSuitableTranslations } = require("../global/functions");
         const admin = await adminModel.findById(authorizationId);
         if (admin){
             if (admin.isWebsiteOwner) {

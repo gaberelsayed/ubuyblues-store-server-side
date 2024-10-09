@@ -1,4 +1,4 @@
-const { getResponseObject } = require("../global/functions");
+const { getResponseObject, getSuitableTranslations } = require("../global/functions");
 
 const adminsOPerationsManagmentFunctions = require("../models/admins.model");
 

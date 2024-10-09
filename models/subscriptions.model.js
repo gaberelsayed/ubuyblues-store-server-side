@@ -2,6 +2,8 @@
 
 const { subscriptionModel } = require("../models/all.models");
 
+const { getSuitableTranslations } = require("../global/functions");
+
 async function addNewSubscription(email, language) {
     try {
         const subscription = await subscriptionModel.findOne({ email });

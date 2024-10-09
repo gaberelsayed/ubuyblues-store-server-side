@@ -2,13 +2,13 @@
 
 const { userModel, accountVerificationCodesModel, adminModel, productsWalletModel, favoriteProductModel } = require("../models/all.models");
 
-const { getSuitableTranslations } = require("../global/functions");
-
 // require bcryptjs module for password encrypting
 
 const { hash, compare } = require("bcryptjs");
 
 // Define Create New User Function
+
+const { getSuitableTranslations } = require("../global/functions");
 
 async function createNewUser(email, password, language) {
     try {

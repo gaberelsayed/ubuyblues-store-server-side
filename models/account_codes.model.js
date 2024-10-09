@@ -1,8 +1,8 @@
 const { accountVerificationCodesModel } = require("../models/all.models");
 
-const { getSuitableTranslations } = require("../global/functions");
-
 const { hash, compare } = require("bcryptjs");
+
+const { getSuitableTranslations } = require("../global/functions");
 
 async function addNewAccountVerificationCode(email, code, typeOfUse, language) {
     try{

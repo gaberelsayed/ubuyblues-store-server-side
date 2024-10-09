@@ -367,38 +367,43 @@ async function updateOrder(authorizationId, orderId, newOrderDetails, language) 
 }
 
 async function changeCheckoutStatusToSuccessfull(orderId, language) {
-    const order = await orderModel.findOneAndUpdate({ _id: orderId }, { checkoutStatus: "Checkout Successfull" });
-    if (order) {
-        const totalPrices = {
-            totalPriceBeforeDiscount: 0,
-            totalDiscount: 0,
-            totalPriceAfterDiscount: 0
-        }
-        for(let product of order.products){
-            totalPrices.totalPriceBeforeDiscount += product.totalAmount;
-            totalPrices.totalDiscount += product.discount * product.quantity;
-            totalPrices.totalPriceAfterDiscount = totalPrices.totalPriceBeforeDiscount - totalPrices.totalDiscount;
+    try{
+        const order = await orderModel.findOneAndUpdate({ _id: orderId }, { checkoutStatus: "Checkout Successfull" });
+        if (order) {
+            const totalPrices = {
+                totalPriceBeforeDiscount: 0,
+                totalDiscount: 0,
+                totalPriceAfterDiscount: 0
+            }
+            for(let product of order.products){
+                totalPrices.totalPriceBeforeDiscount += product.totalAmount;
+                totalPrices.totalDiscount += product.discount * product.quantity;
+                totalPrices.totalPriceAfterDiscount = totalPrices.totalPriceBeforeDiscount - totalPrices.totalDiscount;
+            }
+            return {
+                msg: getSuitableTranslations("Updating Order Checkout Status To Successfull Process Has Been Successfully !!", language),
+                error: false,
+                data: {
+                    orderId: order._id,
+                    orderNumber: order.orderNumber,
+                    billingAddress: order.billingAddress,
+                    shippingAddress: order.shippingAddress,
+                    products: order.products,
+                    totalPriceBeforeDiscount: totalPrices.totalPriceBeforeDiscount,
+                    totalDiscount: totalPrices.totalDiscount,
+                    totalPriceAfterDiscount: totalPrices.totalPriceAfterDiscount,
+                    shippingCost: order.shippingCost
+                },
+            }
         }
         return {
-            msg: getSuitableTranslations("Updating Order Checkout Status To Successfull Process Has Been Successfully !!", language),
-            error: false,
-            data: {
-                orderId: order._id,
-                orderNumber: order.orderNumber,
-                billingAddress: order.billingAddress,
-                shippingAddress: order.shippingAddress,
-                products: order.products,
-                totalPriceBeforeDiscount: totalPrices.totalPriceBeforeDiscount,
-                totalDiscount: totalPrices.totalDiscount,
-                totalPriceAfterDiscount: totalPrices.totalPriceAfterDiscount,
-                shippingCost: order.shippingCost
-            },
+            msg: getSuitableTranslations("Sorry, This Order Is Not Found !!", language),
+            error: true,
+            data: {},
         }
     }
-    return {
-        msg: getSuitableTranslations("Sorry, This Order Is Not Found !!", language),
-        error: true,
-        data: {},
+    catch(err) {
+        throw Error(err);
     }
 }
 

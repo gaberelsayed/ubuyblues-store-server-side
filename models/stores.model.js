@@ -2,11 +2,11 @@
 
 const { storeModel, adminModel, categoryModel, productModel, brandModel } = require("../models/all.models");
 
-const { getSuitableTranslations } = require("../global/functions");
-
 // require bcryptjs module for password encrypting
 
 const { hash } = require("bcryptjs");
+
+const { getSuitableTranslations } = require("../global/functions");
 
 async function getStoresCount(filters, language) {
     try {
