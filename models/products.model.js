@@ -232,6 +232,7 @@ async function getAllFlashProductsInsideThePage(pageNumber, pageSize, filters, s
         const currentDate = new Date();
         filters.startDiscountPeriod = { $lte: currentDate };
         filters.endDiscountPeriod = { $gte: currentDate };
+        console.log(pageNumber)
         return {
             msg: getSuitableTranslations("Get Flash Products Inside The Page: {{pageNumber}} Process Has Been Successfully !!", language, { pageNumber }),
             error: false,

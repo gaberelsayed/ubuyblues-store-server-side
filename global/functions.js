@@ -16,6 +16,10 @@ const sharp = require("sharp");
 
 const arTranslations = require("./translations/ar.json");
 
+const trTranslations = require("./translations/tr.json");
+
+const deTranslations = require("./translations/de.json");
+
 function isEmail(email) {
     return email.match(/[^\s@]+@[^\s@]+\.[^\s@]+/);
 }
@@ -434,6 +438,7 @@ async function handleResizeImagesAndConvertFormatToWebp(files, outputImageFilePa
 
 function processingTranslation(variablesObject, translation) {
     const variables = Object.keys(variablesObject);
+    console.log(variables)
     if (variables.length > 0) {
         variables.forEach((variable) => {
             translation = translation.replace(`{{${variable}}}`, variablesObject[variable]);
@@ -447,16 +452,16 @@ function getSuitableTranslations(msg, language, variables = {}) {
     if (language) {
         switch(language) {
             case "ar": return processingTranslation(variables, arTranslations[msg]);
-            case "tr": return processingTranslation(variables, arTranslations[msg]);
-            case "ge": return processingTranslation(variables, arTranslations[msg]);
+            case "tr": return processingTranslation(variables, trTranslations[msg]);
+            case "de": return processingTranslation(variables, deTranslations[msg]);
             default: return processingTranslation(variables, msg);
         }
     }
     return {
         en: processingTranslation(variables, msg),
         ar: processingTranslation(variables, arTranslations[msg]),
-        tr: processingTranslation(variables, arTranslations[msg]),
-        ge: processingTranslation(variables, arTranslations[msg])
+        tr: processingTranslation(variables, trTranslations[msg]),
+        de: processingTranslation(variables, deTranslations[msg])
     }
 }
 
