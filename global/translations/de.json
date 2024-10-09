@@ -104,6 +104,7 @@
     "Get Product Info Process Has Been Successfuly !!": "Der Prozess zum Abrufen von Produktinformationen war erfolgreich!!",
     "Get Products Count Process Has Been Successfully !!": "Der Prozess zum Abrufen der Anzahl der Produkte war erfolgreich!!",
     "Get Flash Products Count Process Has Been Successfully !!": "Der Prozess zum Abrufen der Anzahl der Flash-Produkte war erfolgreich!!",
+    "Get All Flash Products Inside The Page: {{pageNumber}} Process Has Been Successfully !!": "Der Prozess zum Abrufen aller Flash-Produkte auf Seite: {{pageNumber}} war erfolgreich!!",
     "Get Sample From Related Products In This Product Process Has Been Successfuly !!": "Der Prozess zum Abrufen einer Probe von verwandten Produkten in diesem Produkt war erfolgreich!!",
     "Get All Gallery Images For This Product Process Has Been Successfully !!": "Der Prozess zum Abrufen aller Galerie-Bilder für dieses Produkt war erfolgreich!!",
     "Deleting Product Process Has Been Successfuly !!": "Der Prozess zum Löschen des Produkts war erfolgreich!!",

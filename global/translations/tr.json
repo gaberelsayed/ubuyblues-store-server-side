@@ -104,6 +104,7 @@
     "Get Product Info Process Has Been Successfuly !!": "Ürün bilgilerini alma işlemi başarıyla tamamlandı!!",
     "Get Products Count Process Has Been Successfully !!": "Ürünlerin sayısını alma işlemi başarıyla tamamlandı!!",
     "Get Flash Products Count Process Has Been Successfully !!": "Flaş ürünlerin sayısını alma işlemi başarıyla tamamlandı!!",
+    "Get All Flash Products Inside The Page: {{pageNumber}} Process Has Been Successfully !!": "Sayfa içindeki tüm flaş ürünleri getirme işlemi: {{pageNumber}} başarıyla tamamlandı!!",
     "Get Sample From Related Products In This Product Process Has Been Successfuly !!": "Bu üründeki ilgili ürünlerden örnek alma işlemi başarıyla tamamlandı!!",
     "Get All Gallery Images For This Product Process Has Been Successfully !!": "Bu ürün için tüm galeri görüntülerini alma işlemi başarıyla tamamlandı!!",
     "Deleting Product Process Has Been Successfuly !!": "Ürünü silme işlemi başarıyla tamamlandı!!",

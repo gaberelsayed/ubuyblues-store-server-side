@@ -104,6 +104,7 @@
     "Get Product Info Process Has Been Successfuly !!": "عملية جلب معلومات المنتج تمت بنجاح !!",
     "Get Products Count Process Has Been Successfully !!": "عملية جلب عدد المنتجات تمت بنجاح !!",
     "Get Flash Products Count Process Has Been Successfully !!": "عملية جلب عدد المنتجات الفلاش تمت بنجاح !!",
+    "Get All Flash Products Inside The Page: {{pageNumber}} Process Has Been Successfully !!": "عملية جلب كل المنتجات ذات التخفيض بداخل بداخل الصفحة: {{pageNumber}} تمت بنجاح !!",
     "Get Sample From Related Products In This Product Process Has Been Successfuly !!": "عملية جلب عينة من المنتجات المرتبطة بهذا المنتج تمت بنجاح !!",
     "Get All Gallery Images For This Product Process Has Been Successfully !!": "عملية جلب كل صور الاستديو لهذا المنتج تمت بنجاح !!",
     "Deleting Product Process Has Been Successfuly !!": "عملية حذف منتج تمت بنجاح !!",
