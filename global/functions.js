@@ -438,7 +438,7 @@ async function handleResizeImagesAndConvertFormatToWebp(files, outputImageFilePa
 
 function processingTranslation(variablesObject, translation) {
     const variables = Object.keys(variablesObject);
-    console.log(variables)
+    // console.log(variables)
     if (variables.length > 0) {
         variables.forEach((variable) => {
             translation = translation.replace(`{{${variable}}}`, variablesObject[variable]);
