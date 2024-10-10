@@ -1,6 +1,7 @@
 {
     "Sending Code To Your Email Process Has Been Succssfuly !!": "Der Code wurde erfolgreich an Ihre E-Mail gesendet!!",
     "This Code For This Email Is Valid !!": "Dieser Code für diese E-Mail ist gültig!!",
+    "This Code For This Email Is Not Valid !!": "Dieser Code für diese E-Mail ist ungültig!!",
     "Sorry, This User Is Not Found !!": "Entschuldigung, dieser Benutzer wurde nicht gefunden!!",
     "Sorry, This Email Has Been Blocked From Receiving Code Messages For 24 Hours Due To Exceeding The Maximum Number Of Resend Attempts !!": "Entschuldigung, diese E-Mail wurde für 24 Stunden gesperrt, weil die maximale Anzahl der Wiederholungsversuche überschritten wurde!!",
     "Sorry, There Is No Code For This Email !!": "Entschuldigung, es gibt keinen Code für diese E-Mail!!",
@@ -9,7 +10,6 @@
     "Sorry, The Email Or Password Incorrect !!": "Entschuldigung, die E-Mail oder das Passwort ist falsch!!",
     "Get Admin Info Process Has Been Successfully !!": "Der Abruf der Admin-Informationen war erfolgreich!!",
     "Sorry, This Admin Is Not Exist !!": "Entschuldigung, dieser Admin existiert nicht!!",
-    "Adding New Text Ad Process Has Been Successfully !!": "Der Prozess zum Hinzufügen einer neuen Textanzeige war erfolgreich!!",
     "Get Admins Count Process Has Been Successfully !!": "Der Prozess zur Ermittlung der Anzahl der Administratoren war erfolgreich!!",
     "Sorry, This Merchant Has Been Blocked !!": "Entschuldigung, dieser Händler wurde gesperrt!!",
     "Sorry, Permission Denied Because This Admin Is Not Merchant !!": "Entschuldigung, die Erlaubnis wurde verweigert, da dieser Admin kein Händler ist!!",
@@ -20,6 +20,7 @@
     "Updating Admin Details Process Has Been Successfully !!": "Der Prozess zur Aktualisierung der Admin-Details war erfolgreich!!",
     "Deleting Admin Process Has Been Successfully !!": "Der Prozess zum Löschen des Administrators war erfolgreich!!",
     "Get All Ads Process Has Been Successfully !!": "Der Prozess zum Abrufen aller Anzeigen war erfolgreich!!",
+    "Adding New Text Ad Process Has Been Successfully !!": "Der Prozess zum Hinzufügen einer neuen Textanzeige war erfolgreich!!",
     "Sorry, Permission Denied Because This Ad Is Not Exist At Store Managed By This Admin !!": "Entschuldigung, die Erlaubnis wurde verweigert, weil diese Anzeige in dem von diesem Admin verwalteten Geschäft nicht existiert!!",
     "Sorry, This Ad Is Not Exist !!": "Entschuldigung, diese Anzeige existiert nicht!!",
     "Sorry, This Admin Has Been Blocked !!": "Entschuldigung, dieser Administrator wurde gesperrt!!",
