@@ -45,9 +45,8 @@ async function getOrdersCount(authorizationId, filters, language) {
                 data: await orderModel.countDocuments(filters),
             }
         }
-        const firstLetterOfDistination = user.distination[0];
         return {
-            msg: getSuitableTranslations(`Sorry, This ${user.distination.replace(firstLetterOfDistination, firstLetterOfDistination.toUpperCase())} Is Not Exist !!`, language),
+            msg: getSuitableTranslations(`Sorry, This ${user.distination.replace(user.distination[0], user.distination[0].toUpperCase())} Is Not Exist !!`, language),
             error: true,
             data: {},
         }
@@ -73,9 +72,8 @@ async function getAllOrdersInsideThePage(authorizationId, pageNumber, pageSize, 
                 data: await orderModel.find(filters).skip((pageNumber - 1) * pageSize).limit(pageSize).sort({ orderNumber: -1 }),
             }
         }
-        const firstLetterOfDistination = user.distination[0];
         return {
-            msg: getSuitableTranslations(`Sorry, This ${user.distination.replace(firstLetterOfDistination, firstLetterOfDistination.toUpperCase())} Is Not Exist !!`, language),
+            msg: getSuitableTranslations(`Sorry, This ${user.distination.replace(user.distination[0], user.distination[0].toUpperCase())} Is Not Exist !!`, language),
             error: true,
             data: {},
         }
