@@ -56,7 +56,10 @@ const adminSchema = new mongoose.Schema({
                         "Delete Product",
                         "Show And Hide Sections",
                         "Change Bussiness Email Password",
-                        "Add New Admin"
+                        "Add New Admin",
+                        "Add New Ad",
+                        "Update Ad Info",
+                        "Delete Ad"
                     ],
                 },
                 value: {

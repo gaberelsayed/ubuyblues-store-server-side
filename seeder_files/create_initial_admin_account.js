@@ -58,7 +58,10 @@ const adminSchema = mongoose.Schema({
                     "Delete Product",
                     "Show And Hide Sections",
                     "Change Bussiness Email Password",
-                    "Add New Admin"
+                    "Add New Admin",
+                    "Add New Ad",
+                    "Update Ad Info",
+                    "Delete Ad"
                 ],
             },
             value: {
@@ -167,7 +170,7 @@ const userInfo = {
     
 }
 
-async function create_admin_user_account() {
+async function create_initial_admin_user_account() {
     try {
         await mongoose.connect(process.env.DB_URL);
         let user = await adminModel.findOne({ email: userInfo.email });
@@ -180,11 +183,11 @@ async function create_admin_user_account() {
         const new_admin_user = new adminModel(userInfo);
         await new_admin_user.save();
         await mongoose.disconnect();
-        return "Ok !!, Create Admin Account Process Has Been Successfuly !!";
+        return "Ok !!, Create Initial Admin Account Process Has Been Successfuly !!";
     } catch(err) {
         await mongoose.disconnect();
         throw Error(err);
     }
 }
 
-create_admin_user_account().then((result) => console.log(result));
+create_initial_admin_user_account().then((result) => console.log(result));

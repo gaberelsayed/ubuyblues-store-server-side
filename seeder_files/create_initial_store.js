@@ -46,6 +46,16 @@ const storeSchema = mongoose.Schema({
         ],
     },
     isMainStore: Boolean,
+    language: {
+        type: String,
+        enum: [
+            "ar",
+            "en",
+            "de",
+            "tr"
+        ],
+        default: "en"
+    },
     creatingOrderDate: {
         type: Date,
         default: Date.now(),
@@ -73,17 +83,17 @@ const storeInfo = {
     approveDate: Date.now(),
 };
 
-async function createStore() {
+async function create_initial_store() {
     try {
         await mongoose.connect(process.env.DB_URL);
         const newStore = new storeModel(storeInfo);
         await newStore.save();
         await mongoose.disconnect();
-        return "Ok !!, Create Store Process Has Been Successfuly !!";
+        return "Ok !!, Create Initial Store Process Has Been Successfuly !!";
     } catch(err) {
         await mongoose.disconnect();
         throw Error(err);
     }
 }
 
-createStore().then((result) => console.log(result));
+create_initial_store().then((result) => console.log(result));

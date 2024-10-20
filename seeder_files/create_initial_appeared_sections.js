@@ -37,16 +37,16 @@ const appeared_sections = [
     },
 ]
 
-async function create_appeared_sections() {
+async function create_initial_appeared_sections() {
     try {
         await mongoose.connect(process.env.DB_URL);
         await appeared_sections_model.insertMany(appeared_sections);
         await mongoose.disconnect();
-        return "Ok !!, Create Appeared Sections Account Has Been Successfuly !!";
+        return "Ok !!, Create Initial Appeared Sections Account Has Been Successfuly !!";
     } catch(err) {
         await mongoose.disconnect();
         throw Error(err);
     }
 }
 
-create_appeared_sections().then((result) => console.log(result));
+create_initial_appeared_sections().then((result) => console.log(result));
