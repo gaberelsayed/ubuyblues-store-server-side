@@ -8,7 +8,7 @@ function getFiltersObject(filters) {
         if (objectKey === "storeId") filtersObject[objectKey] = filters[objectKey];
         if (objectKey === "categoryId") filtersObject[objectKey] = filters[objectKey];
         if (objectKey === "parent") {
-            if (filtersObject[objectKey] === "null") {
+            if (filters[objectKey] === "null") {
                 filtersObject[objectKey] = null;
             } else filtersObject[objectKey] = filters[objectKey];
         }
@@ -60,9 +60,11 @@ async function getCategoryInfo(req, res) {
 
 async function getCategoriesCount(req, res) {
     try {
+        console.log(getFiltersObject(req.query))
         res.json(await categoriesManagmentFunctions.getCategoriesCount(getFiltersObject(req.query), req.query.language));
     }
     catch (err) {
+        console.log(err)
         res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
