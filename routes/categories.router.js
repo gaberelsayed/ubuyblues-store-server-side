@@ -31,6 +31,15 @@ categoriesRouter.get("/all-categories", categoriesController.getAllCategories);
 
 categoriesRouter.get("/all-categories-with-hierarechy", categoriesController.getAllCategoriesWithHierarechy);
 
+categoriesRouter.get("/all-sub-categories-for-parent",
+    (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes([
+            { fieldName: "Category Parent Id", fieldValue: req.query.parentId, dataType: "ObjectId", isRequiredValue: false },
+        ], res, next);
+    },
+    categoriesController.getAllSubCategoriesForParent
+);
+
 categoriesRouter.get("/categories-count",
     (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([

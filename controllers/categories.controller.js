@@ -44,6 +44,15 @@ async function getAllCategoriesWithHierarechy(req, res) {
     }
 }
 
+async function getAllSubCategoriesForParent(req, res) {
+    try {
+        res.json(await categoriesManagmentFunctions.getAllSubCategoriesForParent(req.query.parentId, req.query.language));
+    }
+    catch (err) {
+        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
+    }
+}
+
 async function getCategoryInfo(req, res) {
     try {
         res.json(await categoriesManagmentFunctions.getCategoryInfo(req.params.categoryId, req.query.language));
@@ -106,6 +115,7 @@ module.exports = {
     postNewCategory,
     getAllCategories,
     getAllCategoriesWithHierarechy,
+    getAllSubCategoriesForParent,
     getCategoriesCount,
     getAllCategoriesInsideThePage,
     getCategoryInfo,
