@@ -100,13 +100,14 @@ usersRouter.post("/send-account-verification-code",
 usersRouter.put("/update-user-info",
     validateJWT,
     (req, res, next) => {
-        const { firstName, lastName, previewName, email, password } = req.body;
+        const { firstName, lastName, previewName, email, password, newPassword } = req.body;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "First Name", fieldValue: firstName, dataType: "string", isRequiredValue: false },
             { fieldName: "Last Name", fieldValue: lastName, dataType: "string", isRequiredValue: false },
             { fieldName: "Preview Name", fieldValue: previewName, dataType: "string", isRequiredValue: false },
             { fieldName: "Email", fieldValue: email, dataType: "string", isRequiredValue: false },
-            { fieldName: "Password", fieldValue: password, dataType: "string", isRequiredValue: false },
+            { fieldName: "Password", fieldValue: password, dataType: "string", isRequiredValue: newPassword ? true : false },
+            { fieldName: "New Password", fieldValue: newPassword, dataType: "string", isRequiredValue: password ? true : false },
         ], res, next);
     },
     (req, res, next) => {
