@@ -33,8 +33,10 @@ categoriesRouter.get("/all-categories-with-hierarechy", categoriesController.get
 
 categoriesRouter.get("/all-sub-categories-for-parent",
     (req, res, next) => {
+        const { storeId, parentId } = req.query;
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Category Parent Id", fieldValue: req.query.parentId, dataType: "ObjectId", isRequiredValue: false },
+            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "Category Parent Id", fieldValue: parentId, dataType: "ObjectId", isRequiredValue: false },
         ], res, next);
     },
     categoriesController.getAllSubCategoriesForParent

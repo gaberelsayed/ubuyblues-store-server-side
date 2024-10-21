@@ -46,7 +46,8 @@ async function getAllCategoriesWithHierarechy(req, res) {
 
 async function getAllSubCategoriesForParent(req, res) {
     try {
-        res.json(await categoriesManagmentFunctions.getAllSubCategoriesForParent(req.query.parentId, req.query.language));
+        const { storeId, parentId } = req.query;
+        res.json(await categoriesManagmentFunctions.getAllSubCategoriesForParent(storeId, parentId, req.query.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
