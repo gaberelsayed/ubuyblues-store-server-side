@@ -60,11 +60,9 @@ async function getCategoryInfo(req, res) {
 
 async function getCategoriesCount(req, res) {
     try {
-        console.log(getFiltersObject(req.query))
         res.json(await categoriesManagmentFunctions.getCategoriesCount(getFiltersObject(req.query), req.query.language));
     }
     catch (err) {
-        console.log(err)
         res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
     }
 }
