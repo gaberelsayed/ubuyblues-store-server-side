@@ -7,7 +7,11 @@ function getFiltersObject(filters) {
     for (let objectKey in filters) {
         if (objectKey === "storeId") filtersObject[objectKey] = filters[objectKey];
         if (objectKey === "categoryId") filtersObject[objectKey] = filters[objectKey];
-        if (objectKey === "parent") filtersObject[objectKey] = JSON.parse(filters[objectKey]);
+        if (objectKey === "parent") {
+            if (filtersObject[objectKey] === "null") {
+                filtersObject[objectKey] = null;
+            } else filtersObject[objectKey] = filters[objectKey];
+        }
     }
     return filtersObject;
 }
