@@ -34,7 +34,7 @@ categoriesRouter.get("/all-categories-with-hierarechy", categoriesController.get
 categoriesRouter.get("/categories-count",
     (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: req.query.storeId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "Store Id", fieldValue: req.query.storeId, dataType: "ObjectId", isRequiredValue: false },
         ], res, next);
     },
     categoriesController.getCategoriesCount
@@ -42,7 +42,7 @@ categoriesRouter.get("/categories-count",
 
 categoriesRouter.get("/all-categories-inside-the-page",
     (req, res, next) => {
-        const { pageNumber, pageSize, storeId, parentId } = req.query;
+        const { pageNumber, pageSize } = req.query;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "page Number", fieldValue: Number(pageNumber), dataType: "number", isRequiredValue: true },
             { fieldName: "page Size", fieldValue: Number(pageSize), dataType: "number", isRequiredValue: true },
