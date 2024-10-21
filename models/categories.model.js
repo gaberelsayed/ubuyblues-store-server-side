@@ -101,19 +101,6 @@ async function getAllCategoriesWithHierarechy(filters, language) {
     }
 }
 
-async function getAllSubCategoriesForParent(storeId, parentId, language) {
-    try {
-        return {
-            msg: getSuitableTranslations("Get All Sub Categories For Parent Process Has Been Successfully !!", language),
-            error: false,
-            data: await categoryModel.find({ storeId, parent: parentId ? parentId : null }, { name: 1, storeId: 1, parent: 1 }),
-        }
-    }
-    catch (err) {
-        throw Error(err);
-    }
-}
-
 async function getCategoryInfo(categoryId, language) {
     try {
         const categoryInfo = await categoryModel.findById(categoryId);
@@ -273,7 +260,7 @@ module.exports = {
     addNewCategory,
     getAllCategories,
     getAllCategoriesWithHierarechy,
-    getAllSubCategoriesForParent,
+    getAllCategoriesInsideThePage,
     getCategoriesCount,
     getAllCategoriesInsideThePage,
     getCategoryInfo,

@@ -2,7 +2,7 @@ const categoriesRouter = require("express").Router();
 
 const categoriesController = require("../controllers/categories.controller");
 
-const { validateJWT } = require("../middlewares/global.middlewares");
+const { validateJWT, validateNumbersIsGreaterThanZero, validateNumbersIsNotFloat } = require("../middlewares/global.middlewares");
 
 const { validateIsExistValueForFieldsAndDataTypes } = require("../global/functions");
 
@@ -31,17 +31,6 @@ categoriesRouter.get("/all-categories", categoriesController.getAllCategories);
 
 categoriesRouter.get("/all-categories-with-hierarechy", categoriesController.getAllCategoriesWithHierarechy);
 
-categoriesRouter.get("/all-sub-categories-for-parent",
-    (req, res, next) => {
-        const { storeId, parentId } = req.query;
-        validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "Store Id", fieldValue: storeId, dataType: "ObjectId", isRequiredValue: true },
-            { fieldName: "Category Parent Id", fieldValue: parentId, dataType: "ObjectId", isRequiredValue: false },
-        ], res, next);
-    },
-    categoriesController.getAllSubCategoriesForParent
-);
-
 categoriesRouter.get("/categories-count",
     (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
@@ -53,12 +42,14 @@ categoriesRouter.get("/categories-count",
 
 categoriesRouter.get("/all-categories-inside-the-page",
     (req, res, next) => {
-        const { pageNumber, pageSize } = req.query;
+        const { pageNumber, pageSize, storeId, parentId } = req.query;
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "page Number", fieldValue: Number(pageNumber), dataType: "number", isRequiredValue: true },
             { fieldName: "page Size", fieldValue: Number(pageSize), dataType: "number", isRequiredValue: true },
         ], res, next);
     },
+    (req, res, next) => validateNumbersIsGreaterThanZero([req.query.pageNumber, req.query.pageSize], res, next, ["Sorry, Please Send Valid Page Number ( Number Must Be Greater Than Zero ) !!", "Sorry, Please Send Valid Page Size ( Number Must Be Greater Than Zero ) !!"]),
+    (req, res, next) => validateNumbersIsNotFloat([req.query.pageNumber, req.query.pageSize], res, next, ["Sorry, Please Send Valid Page Number ( Number Must Be Not Float ) !!", "Sorry, Please Send Valid Page Size ( Number Must Be Not Float ) !!"]),
     categoriesController.getAllCategoriesInsideThePage
 );
 
@@ -66,7 +57,7 @@ categoriesRouter.delete("/:categoryId",
     validateJWT,
     (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
-            { fieldName: "category Id", fieldValue: req.params.categoryId, dataType: "ObjectId", isRequiredValue: true },
+            { fieldName: "Category Id", fieldValue: req.params.categoryId, dataType: "ObjectId", isRequiredValue: true },
         ], res, next);
     },
     categoriesController.deleteCategory

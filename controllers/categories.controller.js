@@ -7,6 +7,7 @@ function getFiltersObject(filters) {
     for (let objectKey in filters) {
         if (objectKey === "storeId") filtersObject[objectKey] = filters[objectKey];
         if (objectKey === "categoryId") filtersObject[objectKey] = filters[objectKey];
+        if (objectKey === "parent") filtersObject[objectKey] = JSON.parse(filters[objectKey]);
     }
     return filtersObject;
 }
@@ -38,16 +39,6 @@ async function getAllCategories(req, res) {
 async function getAllCategoriesWithHierarechy(req, res) {
     try {
         res.json(await categoriesManagmentFunctions.getAllCategoriesWithHierarechy(getFiltersObject(req.query), req.query.language));
-    }
-    catch (err) {
-        res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
-    }
-}
-
-async function getAllSubCategoriesForParent(req, res) {
-    try {
-        const { storeId, parentId } = req.query;
-        res.json(await categoriesManagmentFunctions.getAllSubCategoriesForParent(storeId, parentId, req.query.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
@@ -116,7 +107,6 @@ module.exports = {
     postNewCategory,
     getAllCategories,
     getAllCategoriesWithHierarechy,
-    getAllSubCategoriesForParent,
     getCategoriesCount,
     getAllCategoriesInsideThePage,
     getCategoryInfo,
