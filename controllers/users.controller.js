@@ -9,6 +9,7 @@ const {
     addNewAccountVerificationCode,
     isAccountVerificationCodeValid
 } = require("../models/account_codes.model");
+const { createNewStore } = require("../models/stores.model");
 
 function getFiltersObject(filters) {
     let filtersObject = {};
