@@ -30,7 +30,9 @@ async function getFavoriteProductsByProductsIdsAndUserId(req, res) {
 
 async function getFavoriteProductsCount(req, res) {
     try {
-        res.json(await favoriteProductsOPerationsManagmentFunctions.getFavoriteProductsCount(getFiltersObject({ ...req.query, userId: req.data._id }), filters.language));
+        const filters = req.query;
+        filters.userId = req.data._id;
+        res.json(await favoriteProductsOPerationsManagmentFunctions.getFavoriteProductsCount(getFiltersObject(filters), filters.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));
@@ -40,7 +42,8 @@ async function getFavoriteProductsCount(req, res) {
 async function getAllFavoriteProductsInsideThePage(req, res) {
     try {
         const filters = req.query;
-        res.json(await favoriteProductsOPerationsManagmentFunctions.getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject({ ...filters, userId: req.data._id }), filters.language));
+        filters.userId = req.data._id;
+        res.json(await favoriteProductsOPerationsManagmentFunctions.getAllFavoriteProductsInsideThePage(filters.pageNumber, filters.pageSize, getFiltersObject(filters), filters.language));
     }
     catch (err) {
         res.status(500).json(getResponseObject(getSuitableTranslations("Internal Server Error !!", req.query.language), true, {}));

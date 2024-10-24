@@ -38,7 +38,7 @@ async function createNewUser(email, password, language) {
 
 async function login(email, password, language) {
     try {
-        const user = await userModel.findOne({ email });
+        const user = await userModel.findOne({ email, provider: "same-site" });
         if (user) {
             if (await compare(password, user.password)) {
                 return {
@@ -47,6 +47,7 @@ async function login(email, password, language) {
                     data: {
                         _id: user._id,
                         isVerified: user.isVerified,
+                        provider: "same-site"
                     },
                 };
             }
@@ -69,7 +70,7 @@ async function login(email, password, language) {
 
 async function loginByGoogle(userInfo, language) {
     try{
-        const user = await userModel.findOne({ email: userInfo.email });
+        const user = await userModel.findOne({ email: userInfo.email, provider: "google" });
         if (user) {
             return {
                 msg: getSuitableTranslations("Logining Process By Google Has Been Successfully !!", language),
@@ -77,6 +78,7 @@ async function loginByGoogle(userInfo, language) {
                 data: {
                     _id: user._id,
                     isVerified: user.isVerified,
+                    provider: "google",
                 },
             };
         }
@@ -95,6 +97,7 @@ async function loginByGoogle(userInfo, language) {
             data: {
                 _id,
                 isVerified,
+                provider: "google"
             },
         }
     }
