@@ -118,10 +118,16 @@ productsRouter.post("/products-by-ids-and-store-id",
     (req, res, next) => {
         validateIsExistValueForFieldsAndDataTypes([
             { fieldName: "Store Id", fieldValue: req.query.storeId, dataType: "ObjectId", isRequiredValue: true },
-            ...req.body.productsIds.map((productId, index) => (
+            { fieldName: "Products By Ids", fieldValue: req.body.productsIds, dataType: "array", isRequiredValue: true }
+        ],
+        res, next);
+    },
+    (req, res, next) => {
+        validateIsExistValueForFieldsAndDataTypes(
+            req.body.productsIds.map((productId, index) => (
                 { fieldName: `Id In Product ${index + 1}`, fieldValue: productId, dataType: "ObjectId", isRequiredValue: true }
-            ))]
-        , res, next);
+            )),
+        res, next);
     },
     productsController.getProductsByIdsAndStoreId
 );
