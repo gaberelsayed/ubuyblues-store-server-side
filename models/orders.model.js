@@ -5,6 +5,7 @@ const { orderModel, userModel, adminModel, productsWalletModel, productModel, mo
 const { getCouponDetails } = require("./coupons.model");
 
 const { getSuitableTranslations } = require("../global/functions");
+const { countries } = require("countries-list");
 
 const isProductLocalOrInternational = (productCountries, shippingCountry) => {
     return productCountries.includes(shippingCountry) ? "local" : "international";
@@ -205,7 +206,7 @@ async function createNewOrder(orderDetails, language) {
                 totalAmount: orderedProducts[i].price * orderDetails.products[i].quantity,
                 quantity: orderDetails.products[i].quantity,
                 imagePath: orderedProducts[i].imagePath,
-                country: orderedProducts[i].country,
+                countries: orderedProducts[i].countries,
             });
         }
         const totalPrices = {
@@ -292,7 +293,6 @@ async function createNewOrder(orderDetails, language) {
             },
         }
     } catch (err) {
-        console.log(err)
         throw Error(err);
     }
 }
