@@ -35,7 +35,11 @@ const appeared_sections = [
         sectionName: "stores",
         isAppeared: false,
     },
-]
+    {
+        sectionName: "binance payment method",
+        isAppeared: false,
+    },
+];
 
 async function create_initial_appeared_sections() {
     try {
