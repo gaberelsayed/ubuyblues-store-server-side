@@ -292,6 +292,7 @@ async function createNewOrder(orderDetails, language) {
             },
         }
     } catch (err) {
+        console.log(err)
         throw Error(err);
     }
 }
